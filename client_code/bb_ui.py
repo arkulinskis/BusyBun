@@ -10,11 +10,12 @@ from anvil.js import window
 GAME_CALLS = {
     "get_state", "finish_level", "cook", "buy_hat", "wear_hat", "buy_market", "claim_daily", "set_name",
     "import_guest", "leaderboard", "guest_state", "guest_finish_level", "guest_cook", "guest_buy_hat",
-    "guest_wear_hat", "guest_buy_market", "guest_claim_daily",
+    "guest_wear_hat", "guest_buy_market", "guest_claim_daily", "submit_feedback",
 }
 ADMIN_CALLS = {
     "admin_whoami", "admin_state", "save_level", "delete_level", "move_level", "save_territory", "move_territory",
     "delete_territory", "restore_level", "restore_defaults", "list_players", "set_admin",
+    "list_feedback", "set_feedback_status", "delete_feedback",
 }
 
 

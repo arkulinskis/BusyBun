@@ -49,7 +49,7 @@ def admin_state():
         "orphans": [l["key"] for l in orphans],
         "catalog": C.public(),
         "stats": {"players": len(users), "clears": sum((l["clears"] or 0) for l in app_tables.levels.search()),
-                  "levels": len(app_tables.levels.search())},
+                  "levels": len(app_tables.levels.search()), "feedback_new": _feedback_counts()["new"]},
         "builtin_keys": [lv["key"] for lv in L.LEVELS],
     }
 
@@ -249,3 +249,47 @@ def set_admin(email, flag):
         return {"ok": False, "error": "You can't remove your own admin rights."}
     u["is_admin"] = bool(flag)
     return list_players()
+
+
+# ---------------------------------------------------------------- feedback inbox
+
+FEEDBACK_STATUSES = ("new", "read", "done")
+
+
+def _feedback_counts():
+    counts = {s: 0 for s in FEEDBACK_STATUSES}
+    for r in app_tables.feedback.search():
+        counts[r["status"] if r["status"] in counts else "new"] += 1
+    return counts
+
+
+@anvil.server.callable
+def list_feedback(status=None):
+    _admin()
+    rows = sorted(app_tables.feedback.search(), key=lambda r: r["created"] or G._now(), reverse=True)
+    items = []
+    for r in rows:
+        if status and (r["status"] or "new") != status:
+            continue
+        items.append({"id": r.get_id(), "kind": r["kind"] or "other", "kind_name": G.FEEDBACK_KINDS.get(r["kind"], "Other"),
+                      "message": r["message"], "name": r["name"], "email": r["email"], "context": r["context"] or {},
+                      "created": G._iso(r["created"]), "status": r["status"] or "new"})
+    return {"ok": True, "items": items[:500], "counts": _feedback_counts()}
+
+
+@anvil.server.callable
+def set_feedback_status(row_id, status, filter_status=None):
+    _admin()
+    r = app_tables.feedback.get_by_id(row_id)
+    if r is not None and status in FEEDBACK_STATUSES:
+        r["status"] = status
+    return list_feedback(filter_status)
+
+
+@anvil.server.callable
+def delete_feedback(row_id, filter_status=None):
+    _admin()
+    r = app_tables.feedback.get_by_id(row_id)
+    if r is not None:
+        r.delete()
+    return list_feedback(filter_status)

@@ -120,7 +120,7 @@ BADGES = [
     {"key": "master_chef", "name": "Master Chef", "emoji": "👩‍🍳", "desc": "Cook all 10 recipes."},
     {"key": "fashionista", "name": "Fashion Bun", "emoji": "🎩", "desc": "Own 5 hats."},
     {"key": "golden_touch", "name": "Golden Touch", "emoji": "🥢", "desc": "Find 10 pairs of golden chopsticks."},
-    {"key": "pen_pal", "name": "Pen Pal", "emoji": "💌", "desc": "Find all of Grandma's postcards."},
+    {"key": "pen_pal", "name": "Pen Pal", "emoji": "✉️", "desc": "Find all of Grandma's postcards."},
     {"key": "regular", "name": "Market Regular", "emoji": "📦", "desc": "Open the daily market box 7 times.", "stat": "dailies", "at": 7},
     {"key": "liberator", "name": "Liberator", "emoji": "🏮", "desc": "Free every territory from the pests."},
     {"key": "star_chef", "name": "Star Chef", "emoji": "⭐", "desc": "Earn 45 stars."},
@@ -185,7 +185,7 @@ PICKUPS = [
     {"key": "heart", "name": "Heart Bun", "emoji": "❤️"},
     {"key": "tea", "name": "Jasmine Tea (speed)", "emoji": "🍵"},
     {"key": "chopsticks", "name": "Golden Chopsticks", "emoji": "🥢"},
-    {"key": "postcard", "name": "Grandma's Postcard", "emoji": "💌"},
+    {"key": "postcard", "name": "Grandma's Postcard", "emoji": "✉️"},
 ]
 
 COINS = {"errand": 5, "first_clear": 20, "star": 10, "pest": 1, "crate": 1, "boss": 15, "nest": 3}

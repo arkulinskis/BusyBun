@@ -44,9 +44,27 @@ def _client_today(today):
 
 # ---------------------------------------------------------------- seeding and the journey
 
+_UPGRADED = [False]
+
+
 def ensure_seeded():
     if len(app_tables.territories.search()) == 0:
         seed_defaults()
+    if not _UPGRADED[0]:
+        upgrade_builtins()
+        _UPGRADED[0] = True
+
+
+def upgrade_builtins():
+    """Bring unedited built-in levels up to the latest shipped version. Returns how many changed."""
+    shipped = {lv["key"]: lv for lv in L.LEVELS}
+    n = 0
+    for row in app_tables.levels.search(builtin=True):
+        lv = shipped.get(row["key"])
+        if lv and row["data"] is not None and L.canon(row["data"]) == L.canon(lv["v1"]) and L.canon(lv["v1"]) != L.canon(lv["data"]):
+            row["data"] = lv["data"]
+            n += 1
+    return n
 
 
 def seed_defaults(only_missing=True):
@@ -688,3 +706,39 @@ def guest_buy_market(progress, offer_id, today=None):
 @anvil.server.callable
 def guest_claim_daily(progress, today=None):
     return _guest(progress, today, lambda p, jr, t: apply_daily(p, jr, t))
+
+
+# ---------------------------------------------------------------- feedback and bug reports (anyone can send)
+
+FEEDBACK_KINDS = {"bug": "Bug", "idea": "Idea", "level": "Level problem", "other": "Other"}
+FEEDBACK_LIMIT = 8  # per browser session per hour
+
+
+def _clean_context(ctx):
+    out = {}
+    if isinstance(ctx, dict):
+        for k, v in list(ctx.items())[:25]:
+            if isinstance(v, (int, float)) and not isinstance(v, bool):
+                out[str(k)[:40]] = v
+            elif v is not None:
+                out[str(k)[:40]] = str(v)[:300]
+    return out
+
+
+@anvil.server.callable
+def submit_feedback(kind, message, email=None, context=None):
+    message = str(message or "").strip()
+    if len(message) < 5:
+        return {"ok": False, "error": "Please write a little more (at least 5 characters)."}
+    now = _now()
+    recent = [t for t in (anvil.server.session.get("feedback_times") or []) if (now - dt.datetime.fromisoformat(t)).total_seconds() < 3600]
+    if len(recent) >= FEEDBACK_LIMIT:
+        return {"ok": False, "error": "Thanks! You've sent a lot of messages this hour. Please try again a bit later."}
+    anvil.server.session["feedback_times"] = recent + [now.isoformat()]
+    u = anvil.users.get_user()
+    email = re.sub(r"\s+", "", str(email or ""))[:120] or (u["email"] if u else None)
+    app_tables.feedback.add_row(
+        user=u, name=(u["display_name"] or u["email"]) if u else "Guest", email=email or None,
+        kind=kind if kind in FEEDBACK_KINDS else "other", message=message[:4000],
+        context=_clean_context(context), created=now, status="new")
+    return {"ok": True}

@@ -695,3 +695,33 @@ LEVELS = [
         goals={"meat": 5, "errands": True, "nests": True}, par=150,
         intro="The Rat King sits on the Emperor's banquet table. Bonk him eight times to free the land!"),
 ]
+
+
+# ---------------------------------------------------------------- version 2 (2026-10-26)
+# Health hearts in every level with pests (before, only the Rat King's level had one).
+# Each built-in keeps its version-1 data in "v1", so Game.upgrade_builtins() can update live levels
+# that nobody has edited, and leave levels edited in the builder alone.
+HEARTS_V2 = {
+    "kitchen-2": [(13, 5)], "kitchen-3": [(16, 9), (21, 13)],
+    "market-1": [(15, 9)], "market-2": [(13, 9)], "market-3": [(15, 10), (22, 13)],
+    "dimsum-1": [(18, 12)], "dimsum-2": [(12, 10)], "dimsum-3": [(17, 11), (24, 13)],
+    "spice-1": [(16, 7)], "spice-2": [(6, 4)], "spice-3": [(16, 9), (24, 12)],
+    "harbour-1": [(16, 7)], "harbour-2": [(12, 9)], "harbour-3": [(18, 9), (24, 12)],
+    "banquet-1": [(15, 7), (22, 10)], "banquet-2": [(13, 10), (24, 13)],
+}
+for _lv in LEVELS:
+    _lv["v1"] = {k: (list(v) if isinstance(v, list) else (dict(v) if isinstance(v, dict) else v)) for k, v in _lv["data"].items()}
+    _lv["v1"]["ents"] = [dict(e) for e in _lv["data"]["ents"]]
+    for _x, _y in HEARTS_V2.get(_lv["key"], []):
+        _lv["data"]["ents"].append({"t": "pickup", "k": "heart", "x": _x, "y": _y})
+
+
+def canon(d):
+    """A comparable form of level data (Anvil may hand back 3.0 where we stored 3)."""
+    if isinstance(d, dict):
+        return {k: canon(v) for k, v in d.items()}
+    if isinstance(d, list):
+        return [canon(v) for v in d]
+    if isinstance(d, float) and d.is_integer():
+        return int(d)
+    return d
