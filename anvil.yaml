@@ -278,7 +278,7 @@ metadata:
   title: BusyBun
 name: Busy Bun
 native_deps:
-  head_html: "<script src=\"_/theme/legal-kit.js?v=9a70c91460\"></script>\n\n<!-- Busy Bun — Native Libraries. tools/sync_to_anvil.py\
+  head_html: "<script src=\"_/theme/legal-kit.js?v=f5d96a3684\"></script>\n\n<!-- Busy Bun — Native Libraries. tools/sync_to_anvil.py\
     \ puts this (plus lib/*.js and every form's styles and scripts)\n     into anvil.yaml → native_deps.head_html. -->\n<meta\
     \ name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\">\n<meta name=\"\
     theme-color\" content=\"#f7e6c8\">\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\"\
