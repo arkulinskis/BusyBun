@@ -276,95 +276,99 @@ native_deps:
     \  .bb { font-family: var(--bb-font); color: var(--bb-ink); font-size: 15px; line-height: 1.4; }\n  .bb h1, .bb h2, .bb\
     \ h3, .bb h4 { font-family: var(--bb-title); font-weight: 600; margin: 0; line-height: 1.15; letter-spacing: .2px; }\n\
     \  .bb button { font-family: var(--bb-title); cursor: pointer; }\n  .bb input, .bb select, .bb textarea { font-family:\
-    \ var(--bb-font); font-size: 15px; color: var(--bb-ink); }\n\n  /* Chunky \"sticker\" buttons */\n  .bb-btn { display:\
-    \ inline-flex; align-items: center; justify-content: center; gap: 8px; border: 3px solid var(--bb-line);\n    background:\
-    \ var(--bb-gold); color: var(--bb-ink); font-weight: 600; font-size: 17px; padding: 10px 18px; border-radius: 14px;\n\
-    \    box-shadow: 0 4px 0 var(--bb-line); transition: transform .08s, box-shadow .08s, filter .15s; user-select: none;\
-    \ white-space: nowrap; }\n  .bb-btn:hover { filter: brightness(1.06); }\n  .bb-btn:active { transform: translateY(3px);\
-    \ box-shadow: 0 1px 0 var(--bb-line); }\n  .bb-btn[disabled] { filter: grayscale(.7) opacity(.6); cursor: not-allowed;\
-    \ transform: none; box-shadow: 0 4px 0 var(--bb-line); }\n  .bb-btn.red { background: var(--bb-red); color: #fff; }\n\
-    \  .bb-btn.green { background: var(--bb-green); color: #fff; }\n  .bb-btn.cream { background: var(--bb-cream); }\n  .bb-btn.jade\
-    \ { background: var(--bb-jade); color: #fff; }\n  .bb-btn.small { font-size: 14px; padding: 6px 12px; border-radius: 11px;\
-    \ border-width: 2.5px; box-shadow: 0 3px 0 var(--bb-line); }\n  .bb-btn.small:active { box-shadow: 0 1px 0 var(--bb-line);\
-    \ transform: translateY(2px); }\n  .bb-btn.big { font-size: 22px; padding: 14px 28px; border-radius: 18px; }\n  .bb-btn.ghost\
-    \ { background: transparent; box-shadow: none; border-color: transparent; text-decoration: underline; padding: 6px 8px;\
-    \ }\n  .bb-btn.ghost:active { transform: none; }\n  .bb-card { background: var(--bb-cream); border: 3px solid var(--bb-line);\
-    \ border-radius: var(--bb-radius); box-shadow: var(--bb-shadow); }\n  .bb-pill { display: inline-flex; align-items: center;\
-    \ gap: 6px; background: var(--bb-cream); border: 2.5px solid var(--bb-line);\n    border-radius: 999px; padding: 3px 12px\
-    \ 3px 6px; font-family: var(--bb-title); font-weight: 600; box-shadow: 0 3px 0 var(--bb-line); }\n  .bb-emoji { font-family:\
-    \ var(--bb-emoji); font-style: normal; line-height: 1; }\n  .bb-field { display: flex; flex-direction: column; gap: 4px;\
-    \ margin-bottom: 12px; text-align: left; }\n  .bb-field label { font-weight: 800; font-size: 13px; color: var(--bb-ink-2);\
-    \ }\n  .bb-input { width: 100%; border: 2.5px solid var(--bb-line); border-radius: 12px; padding: 10px 12px; background:\
-    \ #fff; outline: none; }\n  .bb-input:focus { box-shadow: 0 0 0 4px rgba(244, 182, 60, .5); }\n  .bb-err { color: var(--bb-red-2);\
-    \ font-weight: 800; font-size: 14px; min-height: 1.2em; }\n  .bb-muted { color: var(--bb-soft); }\n\n  /* Modal + toast\
-    \ */\n  .bb-modal-bg { position: fixed; inset: 0; background: rgba(43, 27, 46, .55); display: flex; align-items: center;\
-    \ justify-content: center;\n    z-index: 1000; padding: 16px; animation: bbFade .15s ease-out; backdrop-filter: blur(2px);\
-    \ }\n  .bb-modal { position: relative; max-width: 520px; width: 100%; max-height: calc(100vh - 32px); overflow: auto;\
-    \ padding: 22px;\n    animation: bbPop .25s cubic-bezier(.2, 1.4, .4, 1); }\n  .bb-modal .bb-x { position: absolute; top:\
-    \ 10px; right: 10px; width: 36px; height: 36px; border-radius: 50%; border: 2.5px solid var(--bb-line);\n    background:\
-    \ var(--bb-cream); font-size: 18px; line-height: 1; box-shadow: 0 2px 0 var(--bb-line); }\n  .bb-toasts { position: fixed;\
-    \ left: 50%; top: 14px; transform: translateX(-50%); z-index: 2000; display: flex; flex-direction: column;\n    gap: 8px;\
-    \ align-items: center; pointer-events: none; width: max-content; max-width: calc(100vw - 32px); }\n  .bb-toast { background:\
-    \ var(--bb-cream); border: 3px solid var(--bb-line); border-radius: 14px; padding: 8px 16px; font-family: var(--bb-title);\n\
-    \    font-weight: 600; box-shadow: 0 4px 0 var(--bb-line); animation: bbDrop .3s cubic-bezier(.2, 1.4, .4, 1); text-align:\
-    \ center; }\n  .bb-toast.err { background: #ffd9d4; }\n  .bb-toast.gold { background: var(--bb-gold); }\n  @keyframes\
-    \ bbFade { from { opacity: 0; } }\n  @keyframes bbPop { from { transform: scale(.85); opacity: 0; } }\n  @keyframes bbDrop\
-    \ { from { transform: translateY(-20px); opacity: 0; } }\n  @keyframes bbBob { 50% { transform: translateY(-6px); } }\n\
-    \  @keyframes bbWiggle { 25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); } }\n  @keyframes bbSpin { to\
-    \ { transform: rotate(360deg); } }\n  @keyframes bbPulse { 50% { transform: scale(1.08); } }\n  /* The bouncing bun mascot:\
-    \ Anvil's loading spinner (#loadingSpinner, shown during server calls)\n     and our own busy overlays (.bb-hop). lib/art.js\
-    \ draws the bun and sets --bb-mascot. */\n  @keyframes bbHop {\n    0%, 100% { transform: translateY(0) scale(1.12, .86);\
-    \ }\n    12% { transform: translateY(-6%) scale(.92, 1.1); }\n    45%, 55% { transform: translateY(-30%) scale(.98, 1.03);\
-    \ }\n    88% { transform: translateY(-4%) scale(1.02, .98); }\n  }\n  @keyframes bbHopShadow { 0%, 100% { transform: scale(1);\
-    \ opacity: .32; } 50% { transform: scale(.5); opacity: .12; } }\n  #loadingSpinner { --anvil-spinner-size: 110px; width:\
-    \ 110px; height: 110px; border-radius: 50%;\n    background: radial-gradient(circle closest-side, #fff7ea 92%, #3d2416\
-    \ 93%, #3d2416 97%, transparent 98%) !important; box-shadow: 0 4px 0 #3d2416; }\n  #loadingSpinner > svg, #loadingSpinner\
-    \ > img { display: none !important; }\n  #loadingSpinner::before, #loadingSpinner::after { content: \"\"; position: absolute;\
-    \ pointer-events: none; }\n  #loadingSpinner::before { left: 30%; right: 30%; bottom: 17%; height: 9%; border-radius:\
-    \ 50%; background: #3d2416; animation: bbHopShadow .7s ease-in-out infinite; }\n  #loadingSpinner::after { left: 14%;\
-    \ right: 14%; top: 4%; bottom: 20%; background: var(--bb-mascot) center bottom / contain no-repeat;\n    transform-origin:\
-    \ 50% 100%; animation: bbHop .7s ease-in-out infinite; }\n  .bb-hop { position: relative; display: inline-block; width:\
-    \ 46px; height: 46px; flex: none; }\n  .bb-hop::before { content: \"\"; position: absolute; left: 22%; right: 22%; bottom:\
-    \ 0; height: 12%; border-radius: 50%; background: #3d2416; animation: bbHopShadow .7s ease-in-out infinite; }\n  .bb-hop::after\
-    \ { content: \"\"; position: absolute; inset: 0 0 6% 0; background: var(--bb-mascot) center bottom / contain no-repeat;\
-    \ transform-origin: 50% 100%; animation: bbHop .7s ease-in-out infinite; }\n  .bb-hop.big { width: 110px; height: 110px;\
-    \ }\n  @media (prefers-reduced-motion: reduce) { #loadingSpinner::after, #loadingSpinner::before, .bb-hop::after, .bb-hop::before\
-    \ { animation-duration: 2.4s; } }\n  .bb-loading { position: fixed; inset: 0; display: flex; flex-direction: column; align-items:\
-    \ center; justify-content: center; gap: 14px;\n    background: var(--bb-dough); z-index: 5; font-family: var(--bb-title);\
-    \ font-size: 20px; }\n  .bb-loading .bb-emoji { font-size: 54px; animation: bbBob .8s ease-in-out infinite; }\n</style>\n\
-    <script>\n(function () {\n  'use strict';\n  var BB = window.BB = window.BB || {};\n  BB.components = BB.components ||\
-    \ {};\n\n  /* ---------- Python ⇄ JS bridge ----------\n     Python mounts a component with window.BB.mount(name, rootNode,\
-    \ jsonString, emit).\n     The component calls emit(event, payload) and gets a Promise of whatever Python returned\n \
-    \    (bb_ui sends it back as a JSON string; we parse it here). */\n  BB.wrapEmit = function (emit) {\n    return function\
-    \ (name, payload) {\n      var r;\n      try { r = emit ? emit(name, JSON.stringify(payload == null ? {} : payload)) :\
-    \ null; }\n      catch (e) { console.error(e); return Promise.reject(e); }\n      return Promise.resolve(r).then(function\
-    \ (v) {\n        if (typeof v === 'string') { try { return JSON.parse(v); } catch (e) { return v; } }\n        return\
-    \ v;\n      });\n    };\n  };\n  BB.define = function (name, mountFn) { BB.components[name] = mountFn; };\n  BB.mount\
-    \ = function (name, root, json, emit) {\n    var fn = BB.components[name];\n    if (!fn) { console.error('BB component\
-    \ not loaded: ' + name); return null; }\n    if (!root) { console.error('BB mount: no root node for ' + name); return\
-    \ null; }\n    var data = typeof json === 'string' ? JSON.parse(json || '{}') : (json || {});\n    return fn(root, data,\
-    \ BB.wrapEmit(emit));\n  };\n\n  /* ---------- small helpers ---------- */\n  BB.esc = function (s) {\n    return String(s\
-    \ == null ? '' : s).replace(/[&<>\"']/g, function (c) {\n      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"':\
-    \ '&quot;', \"'\": '&#39;' }[c];\n    });\n  };\n  BB.store = {\n    get: function (k, dflt) { try { var v = localStorage.getItem(k);\
-    \ return v == null ? dflt : JSON.parse(v); } catch (e) { return dflt; } },\n    set: function (k, v) { try { localStorage.setItem(k,\
-    \ JSON.stringify(v)); } catch (e) {} },\n    del: function (k) { try { localStorage.removeItem(k); } catch (e) {} }\n\
-    \  };\n  BB.today = function () {\n    var d = new Date();\n    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2,\
-    \ '0') + '-' + String(d.getDate()).padStart(2, '0');\n  };\n  BB.fmtTime = function (s) {\n    if (s == null) return '–';\n\
-    \    s = Math.max(0, s);\n    var m = Math.floor(s / 60), r = s - m * 60;\n    return (m ? m + ':' + (r < 10 ? '0' : '')\
-    \ + r.toFixed(1) : r.toFixed(1) + 's');\n  };\n  BB.isTouch = function () { return ('ontouchstart' in window) || navigator.maxTouchPoints\
-    \ > 0; };\n\n  BB.toast = function (msg, kind) {\n    var box = document.querySelector('.bb-toasts');\n    if (!box) {\
-    \ box = document.createElement('div'); box.className = 'bb bb-toasts'; document.body.appendChild(box); }\n    var t =\
-    \ document.createElement('div');\n    t.className = 'bb-toast' + (kind === true || kind === 'err' ? ' err' : kind ===\
-    \ 'gold' ? ' gold' : '');\n    t.innerHTML = msg;\n    box.appendChild(t);\n    setTimeout(function () { t.style.transition\
-    \ = 'opacity .3s, transform .3s'; t.style.opacity = '0'; t.style.transform = 'translateY(-10px)'; }, 2600);\n    setTimeout(function\
-    \ () { t.remove(); }, 3000);\n  };\n\n  // BB.modal(html, {onClose, cls}) → {el, close}. Clicking the backdrop or × closes\
-    \ it.\n  BB.modal = function (html, opts) {\n    opts = opts || {};\n    var bg = document.createElement('div');\n   \
-    \ bg.className = 'bb bb-modal-bg';\n    bg.innerHTML = '<div class=\"bb-card bb-modal ' + (opts.cls || '') + '\">' + (opts.noClose\
-    \ ? '' : '<button class=\"bb-x\" aria-label=\"Close\">✕</button>') + html + '</div>';\n    document.body.appendChild(bg);\n\
-    \    var closed = false;\n    function close() {\n      if (closed) return; closed = true;\n      bg.remove();\n     \
-    \ document.removeEventListener('keydown', onKey);\n      if (opts.onClose) opts.onClose();\n    }\n    function onKey(e)\
-    \ { if (e.key === 'Escape' && !opts.noClose) close(); }\n    document.addEventListener('keydown', onKey);\n    bg.addEventListener('click',\
-    \ function (e) {\n      if ((e.target === bg && !opts.noClose) || (e.target.closest && e.target.closest('.bb-x'))) { BB.Sound.play('click');\
+    \ var(--bb-font); font-size: 15px; color: var(--bb-ink); }\n  /* Default links: soy-sauce red instead of browser blue\
+    \ (form-specific link rules still win) */\n  /* :root raises it above Bootstrap's a / a:hover blue */\n  :root a, :root\
+    \ a:visited { color: var(--bb-red-2); font-weight: 700; cursor: pointer;\n    text-decoration: underline; text-decoration-thickness:\
+    \ 2px; text-underline-offset: 3px; }\n  :root a:hover, :root a:focus { color: var(--bb-red); text-decoration: underline;\
+    \ text-decoration-color: var(--bb-gold-2); }\n\n  /* Chunky \"sticker\" buttons */\n  .bb-btn { display: inline-flex;\
+    \ align-items: center; justify-content: center; gap: 8px; border: 3px solid var(--bb-line);\n    background: var(--bb-gold);\
+    \ color: var(--bb-ink); font-weight: 600; font-size: 17px; padding: 10px 18px; border-radius: 14px;\n    box-shadow: 0\
+    \ 4px 0 var(--bb-line); transition: transform .08s, box-shadow .08s, filter .15s; user-select: none; white-space: nowrap;\
+    \ }\n  .bb-btn:hover { filter: brightness(1.06); }\n  .bb-btn:active { transform: translateY(3px); box-shadow: 0 1px 0\
+    \ var(--bb-line); }\n  .bb-btn[disabled] { filter: grayscale(.7) opacity(.6); cursor: not-allowed; transform: none; box-shadow:\
+    \ 0 4px 0 var(--bb-line); }\n  .bb-btn.red { background: var(--bb-red); color: #fff; }\n  .bb-btn.green { background:\
+    \ var(--bb-green); color: #fff; }\n  .bb-btn.cream { background: var(--bb-cream); }\n  .bb-btn.jade { background: var(--bb-jade);\
+    \ color: #fff; }\n  .bb-btn.small { font-size: 14px; padding: 6px 12px; border-radius: 11px; border-width: 2.5px; box-shadow:\
+    \ 0 3px 0 var(--bb-line); }\n  .bb-btn.small:active { box-shadow: 0 1px 0 var(--bb-line); transform: translateY(2px);\
+    \ }\n  .bb-btn.big { font-size: 22px; padding: 14px 28px; border-radius: 18px; }\n  .bb-btn.ghost { background: transparent;\
+    \ box-shadow: none; border-color: transparent; text-decoration: underline; padding: 6px 8px; }\n  .bb-btn.ghost:active\
+    \ { transform: none; }\n  .bb-card { background: var(--bb-cream); border: 3px solid var(--bb-line); border-radius: var(--bb-radius);\
+    \ box-shadow: var(--bb-shadow); }\n  .bb-pill { display: inline-flex; align-items: center; gap: 6px; background: var(--bb-cream);\
+    \ border: 2.5px solid var(--bb-line);\n    border-radius: 999px; padding: 3px 12px 3px 6px; font-family: var(--bb-title);\
+    \ font-weight: 600; box-shadow: 0 3px 0 var(--bb-line); }\n  .bb-emoji { font-family: var(--bb-emoji); font-style: normal;\
+    \ line-height: 1; }\n  .bb-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; text-align: left;\
+    \ }\n  .bb-field label { font-weight: 800; font-size: 13px; color: var(--bb-ink-2); }\n  .bb-input { width: 100%; border:\
+    \ 2.5px solid var(--bb-line); border-radius: 12px; padding: 10px 12px; background: #fff; outline: none; }\n  .bb-input:focus\
+    \ { box-shadow: 0 0 0 4px rgba(244, 182, 60, .5); }\n  .bb-err { color: var(--bb-red-2); font-weight: 800; font-size:\
+    \ 14px; min-height: 1.2em; }\n  .bb-muted { color: var(--bb-soft); }\n\n  /* Modal + toast */\n  .bb-modal-bg { position:\
+    \ fixed; inset: 0; background: rgba(43, 27, 46, .55); display: flex; align-items: center; justify-content: center;\n \
+    \   z-index: 1000; padding: 16px; animation: bbFade .15s ease-out; backdrop-filter: blur(2px); }\n  .bb-modal { position:\
+    \ relative; max-width: 520px; width: 100%; max-height: calc(100vh - 32px); overflow: auto; padding: 22px;\n    animation:\
+    \ bbPop .25s cubic-bezier(.2, 1.4, .4, 1); }\n  .bb-modal .bb-x { position: absolute; top: 10px; right: 10px; width: 36px;\
+    \ height: 36px; border-radius: 50%; border: 2.5px solid var(--bb-line);\n    background: var(--bb-cream); font-size: 18px;\
+    \ line-height: 1; box-shadow: 0 2px 0 var(--bb-line); }\n  .bb-toasts { position: fixed; left: 50%; top: 14px; transform:\
+    \ translateX(-50%); z-index: 2000; display: flex; flex-direction: column;\n    gap: 8px; align-items: center; pointer-events:\
+    \ none; width: max-content; max-width: calc(100vw - 32px); }\n  .bb-toast { background: var(--bb-cream); border: 3px solid\
+    \ var(--bb-line); border-radius: 14px; padding: 8px 16px; font-family: var(--bb-title);\n    font-weight: 600; box-shadow:\
+    \ 0 4px 0 var(--bb-line); animation: bbDrop .3s cubic-bezier(.2, 1.4, .4, 1); text-align: center; }\n  .bb-toast.err {\
+    \ background: #ffd9d4; }\n  .bb-toast.gold { background: var(--bb-gold); }\n  @keyframes bbFade { from { opacity: 0; }\
+    \ }\n  @keyframes bbPop { from { transform: scale(.85); opacity: 0; } }\n  @keyframes bbDrop { from { transform: translateY(-20px);\
+    \ opacity: 0; } }\n  @keyframes bbBob { 50% { transform: translateY(-6px); } }\n  @keyframes bbWiggle { 25% { transform:\
+    \ rotate(-6deg); } 75% { transform: rotate(6deg); } }\n  @keyframes bbSpin { to { transform: rotate(360deg); } }\n  @keyframes\
+    \ bbPulse { 50% { transform: scale(1.08); } }\n  /* The bouncing bun mascot: Anvil's loading spinner (#loadingSpinner,\
+    \ shown during server calls)\n     and our own busy overlays (.bb-hop). lib/art.js draws the bun and sets --bb-mascot.\
+    \ */\n  @keyframes bbHop {\n    0%, 100% { transform: translateY(0) scale(1.12, .86); }\n    12% { transform: translateY(-6%)\
+    \ scale(.92, 1.1); }\n    45%, 55% { transform: translateY(-30%) scale(.98, 1.03); }\n    88% { transform: translateY(-4%)\
+    \ scale(1.02, .98); }\n  }\n  @keyframes bbHopShadow { 0%, 100% { transform: scale(1); opacity: .32; } 50% { transform:\
+    \ scale(.5); opacity: .12; } }\n  #loadingSpinner { --anvil-spinner-size: 110px; width: 110px; height: 110px; border-radius:\
+    \ 50%;\n    background: radial-gradient(circle closest-side, #fff7ea 92%, #3d2416 93%, #3d2416 97%, transparent 98%) !important;\
+    \ box-shadow: 0 4px 0 #3d2416; }\n  #loadingSpinner > svg, #loadingSpinner > img { display: none !important; }\n  #loadingSpinner::before,\
+    \ #loadingSpinner::after { content: \"\"; position: absolute; pointer-events: none; }\n  #loadingSpinner::before { left:\
+    \ 30%; right: 30%; bottom: 17%; height: 9%; border-radius: 50%; background: #3d2416; animation: bbHopShadow .7s ease-in-out\
+    \ infinite; }\n  #loadingSpinner::after { left: 14%; right: 14%; top: 4%; bottom: 20%; background: var(--bb-mascot) center\
+    \ bottom / contain no-repeat;\n    transform-origin: 50% 100%; animation: bbHop .7s ease-in-out infinite; }\n  .bb-hop\
+    \ { position: relative; display: inline-block; width: 46px; height: 46px; flex: none; }\n  .bb-hop::before { content:\
+    \ \"\"; position: absolute; left: 22%; right: 22%; bottom: 0; height: 12%; border-radius: 50%; background: #3d2416; animation:\
+    \ bbHopShadow .7s ease-in-out infinite; }\n  .bb-hop::after { content: \"\"; position: absolute; inset: 0 0 6% 0; background:\
+    \ var(--bb-mascot) center bottom / contain no-repeat; transform-origin: 50% 100%; animation: bbHop .7s ease-in-out infinite;\
+    \ }\n  .bb-hop.big { width: 110px; height: 110px; }\n  @media (prefers-reduced-motion: reduce) { #loadingSpinner::after,\
+    \ #loadingSpinner::before, .bb-hop::after, .bb-hop::before { animation-duration: 2.4s; } }\n  .bb-loading { position:\
+    \ fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;\n \
+    \   background: var(--bb-dough); z-index: 5; font-family: var(--bb-title); font-size: 20px; }\n  .bb-loading .bb-emoji\
+    \ { font-size: 54px; animation: bbBob .8s ease-in-out infinite; }\n</style>\n<script>\n(function () {\n  'use strict';\n\
+    \  var BB = window.BB = window.BB || {};\n  BB.components = BB.components || {};\n\n  /* ---------- Python ⇄ JS bridge\
+    \ ----------\n     Python mounts a component with window.BB.mount(name, rootNode, jsonString, emit).\n     The component\
+    \ calls emit(event, payload) and gets a Promise of whatever Python returned\n     (bb_ui sends it back as a JSON string;\
+    \ we parse it here). */\n  BB.wrapEmit = function (emit) {\n    return function (name, payload) {\n      var r;\n    \
+    \  try { r = emit ? emit(name, JSON.stringify(payload == null ? {} : payload)) : null; }\n      catch (e) { console.error(e);\
+    \ return Promise.reject(e); }\n      return Promise.resolve(r).then(function (v) {\n        if (typeof v === 'string')\
+    \ { try { return JSON.parse(v); } catch (e) { return v; } }\n        return v;\n      });\n    };\n  };\n  BB.define =\
+    \ function (name, mountFn) { BB.components[name] = mountFn; };\n  BB.mount = function (name, root, json, emit) {\n   \
+    \ var fn = BB.components[name];\n    if (!fn) { console.error('BB component not loaded: ' + name); return null; }\n  \
+    \  if (!root) { console.error('BB mount: no root node for ' + name); return null; }\n    var data = typeof json === 'string'\
+    \ ? JSON.parse(json || '{}') : (json || {});\n    return fn(root, data, BB.wrapEmit(emit));\n  };\n\n  /* ---------- small\
+    \ helpers ---------- */\n  BB.esc = function (s) {\n    return String(s == null ? '' : s).replace(/[&<>\"']/g, function\
+    \ (c) {\n      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;', \"'\": '&#39;' }[c];\n    });\n  };\n\
+    \  BB.store = {\n    get: function (k, dflt) { try { var v = localStorage.getItem(k); return v == null ? dflt : JSON.parse(v);\
+    \ } catch (e) { return dflt; } },\n    set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch\
+    \ (e) {} },\n    del: function (k) { try { localStorage.removeItem(k); } catch (e) {} }\n  };\n  BB.today = function ()\
+    \ {\n    var d = new Date();\n    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2,\
+    \ '0');\n  };\n  BB.fmtTime = function (s) {\n    if (s == null) return '–';\n    s = Math.max(0, s);\n    var m = Math.floor(s\
+    \ / 60), r = s - m * 60;\n    return (m ? m + ':' + (r < 10 ? '0' : '') + r.toFixed(1) : r.toFixed(1) + 's');\n  };\n\
+    \  BB.isTouch = function () { return ('ontouchstart' in window) || navigator.maxTouchPoints > 0; };\n\n  BB.toast = function\
+    \ (msg, kind) {\n    var box = document.querySelector('.bb-toasts');\n    if (!box) { box = document.createElement('div');\
+    \ box.className = 'bb bb-toasts'; document.body.appendChild(box); }\n    var t = document.createElement('div');\n    t.className\
+    \ = 'bb-toast' + (kind === true || kind === 'err' ? ' err' : kind === 'gold' ? ' gold' : '');\n    t.innerHTML = msg;\n\
+    \    box.appendChild(t);\n    setTimeout(function () { t.style.transition = 'opacity .3s, transform .3s'; t.style.opacity\
+    \ = '0'; t.style.transform = 'translateY(-10px)'; }, 2600);\n    setTimeout(function () { t.remove(); }, 3000);\n  };\n\
+    \n  // BB.modal(html, {onClose, cls}) → {el, close}. Clicking the backdrop or × closes it.\n  BB.modal = function (html,\
+    \ opts) {\n    opts = opts || {};\n    var bg = document.createElement('div');\n    bg.className = 'bb bb-modal-bg';\n\
+    \    bg.innerHTML = '<div class=\"bb-card bb-modal ' + (opts.cls || '') + '\">' + (opts.noClose ? '' : '<button class=\"\
+    bb-x\" aria-label=\"Close\">✕</button>') + html + '</div>';\n    document.body.appendChild(bg);\n    var closed = false;\n\
+    \    function close() {\n      if (closed) return; closed = true;\n      bg.remove();\n      document.removeEventListener('keydown',\
+    \ onKey);\n      if (opts.onClose) opts.onClose();\n    }\n    function onKey(e) { if (e.key === 'Escape' && !opts.noClose)\
+    \ close(); }\n    document.addEventListener('keydown', onKey);\n    bg.addEventListener('click', function (e) {\n    \
+    \  if ((e.target === bg && !opts.noClose) || (e.target.closest && e.target.closest('.bb-x'))) { BB.Sound.play('click');\
     \ close(); }\n    });\n    return { el: bg.querySelector('.bb-modal'), close: close };\n  };\n\n  /* ---------- Sound:\
     \ everything is synthesized, no files ---------- */\n  var Sound = BB.Sound = { ctx: null, master: null, sfxOn: BB.store.get('bb.sfx',\
     \ true), musicOn: BB.store.get('bb.music', true) };\n  Sound.init = function () {\n    if (Sound.ctx) { if (Sound.ctx.state\
