@@ -6,6 +6,8 @@ import anvil.server
 import anvil.users
 from anvil.js import window
 
+from . import legal
+
 # Server functions the game screen may call (the server checks who is signed in).
 GAME_CALLS = {
     "get_state", "finish_level", "cook", "buy_hat", "wear_hat", "buy_market", "claim_daily", "set_name",
@@ -60,6 +62,7 @@ def auth(event, p):
     try:
         if event == "login":
             anvil.users.login_with_email(p.get("email", "").strip(), p.get("password", ""), remember=True)
+            legal.refresh_soon()  # Privacy & Terms reminder if needed
         elif event == "signup":
             anvil.users.signup_with_email(p.get("email", "").strip(), p.get("password", ""), remember=True)
             if anvil.users.get_user() is None:
@@ -68,6 +71,7 @@ def auth(event, p):
             name = (p.get("name") or "").strip()
             if name:
                 call("set_name", name)
+            legal.refresh_soon()  # records the sign-up tick box
         elif event == "reset":
             try:
                 anvil.users.send_password_reset_email(p.get("email", "").strip())

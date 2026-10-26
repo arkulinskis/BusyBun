@@ -252,6 +252,24 @@ db_schema:
       client_hidden: false
       name: last_played
       type: datetime
+    - admin_ui:
+        order: 11
+        width: 200
+      client_hidden: false
+      name: legal_version
+      type: string
+    - admin_ui:
+        order: 12
+        width: 200
+      client_hidden: false
+      name: legal_accepted_at
+      type: datetime
+    - admin_ui:
+        order: 13
+        width: 200
+      client_hidden: false
+      name: legal_source
+      type: string
     indexes: []
     server: full
     title: Users
@@ -260,11 +278,11 @@ metadata:
   title: BusyBun
 name: Busy Bun
 native_deps:
-  head_html: "<!-- Busy Bun — Native Libraries. tools/sync_to_anvil.py puts this (plus lib/*.js and every form's styles and\
-    \ scripts)\n     into anvil.yaml → native_deps.head_html. -->\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1,\
-    \ maximum-scale=1, user-scalable=no\">\n<meta name=\"theme-color\" content=\"#f7e6c8\">\n<link rel=\"preconnect\" href=\"\
-    https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"\
-    https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;700;800&family=Caveat:wght@600;700&display=swap\"\
+  head_html: "<script src=\"_/theme/legal-kit.js?v=9a70c91460\"></script>\n\n<!-- Busy Bun — Native Libraries. tools/sync_to_anvil.py\
+    \ puts this (plus lib/*.js and every form's styles and scripts)\n     into anvil.yaml → native_deps.head_html. -->\n<meta\
+    \ name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\">\n<meta name=\"\
+    theme-color\" content=\"#f7e6c8\">\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\"\
+    \ href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;700;800&family=Caveat:wght@600;700&display=swap\"\
     \ rel=\"stylesheet\">\n<style>\n  :root {\n    --bb-cream: #fff7ea;\n    --bb-dough: #f7e6c8;\n    --bb-dough-2: #f0d6a8;\n\
     \    --bb-ink: #3d2416;\n    --bb-ink-2: #6b4a35;\n    --bb-soft: #9a7a62;\n    --bb-red: #e0483a;\n    --bb-red-2: #b8352a;\n\
     \    --bb-gold: #f4b63c;\n    --bb-gold-2: #d99417;\n    --bb-green: #5e9c4a;\n    --bb-green-2: #457a35;\n    --bb-jade:\
@@ -1619,73 +1637,74 @@ native_deps:
     guest\">▶ ' + (gs ? 'Continue as guest' : 'Play now') + '</button>' +\n            '<button class=\"bb-btn green\" data-a=\"\
     auth\">Sign in / Create account</button>' +\n            '<div class=\"bb-muted\" style=\"font-weight:700;font-size:13px\"\
     >An account saves your progress and puts you on the leaderboards.</div>') +\n        '</div><div class=\"g-foot\"><a data-a=\"\
-    howto\">How to play</a> · <a data-a=\"feedback\">Send feedback</a> · <a data-a=\"admin\">Level builder</a></div>';\n \
-    \     root.appendChild(el);\n      el.querySelector('.g-hero').appendChild(hatPortrait(190, (st.progress && st.progress.hat)\
-    \ || BB.store.get('bb.lastHat', 'none')));\n      titleBg(el.querySelector('.g-bg'));\n      el.addEventListener('click',\
-    \ function (e) {\n        var a = e.target.closest('[data-a]'); if (!a) return;\n        BB.Sound.play('click');\n   \
-    \     var act2 = a.dataset.a;\n        if (act2 === 'play') startSignedIn();\n        else if (act2 === 'guest') startGuest();\n\
-    \        else if (act2 === 'auth') authModal('login');\n        else if (act2 === 'signout') emit('logout').then(function\
-    \ () { st.signedIn = false; renderTitle(); });\n        else if (act2 === 'howto') howTo();\n        else if (act2 ===\
-    \ 'feedback') feedbackModal({});\n        else if (act2 === 'admin') emit('admin');\n      });\n    }\n    function titleBg(cv)\
-    \ {\n      var ctx = cv.getContext('2d'), fl = [], t0 = performance.now();\n      var em2 = ['\U0001F953', '\U0001F357\
-    ', '\U0001F33F', '\U0001F95A', '\U0001F990', '\U0001F344', '\U0001F336️', '\U0001F36F', '\U0001F96C', '\U0001F9C4', '\U0001F980\
-    ', '\U0001F356', '\U0001F33D'];\n      for (var i = 0; i < 26; i++) fl.push({ x: Math.random(), y: Math.random(), s: 18\
-    \ + Math.random() * 26, v: 0.02 + Math.random() * 0.04, e: em2[i % em2.length], r: Math.random() * 6, vr: (Math.random()\
-    \ - 0.5) * 0.6 });\n      function frame(now) {\n        titleAnim = requestAnimationFrame(frame);\n        var dpr =\
-    \ Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth, h = cv.clientHeight;\n        if (cv.width !== Math.round(w\
-    \ * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }\n        ctx.setTransform(dpr, 0, 0, dpr,\
-    \ 0, 0); ctx.clearRect(0, 0, w, h);\n        var t = (now - t0) / 1000;\n        fl.forEach(function (f) {\n         \
-    \ f.y += f.v / 60; if (f.y > 1.1) { f.y = -0.1; f.x = Math.random(); }\n          ctx.save(); ctx.globalAlpha = 0.55;\
-    \ ctx.translate(f.x * w, f.y * h); ctx.rotate(f.r + t * f.vr);\n          Art.drawEmoji(ctx, f.e, 0, 0, f.s); ctx.restore();\n\
-    \        });\n      }\n      titleAnim = requestAnimationFrame(frame);\n    }\n    function howTo() {\n      BB.modal('<h2\
-    \ style=\"margin-right:40px\">How to play</h2>' +\n        '<p>You are a little bao on a culinary journey. Each territory\
-    \ is overrun by kitchen pests. Clear the levels to free it!</p>' +\n        '<div class=\"g-ctrls\">' +\n        '<kbd>WASD\
-    \ / ←↑↓→</kbd><span>Roll around (on phones: drag on the left side)</span>' +\n        '<kbd>Space / Shift</kbd><span>Steam\
-    \ Dash: bonk pests, smash crates, wreck nests (on phones: the \U0001F4A8 button)</span>' +\n        '<kbd>Esc / P</kbd><span>Pause</span></div>'\
-    \ +\n        '<p><b>In each level:</b> collect the meat, help the neighbours with their errands, destroy the pest nests,\
-    \ then hop into the bamboo steamer.</p>' +\n        '<p><b>Stars:</b> ⭐ finish · ⭐ collect every ingredient · ⭐ beat the\
-    \ par time.</p>' +\n        '<p><b>Between levels:</b> fill your Pantry, cook recipes in the Kitchen for permanent perks,\
-    \ buy hats, open the daily market box, and hunt for golden chopsticks and Grandma\\'s postcards.</p>');\n    }\n\n   \
-    \ // ---------- auth\n    function authModal(mode) {\n      var m = BB.modal('<div class=\"g-auth\"></div>');\n      var\
-    \ box = m.el.querySelector('.g-auth');\n      function draw(mode2, msg) {\n        var signup = mode2 === 'signup', reset\
-    \ = mode2 === 'reset';\n        box.innerHTML = '<div style=\"text-align:center;margin:-6px 0 6px\"></div>' +\n      \
-    \    '<h2 style=\"text-align:center;margin-bottom:6px\">' + (signup ? 'Create your account' : reset ? 'Reset your password'\
-    \ : 'Welcome back!') + '</h2>' +\n          '<p class=\"bb-muted\" style=\"text-align:center;margin:0 0 14px;font-weight:700\"\
-    >' + (signup ? 'Save your journey, cook in the cloud, and race on the leaderboards.' : reset ? 'We\\'ll email you a reset\
-    \ link.' : 'Sign in to pick up where you left off.') + '</p>' +\n          '<form>' +\n          (signup ? '<div class=\"\
-    bb-field\"><label>Bun name</label><input class=\"bb-input\" name=\"name\" maxlength=\"24\" placeholder=\"e.g. Captain\
-    \ Dumpling\" autocomplete=\"nickname\"></div>' : '') +\n          '<div class=\"bb-field\"><label>Email</label><input\
-    \ class=\"bb-input\" name=\"email\" type=\"email\" required autocomplete=\"email\"></div>' +\n          (reset ? '' :\
-    \ '<div class=\"bb-field\"><label>Password</label><input class=\"bb-input\" name=\"password\" type=\"password\" required\
-    \ minlength=\"' + (signup ? 8 : 1) + '\" autocomplete=\"' + (signup ? 'new-password' : 'current-password') + '\">' + (signup\
-    \ ? '<small class=\"bb-muted\">At least 8 characters.</small>' : '') + '</div>') +\n          '<div class=\"bb-err\">'\
-    \ + (msg ? esc(msg) : '') + '</div>' +\n          '<button class=\"bb-btn red\" style=\"width:100%\" type=\"submit\">'\
-    \ + (signup ? 'Create account' : reset ? 'Send reset link' : 'Sign in') + '</button></form>' +\n          '<div style=\"\
-    text-align:center;margin-top:12px;font-weight:700\">' +\n          (signup ? 'Already have an account? <a href=\"#\" data-m=\"\
-    login\">Sign in</a>'\n            : reset ? '<a href=\"#\" data-m=\"login\">Back to sign in</a>'\n              : 'New\
-    \ here? <a href=\"#\" data-m=\"signup\">Create an account</a> · <a href=\"#\" data-m=\"reset\">Forgot password?</a>')\
-    \ + '</div>';\n        box.firstChild.appendChild(hatPortrait(84, 'none'));\n        var f = box.querySelector('form');\n\
-    \        f.addEventListener('submit', function (e) {\n          e.preventDefault();\n          var v = {}; Array.prototype.forEach.call(f.elements,\
-    \ function (x) { if (x.name) v[x.name] = x.value; });\n          var btn = f.querySelector('button'); btn.disabled = true;\n\
-    \          emit(mode2, v).then(function (r) {\n            btn.disabled = false;\n            if (!r) return;\n      \
-    \      if (!r.ok) { box.querySelector('.bb-err').textContent = r.error || 'That didn\\'t work.'; return; }\n         \
-    \   if (r.message) { draw(r.mode || 'login', null); BB.toast(esc(r.message)); return; }\n            m.close(); st.signedIn\
-    \ = true; onSignedIn(mode2 === 'signup');\n          });\n        });\n        box.querySelectorAll('[data-m]').forEach(function\
-    \ (a) { a.addEventListener('click', function (e) { e.preventDefault(); draw(a.dataset.m); }); });\n        var first =\
-    \ box.querySelector('input'); if (first) setTimeout(function () { first.focus(); }, 50);\n      }\n      draw(mode ||\
-    \ 'login');\n    }\n    function onSignedIn(isNew) {\n      var guest = BB.store.get(GUEST_KEY, null);\n      st.guest\
-    \ = false;\n      busy(true, 'Opening your pantry…');\n      var p = (guest && Object.keys(guest.levels || {}).length)\
-    \ ? call('import_guest', [guest, BB.today()]) : call('get_state', [BB.today()]);\n      p.then(function (r) {\n      \
-    \  busy(false);\n        if (!r || !r.ok) { BB.toast(esc((r && r.error) || 'Could not load your game.'), 'err'); renderTitle();\
-    \ return; }\n        apply(r);\n        if (guest && Object.keys(guest.levels || {}).length && Object.keys(r.progress.levels).length)\
-    \ { BB.store.del(GUEST_KEY); BB.toast('\U0001F4BE Your guest progress is now saved to your account!', 'gold'); }\n   \
-    \     else if (isNew) BB.toast('Welcome to Busy Bun, ' + esc(r.me.name) + '!', 'gold');\n        renderHub();\n      });\n\
-    \    }\n    function startSignedIn() { st.guest = false; busy(true, 'Opening your pantry…'); load().then(function (r)\
-    \ { busy(false); if (r && r.ok) renderHub(); }); }\n    function startGuest() { st.guest = true; busy(true, 'Warming up\
-    \ the steamer…'); load().then(function (r) { busy(false); if (r && r.ok) renderHub(); }); }\n\n    // ---------- hub\n\
-    \    var TABS = [['journey', '\U0001F5FA️', 'Journey'], ['pantry', '\U0001F9FA', 'Pantry'], ['kitchen', '\U0001F373',\
-    \ 'Kitchen'], ['shop', '\U0001F3A9', 'Shop'], ['badges', '\U0001F3C5', 'Badges']];\n    function canCookAny() { return\
-    \ st.catalog.recipes.some(function (r) { return Object.keys(r.needs).every(function (k) { return (st.progress.pantry[k]\
+    howto\">How to play</a> · <a data-a=\"feedback\">Send feedback</a> · <a data-a=\"admin\">Level builder</a> · <a data-lk-open=\"\
+    overview\">Privacy &amp; Terms</a></div>';\n      root.appendChild(el);\n      el.querySelector('.g-hero').appendChild(hatPortrait(190,\
+    \ (st.progress && st.progress.hat) || BB.store.get('bb.lastHat', 'none')));\n      titleBg(el.querySelector('.g-bg'));\n\
+    \      el.addEventListener('click', function (e) {\n        var a = e.target.closest('[data-a]'); if (!a) return;\n  \
+    \      BB.Sound.play('click');\n        var act2 = a.dataset.a;\n        if (act2 === 'play') startSignedIn();\n     \
+    \   else if (act2 === 'guest') startGuest();\n        else if (act2 === 'auth') authModal('login');\n        else if (act2\
+    \ === 'signout') emit('logout').then(function () { st.signedIn = false; renderTitle(); });\n        else if (act2 ===\
+    \ 'howto') howTo();\n        else if (act2 === 'feedback') feedbackModal({});\n        else if (act2 === 'admin') emit('admin');\n\
+    \      });\n    }\n    function titleBg(cv) {\n      var ctx = cv.getContext('2d'), fl = [], t0 = performance.now();\n\
+    \      var em2 = ['\U0001F953', '\U0001F357', '\U0001F33F', '\U0001F95A', '\U0001F990', '\U0001F344', '\U0001F336️', '\U0001F36F\
+    ', '\U0001F96C', '\U0001F9C4', '\U0001F980', '\U0001F356', '\U0001F33D'];\n      for (var i = 0; i < 26; i++) fl.push({\
+    \ x: Math.random(), y: Math.random(), s: 18 + Math.random() * 26, v: 0.02 + Math.random() * 0.04, e: em2[i % em2.length],\
+    \ r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.6 });\n      function frame(now) {\n        titleAnim = requestAnimationFrame(frame);\n\
+    \        var dpr = Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth, h = cv.clientHeight;\n        if (cv.width\
+    \ !== Math.round(w * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }\n        ctx.setTransform(dpr,\
+    \ 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);\n        var t = (now - t0) / 1000;\n        fl.forEach(function (f) {\n\
+    \          f.y += f.v / 60; if (f.y > 1.1) { f.y = -0.1; f.x = Math.random(); }\n          ctx.save(); ctx.globalAlpha\
+    \ = 0.55; ctx.translate(f.x * w, f.y * h); ctx.rotate(f.r + t * f.vr);\n          Art.drawEmoji(ctx, f.e, 0, 0, f.s);\
+    \ ctx.restore();\n        });\n      }\n      titleAnim = requestAnimationFrame(frame);\n    }\n    function howTo() {\n\
+    \      BB.modal('<h2 style=\"margin-right:40px\">How to play</h2>' +\n        '<p>You are a little bao on a culinary journey.\
+    \ Each territory is overrun by kitchen pests. Clear the levels to free it!</p>' +\n        '<div class=\"g-ctrls\">' +\n\
+    \        '<kbd>WASD / ←↑↓→</kbd><span>Roll around (on phones: drag on the left side)</span>' +\n        '<kbd>Space /\
+    \ Shift</kbd><span>Steam Dash: bonk pests, smash crates, wreck nests (on phones: the \U0001F4A8 button)</span>' +\n  \
+    \      '<kbd>Esc / P</kbd><span>Pause</span></div>' +\n        '<p><b>In each level:</b> collect the meat, help the neighbours\
+    \ with their errands, destroy the pest nests, then hop into the bamboo steamer.</p>' +\n        '<p><b>Stars:</b> ⭐ finish\
+    \ · ⭐ collect every ingredient · ⭐ beat the par time.</p>' +\n        '<p><b>Between levels:</b> fill your Pantry, cook\
+    \ recipes in the Kitchen for permanent perks, buy hats, open the daily market box, and hunt for golden chopsticks and\
+    \ Grandma\\'s postcards.</p>');\n    }\n\n    // ---------- auth\n    function authModal(mode) {\n      var m = BB.modal('<div\
+    \ class=\"g-auth\"></div>');\n      var box = m.el.querySelector('.g-auth');\n      function draw(mode2, msg) {\n    \
+    \    var signup = mode2 === 'signup', reset = mode2 === 'reset';\n        box.innerHTML = '<div style=\"text-align:center;margin:-6px\
+    \ 0 6px\"></div>' +\n          '<h2 style=\"text-align:center;margin-bottom:6px\">' + (signup ? 'Create your account'\
+    \ : reset ? 'Reset your password' : 'Welcome back!') + '</h2>' +\n          '<p class=\"bb-muted\" style=\"text-align:center;margin:0\
+    \ 0 14px;font-weight:700\">' + (signup ? 'Save your journey, cook in the cloud, and race on the leaderboards.' : reset\
+    \ ? 'We\\'ll email you a reset link.' : 'Sign in to pick up where you left off.') + '</p>' +\n          '<form>' +\n \
+    \         (signup ? '<div class=\"bb-field\"><label>Bun name</label><input class=\"bb-input\" name=\"name\" maxlength=\"\
+    24\" placeholder=\"e.g. Captain Dumpling\" autocomplete=\"nickname\"></div>' : '') +\n          '<div class=\"bb-field\"\
+    ><label>Email</label><input class=\"bb-input\" name=\"email\" type=\"email\" required autocomplete=\"email\"></div>' +\n\
+    \          (reset ? '' : '<div class=\"bb-field\"><label>Password</label><input class=\"bb-input\" name=\"password\" type=\"\
+    password\" required minlength=\"' + (signup ? 8 : 1) + '\" autocomplete=\"' + (signup ? 'new-password' : 'current-password')\
+    \ + '\">' + (signup ? '<small class=\"bb-muted\">At least 8 characters.</small>' : '') + '</div>') +\n          (signup\
+    \ && window.LegalKit ? LegalKit.consentField() : '') +\n          '<div class=\"bb-err\">' + (msg ? esc(msg) : '') + '</div>'\
+    \ +\n          '<button class=\"bb-btn red\" style=\"width:100%\" type=\"submit\">' + (signup ? 'Create account' : reset\
+    \ ? 'Send reset link' : 'Sign in') + '</button></form>' +\n          '<div style=\"text-align:center;margin-top:12px;font-weight:700\"\
+    >' +\n          (signup ? 'Already have an account? <a href=\"#\" data-m=\"login\">Sign in</a>'\n            : reset ?\
+    \ '<a href=\"#\" data-m=\"login\">Back to sign in</a>'\n              : 'New here? <a href=\"#\" data-m=\"signup\">Create\
+    \ an account</a> · <a href=\"#\" data-m=\"reset\">Forgot password?</a>') + '</div>';\n        box.firstChild.appendChild(hatPortrait(84,\
+    \ 'none'));\n        var f = box.querySelector('form');\n        f.addEventListener('submit', function (e) {\n       \
+    \   e.preventDefault();\n          if (signup && window.LegalKit && !LegalKit.consentChecked(f)) return;\n          var\
+    \ v = {}; Array.prototype.forEach.call(f.elements, function (x) { if (x.name) v[x.name] = x.value; });\n          var\
+    \ btn = f.querySelector('button'); btn.disabled = true;\n          emit(mode2, v).then(function (r) {\n            btn.disabled\
+    \ = false;\n            if (!r) return;\n            if (!r.ok) { box.querySelector('.bb-err').textContent = r.error ||\
+    \ 'That didn\\'t work.'; return; }\n            if (r.message) { draw(r.mode || 'login', null); BB.toast(esc(r.message));\
+    \ return; }\n            m.close(); st.signedIn = true; onSignedIn(mode2 === 'signup');\n          });\n        });\n\
+    \        box.querySelectorAll('[data-m]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault();\
+    \ draw(a.dataset.m); }); });\n        var first = box.querySelector('input'); if (first) setTimeout(function () { first.focus();\
+    \ }, 50);\n      }\n      draw(mode || 'login');\n    }\n    function onSignedIn(isNew) {\n      var guest = BB.store.get(GUEST_KEY,\
+    \ null);\n      st.guest = false;\n      busy(true, 'Opening your pantry…');\n      var p = (guest && Object.keys(guest.levels\
+    \ || {}).length) ? call('import_guest', [guest, BB.today()]) : call('get_state', [BB.today()]);\n      p.then(function\
+    \ (r) {\n        busy(false);\n        if (!r || !r.ok) { BB.toast(esc((r && r.error) || 'Could not load your game.'),\
+    \ 'err'); renderTitle(); return; }\n        apply(r);\n        if (guest && Object.keys(guest.levels || {}).length &&\
+    \ Object.keys(r.progress.levels).length) { BB.store.del(GUEST_KEY); BB.toast('\U0001F4BE Your guest progress is now saved\
+    \ to your account!', 'gold'); }\n        else if (isNew) BB.toast('Welcome to Busy Bun, ' + esc(r.me.name) + '!', 'gold');\n\
+    \        renderHub();\n      });\n    }\n    function startSignedIn() { st.guest = false; busy(true, 'Opening your pantry…');\
+    \ load().then(function (r) { busy(false); if (r && r.ok) renderHub(); }); }\n    function startGuest() { st.guest = true;\
+    \ busy(true, 'Warming up the steamer…'); load().then(function (r) { busy(false); if (r && r.ok) renderHub(); }); }\n\n\
+    \    // ---------- hub\n    var TABS = [['journey', '\U0001F5FA️', 'Journey'], ['pantry', '\U0001F9FA', 'Pantry'], ['kitchen',\
+    \ '\U0001F373', 'Kitchen'], ['shop', '\U0001F3A9', 'Shop'], ['badges', '\U0001F3C5', 'Badges']];\n    function canCookAny()\
+    \ { return st.catalog.recipes.some(function (r) { return Object.keys(r.needs).every(function (k) { return (st.progress.pantry[k]\
     \ || 0) >= r.needs[k]; }); }); }\n    function renderHub(tab) {\n      clearScreen(); show('hub');\n      if (tab) { st.tab\
     \ = tab; BB.store.set('bb.tab', tab); }\n      BB.Sound.startMusic('menu');\n      var p = st.progress, s = st.status;\n\
     \      BB.store.set('bb.lastHat', p.hat);\n      var el = document.createElement('div'); el.className = 'g-screen g-hub';\n\
@@ -1702,11 +1721,11 @@ native_deps:
     \ class=\"g-tab ' + (st.tab === tb[0] ? 'on' : '') + '\" data-tab=\"' + tb[0] + '\">' + em(tb[1]) + tb[2] + (dot ? '<span\
     \ class=\"dot\"></span>' : '') + '</button>';\n        }).join('') + '</nav>' +\n        '<main class=\"g-main\"><div\
     \ class=\"g-panel\"></div>' +\n        '<footer class=\"g-footer\"><a class=\"fb\" data-a=\"feedback\">\U0001F4AC Send\
-    \ feedback or report a bug</a><a data-a=\"howto\">How to play</a><span>Busy Bun · a little bao on a big journey</span></footer></main>';\n\
-    \      root.appendChild(el);\n      el.querySelector('.g-av').appendChild(hatPortrait(52, p.hat));\n      var panel =\
-    \ el.querySelector('.g-panel');\n      ({ journey: renderJourney, pantry: renderPantry, kitchen: renderKitchen, shop:\
-    \ renderShop, badges: renderBadges }[st.tab] || renderJourney)(panel);\n      el.addEventListener('click', function (e)\
-    \ {\n        var tb = e.target.closest('[data-tab]');\n        if (tb) { BB.Sound.play('click'); renderHub(tb.dataset.tab);\
+    \ feedback or report a bug</a><a data-a=\"howto\">How to play</a><a data-lk-open=\"overview\">Privacy &amp; Terms</a><span>Busy\
+    \ Bun · a little bao on a big journey</span></footer></main>';\n      root.appendChild(el);\n      el.querySelector('.g-av').appendChild(hatPortrait(52,\
+    \ p.hat));\n      var panel = el.querySelector('.g-panel');\n      ({ journey: renderJourney, pantry: renderPantry, kitchen:\
+    \ renderKitchen, shop: renderShop, badges: renderBadges }[st.tab] || renderJourney)(panel);\n      el.addEventListener('click',\
+    \ function (e) {\n        var tb = e.target.closest('[data-tab]');\n        if (tb) { BB.Sound.play('click'); renderHub(tb.dataset.tab);\
     \ return; }\n        var a = e.target.closest('[data-a]'); if (!a) return;\n        var k = a.dataset.a;\n        if (k\
     \ === 'settings') { BB.Sound.play('click'); settings(); }\n        else if (k === 'daily') { BB.Sound.play('click'); daily();\
     \ }\n        else if (k === 'auth') { BB.Sound.play('click'); authModal('signup'); }\n        else if (k === 'feedback')\
@@ -2077,22 +2096,23 @@ native_deps:
     \ (optional, if you\\'d like a reply)</label><input class=\"bb-input\" name=\"email\" type=\"email\" maxlength=\"120\"\
     \ autocomplete=\"email\"></div>') +\n        '<label style=\"display:flex;gap:8px;align-items:center;font-weight:700;font-size:14px;margin-bottom:10px\"\
     ><input type=\"checkbox\" name=\"ctx\" checked> Include game details' + (o.level ? ' (this level, your hearts and time)'\
-    \ : '') + ' to help fix it</label>' +\n        '<div class=\"bb-err\"></div><button class=\"bb-btn red\" style=\"width:100%\"\
-    \ type=\"submit\">Send</button></form>');\n      var f = m.el.querySelector('form');\n      setTimeout(function () { f.elements.message.focus();\
-    \ }, 50);\n      f.addEventListener('submit', function (e) {\n        e.preventDefault();\n        var msg = f.elements.message.value.trim();\n\
-    \        if (msg.length < 5) { m.el.querySelector('.bb-err').textContent = 'Please write a little more.'; return; }\n\
-    \        var ctx = null;\n        if (f.elements.ctx.checked) {\n          ctx = { screen: o.screen || st.screen, signed_in:\
-    \ !!(st.me && !st.me.guest), viewport: window.innerWidth + 'x' + window.innerHeight,\n            touch: BB.isTouch()\
-    \ ? 'yes' : 'no', browser: navigator.userAgent, date: BB.today() };\n          if (o.level) ctx.level = o.level + ' ('\
-    \ + lvName + ')';\n          if (st.status) { ctx.stars = st.status.stars; ctx.perks = (st.status.perks || []).join(',\
-    \ '); }\n          if (o.game) { try { var d = o.game.debug(); ctx.hearts = d.player.hearts; ctx.time = Math.round(d.time\
-    \ * 10) / 10; ctx.goals = JSON.stringify(d.goals); } catch (x) {} }\n        }\n        var kindVal = (f.querySelector('input[name=kind]:checked')\
-    \ || {}).value || 'other';\n        var btn = f.querySelector('button[type=submit]'); btn.disabled = true;\n        call('submit_feedback',\
-    \ [kindVal, msg, f.elements.email ? f.elements.email.value : null, ctx]).then(function (r) {\n          btn.disabled =\
-    \ false;\n          if (!r || !r.ok) { m.el.querySelector('.bb-err').textContent = (r && r.error) || 'Could not send.\
-    \ Please try again.'; return; }\n          m.close(); BB.Sound.play('errand'); BB.toast('\U0001F48C Thanks! Your message\
-    \ was sent.', 'gold');\n        });\n      });\n    }\n\n    // ---------- settings\n    function settings() {\n     \
-    \ var m = BB.modal('<h2 style=\"margin-right:40px\">Settings</h2><div style=\"display:flex;gap:14px;align-items:center;margin:12px\
+    \ : '') + ' to help fix it</label>' +\n        '<p class=\"bb-muted\" style=\"font-weight:700;font-size:13px;margin:0\
+    \ 0 10px\">How we use what you send: <a data-lk-open=\"privacy\">Privacy Policy</a></p>' +\n        '<div class=\"bb-err\"\
+    ></div><button class=\"bb-btn red\" style=\"width:100%\" type=\"submit\">Send</button></form>');\n      var f = m.el.querySelector('form');\n\
+    \      setTimeout(function () { f.elements.message.focus(); }, 50);\n      f.addEventListener('submit', function (e) {\n\
+    \        e.preventDefault();\n        var msg = f.elements.message.value.trim();\n        if (msg.length < 5) { m.el.querySelector('.bb-err').textContent\
+    \ = 'Please write a little more.'; return; }\n        var ctx = null;\n        if (f.elements.ctx.checked) {\n       \
+    \   ctx = { screen: o.screen || st.screen, signed_in: !!(st.me && !st.me.guest), viewport: window.innerWidth + 'x' + window.innerHeight,\n\
+    \            touch: BB.isTouch() ? 'yes' : 'no', browser: navigator.userAgent, date: BB.today() };\n          if (o.level)\
+    \ ctx.level = o.level + ' (' + lvName + ')';\n          if (st.status) { ctx.stars = st.status.stars; ctx.perks = (st.status.perks\
+    \ || []).join(', '); }\n          if (o.game) { try { var d = o.game.debug(); ctx.hearts = d.player.hearts; ctx.time =\
+    \ Math.round(d.time * 10) / 10; ctx.goals = JSON.stringify(d.goals); } catch (x) {} }\n        }\n        var kindVal\
+    \ = (f.querySelector('input[name=kind]:checked') || {}).value || 'other';\n        var btn = f.querySelector('button[type=submit]');\
+    \ btn.disabled = true;\n        call('submit_feedback', [kindVal, msg, f.elements.email ? f.elements.email.value : null,\
+    \ ctx]).then(function (r) {\n          btn.disabled = false;\n          if (!r || !r.ok) { m.el.querySelector('.bb-err').textContent\
+    \ = (r && r.error) || 'Could not send. Please try again.'; return; }\n          m.close(); BB.Sound.play('errand'); BB.toast('\U0001F48C\
+    \ Thanks! Your message was sent.', 'gold');\n        });\n      });\n    }\n\n    // ---------- settings\n    function\
+    \ settings() {\n      var m = BB.modal('<h2 style=\"margin-right:40px\">Settings</h2><div style=\"display:flex;gap:14px;align-items:center;margin:12px\
     \ 0\"><div class=\"pv\"></div><div><b style=\"font-family:var(--bb-title);font-size:20px\">' + esc(st.me.name) + '</b><div\
     \ class=\"bb-muted\" style=\"font-weight:700\">' + (st.guest ? 'Guest (this browser only)' : esc(st.me.email || '')) +\
     \ '</div></div></div>' +\n        (st.guest ? '<div class=\"g-guestbar\"><span style=\"flex:1\">Create an account to keep\
@@ -2104,6 +2124,7 @@ native_deps:
     \ Sounds off') + '</button>' +\n        '<button class=\"bb-btn small cream\" data-a=\"music\">' + (BB.Sound.musicOn ?\
     \ '\U0001F3B5 Music on' : '\U0001F3B5 Music off') + '</button>' +\n        '<button class=\"bb-btn small cream\" data-a=\"\
     howto\">❓ How to play</button>' +\n        '<button class=\"bb-btn small cream\" data-a=\"feedback\">\U0001F4AC Feedback</button>'\
+    \ +\n        '<button class=\"bb-btn small cream\" data-lk-open=\"overview\">\U0001F512 Privacy &amp; Terms</button>'\
     \ +\n        (st.me.is_admin ? '<button class=\"bb-btn small jade\" data-a=\"admin\">\U0001F6E0 Level builder</button>'\
     \ : '') +\n        '<button class=\"bb-btn small red\" data-a=\"out\">' + (st.guest ? '⏏ Back to title' : '⏏ Sign out')\
     \ + '</button></div>');\n      m.el.querySelector('.pv').appendChild(hatPortrait(80, st.progress.hat));\n      var f =\

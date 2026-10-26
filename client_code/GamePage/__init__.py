@@ -5,7 +5,7 @@ from anvil import *
 import anvil.server
 import anvil.users
 
-from .. import bb_ui
+from .. import bb_ui, legal
 
 
 class GamePage(GamePageTemplate):
@@ -19,6 +19,7 @@ class GamePage(GamePageTemplate):
             return
         self.mounted = True
         bb_ui.mount(self, "game", {"signed_in": anvil.users.get_user() is not None}, self._on_event)
+        legal.refresh_soon()  # Privacy & Terms reminder for signed-in players who haven't accepted
 
     def _on_event(self, event, p):
         if event == "call":
@@ -30,6 +31,7 @@ class GamePage(GamePageTemplate):
             return bb_ui.auth(event, p)
         if event == "logout":
             anvil.users.logout()
+            legal.signed_out()
             return {"ok": True}
         if event == "admin":
             get_open_form().open_admin()
