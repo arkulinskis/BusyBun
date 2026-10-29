@@ -19,7 +19,8 @@ from . import Levels as L
 # Accounts with these emails become admins the first time they sign in (users.is_admin can also be ticked by hand).
 ADMIN_EMAILS = {"arkulinskis@gmail.com"}
 
-STAT_KEYS = ("meat", "pests", "nests", "crates", "errands", "flawless", "dailies", "runs", "bosses", "cooked", "coins_earned")
+STAT_KEYS = ("meat", "pests", "nests", "crates", "errands", "flawless", "dailies", "runs", "bosses", "cooked", "coins_earned",
+             "knobs", "bonuses")
 
 
 def _now():
@@ -51,8 +52,19 @@ def ensure_seeded():
     if len(app_tables.territories.search()) == 0:
         seed_defaults()
     if not _UPGRADED[0]:
+        seed_new_territories()
         upgrade_builtins()
         _UPGRADED[0] = True
+
+
+def seed_new_territories():
+    """Add built-in territories that shipped after this app was first seeded (worlds 7-16), with their levels.
+    Territories that already exist are left alone, so levels an admin deleted don't come back."""
+    have = {r["key"] for r in app_tables.territories.search()}
+    missing = [t["key"] for t in L.TERRITORIES if t["key"] not in have]
+    if not missing:
+        return 0
+    return seed_defaults(territories=set(missing))
 
 
 def upgrade_builtins():
@@ -61,17 +73,20 @@ def upgrade_builtins():
     n = 0
     for row in app_tables.levels.search(builtin=True):
         lv = shipped.get(row["key"])
-        if lv and row["data"] is not None and L.canon(row["data"]) == L.canon(lv["v1"]) and L.canon(lv["v1"]) != L.canon(lv["data"]):
+        if lv and lv.get("v1") and row["data"] is not None and L.canon(row["data"]) == L.canon(lv["v1"]) and L.canon(lv["v1"]) != L.canon(lv["data"]):
             row["data"] = lv["data"]
             n += 1
     return n
 
 
-def seed_defaults(only_missing=True):
-    """Add the built-in territories and levels that aren't in the tables yet. Returns how many were added."""
+def seed_defaults(only_missing=True, territories=None):
+    """Add the built-in territories and levels that aren't in the tables yet (only those territories, if given).
+    Returns how many were added."""
     added = 0
     have_t = {r["key"]: r for r in app_tables.territories.search()}
     for i, t in enumerate(L.TERRITORIES):
+        if territories is not None and t["key"] not in territories:
+            continue
         if t["key"] not in have_t:
             have_t[t["key"]] = app_tables.territories.add_row(
                 key=t["key"], name=t["name"], emoji=t["emoji"], blurb=t["blurb"], theme=t["theme"], pest=t["pest"],
@@ -81,6 +96,8 @@ def seed_defaults(only_missing=True):
     pos = {}
     for lv in L.LEVELS:
         pos[lv["territory"]] = pos.get(lv["territory"], -1) + 1
+        if territories is not None and lv["territory"] not in territories:
+            continue
         if lv["key"] not in have_l:
             app_tables.levels.add_row(key=lv["key"], territory=have_t[lv["territory"]], name=lv["name"],
                                       position=float(pos[lv["territory"]]), data=lv["data"], published=True,
@@ -197,6 +214,8 @@ def status(p, jr):
         "stars": sum(sum(1 for s in p["levels"].get(k, {}).get("stars", []) if s) for k in all_keys),
         "stars_max": 3 * len(all_keys),
         "chopsticks": sum(1 for k in all_keys if p["levels"].get(k, {}).get("chop")),
+        "clears": sum(1 for k in all_keys if p["levels"].get(k, {}).get("stars", [False])[0]),
+        "levels_max": len(all_keys),
         "chopsticks_max": chop_max,
         "perks": perks(p),
         "postcards_max": sum(1 for t in jr if any(L.totals(l["data"])["postcard"] for l in t["levels"])),
@@ -219,6 +238,10 @@ def check_badges(p, jr, today):
         "pen_pal": st["postcards_max"] > 0 and len([x for x in p["postcards"] if any(t["key"] == x for t in jr)]) >= st["postcards_max"],
         "liberator": bool(jr) and len(st["cleared"]) == len([t for t in jr if t["levels"]]),
         "star_chef": st["stars"] >= 45,
+        "traveller": st["clears"] >= 50,
+        "century": st["clears"] >= 100,
+        "constellation": st["stars"] >= 200,
+        "chopstick_master": st["chopsticks"] >= 50,
     }
     new = []
     for b in C.BADGES:
@@ -295,7 +318,7 @@ def apply_finish(p, lv, jr, result, today):
     if goals.get("nests") and nests < tot["nests"]:
         raise GameError("Nests are still standing.")
     if kings < tot["kings"]:
-        raise GameError("The Rat King is still standing.")
+        raise GameError("The boss is still standing.")
     # Items: picked, minus what was handed over, plus thank-you gifts.
     bag = dict(picked)
     gifts = {}
@@ -342,7 +365,7 @@ def apply_finish(p, lv, jr, result, today):
              ("Crates smashed", crates * C.COINS["crate"]),
              ("Errands", len(errands) * C.COINS["errand"]),
              ("Nests destroyed", nests * C.COINS["nest"]),
-             ("Rat King", kings * C.COINS["boss"]),
+             ("Bosses", kings * C.COINS["boss"]),
              ("New stars", len(new_stars) * C.COINS["star"]),
              ("First clear", C.COINS["first_clear"] if first_clear else 0)]
     total = sum(v for _, v in parts)
@@ -358,6 +381,8 @@ def apply_finish(p, lv, jr, result, today):
     s["crates"] += crates
     s["errands"] += len(errands)
     s["bosses"] += kings
+    s["knobs"] += min(_int(result.get("knobs")), 3 * tot["knobs"])
+    s["bonuses"] += min(_int(result.get("bonuses")), tot["bonuses"])
     s["runs"] += 1
     s["coins_earned"] += total
     if _int(result.get("damage")) == 0:

@@ -46,6 +46,17 @@ _ITEMS = [
     ("rice_wine", "Rice Wine", "🍶", "pantry", "uncommon", "A splash makes crab sing."),
     ("coconut", "Coconut", "🥥", "pantry", "uncommon", "For custard buns as yellow as the sun."),
     ("phoenix_egg", "Phoenix Egg", "🥚", "pantry", "legendary", "Warm to the touch. Makes the fluffiest dough in the land.", True),
+    # Worlds 7-16 (added 2026-10-29)
+    ("duck", "Roast Duck", "🦆", "meat", "uncommon", "Crackly skin, hung in the windows of Noodle Alley."),
+    ("eel", "River Eel", "🐍", "meat", "rare", "Slippery! Lives under the lotus leaves."),
+    ("chestnut", "Chestnuts", "🌰", "veg", "common", "Roasted in a big wok on every street corner."),
+    ("bamboo", "Bamboo Shoots", "🎋", "veg", "common", "Crunchy, sweet, and they grow a hand a day."),
+    ("lotus_seed", "Lotus Seeds", "🪷", "veg", "uncommon", "Picked from the pods on Lotus Lake."),
+    ("noodles", "Hand-pulled Noodles", "🍜", "pantry", "common", "Stretched, folded and stretched again. Long life!"),
+    ("red_bean", "Red Bean Paste", "🫘", "pantry", "uncommon", "Sweet, smooth, and the best filling after meat."),
+    ("mandarin", "Mandarin", "🍊", "veg", "common", "Bright as a lantern. Brings good luck."),
+    ("matcha", "Matcha", "🍵", "pantry", "uncommon", "Stone-ground green tea from the Tea Garden."),
+    ("moon_peach", "Moon Peach", "🍑", "veg", "legendary", "Ripens once a year, on the night of the Lantern Festival.", True),
 ]
 ITEMS = {}
 for _row in _ITEMS:
@@ -87,6 +98,15 @@ RECIPES = [
      "needs": {"wagyu": 1, "phoenix_egg": 1, "dragon_chili": 1, "honey": 2},
      "perk": "fireproof", "perk_name": "Fireproof", "perk_desc": "Hot stoves can't hurt you. Unlocks the Emperor's Crown.",
      "hat": "crown"},
+    {"key": "duck_bao", "name": "Roast Duck Bao", "emoji": "🦆",
+     "needs": {"duck": 3, "chestnut": 2, "noodles": 1},
+     "perk": "steady", "perk_name": "Steady Paws", "perk_desc": "Oil, ice, sauce and snail slime can't slow you down."},
+    {"key": "lotus_bao", "name": "Red Bean Lotus Bao", "emoji": "🪷",
+     "needs": {"red_bean": 3, "lotus_seed": 2, "mandarin": 1},
+     "perk": "snacker", "perk_name": "Snack Lover", "perk_desc": "Bonuses like the magnet and Star Anise last twice as long."},
+    {"key": "matcha_bun", "name": "Jade Matcha Bun", "emoji": "🍵",
+     "needs": {"matcha": 2, "eel": 1, "egg": 2},
+     "perk": "nose", "perk_name": "Treasure Nose", "perk_desc": "Arrows point to hidden golden chopsticks and postcards."},
 ]
 RECIPE_BY_KEY = {r["key"]: r for r in RECIPES}
 RECIPE_SELL = 25  # coins for cooking a recipe you already know
@@ -124,7 +144,14 @@ BADGES = [
     {"key": "regular", "name": "Market Regular", "emoji": "📦", "desc": "Open the daily market box 7 times.", "stat": "dailies", "at": 7},
     {"key": "liberator", "name": "Liberator", "emoji": "🏮", "desc": "Free every territory from the pests."},
     {"key": "star_chef", "name": "Star Chef", "emoji": "⭐", "desc": "Earn 45 stars."},
-    {"key": "king_slayer", "name": "Royal Bonker", "emoji": "🐀", "desc": "Defeat the Rat King.", "stat": "bosses", "at": 1},
+    {"key": "king_slayer", "name": "Royal Bonker", "emoji": "🐀", "desc": "Defeat a boss.", "stat": "bosses", "at": 1},
+    {"key": "oven_mitts", "name": "Oven Mitts", "emoji": "🎛️", "desc": "Turn the hot stoves off 10 times.", "stat": "knobs", "at": 10},
+    {"key": "snacker", "name": "Power Snack", "emoji": "🌟", "desc": "Grab 30 bonuses.", "stat": "bonuses", "at": 30},
+    {"key": "traveller", "name": "World Traveller", "emoji": "🧭", "desc": "Clear 50 levels."},
+    {"key": "century", "name": "Century Bun", "emoji": "💯", "desc": "Clear 100 levels."},
+    {"key": "hive_breaker", "name": "Hive Breaker", "emoji": "🐝", "desc": "Defeat 3 bosses.", "stat": "bosses", "at": 3},
+    {"key": "constellation", "name": "Constellation", "emoji": "🌌", "desc": "Earn 200 stars."},
+    {"key": "chopstick_master", "name": "Chopstick Master", "emoji": "🏆", "desc": "Find 50 pairs of golden chopsticks."},
 ]
 
 PESTS = [
@@ -133,9 +160,18 @@ PESTS = [
     {"key": "fly", "name": "Fly", "hp": 1, "desc": "Buzzes over walls and counters."},
     {"key": "roach", "name": "Cockroach", "hp": 2, "desc": "Fast and armoured. Takes two bonks."},
     {"key": "gull", "name": "Seagull", "hp": 2, "desc": "Squawks, then swoops at you in a straight line."},
-    {"key": "king", "name": "Rat King", "hp": 8, "desc": "Boss. Charges, summons rats. Must be defeated."},
+    {"key": "king", "name": "Rat King", "hp": 8, "desc": "Boss. Charges, summons rats. Must be defeated.", "boss": True},
+    {"key": "snail", "name": "Snail", "hp": 2, "desc": "Slow, but leaves slippery slime that slows you down."},
+    {"key": "mould", "name": "Mould Blob", "hp": 1, "desc": "Bounces after you. Splits into two little blobs when bonked."},
+    {"key": "frog", "name": "Frog", "hp": 1, "desc": "Hops towards you in big jumps."},
+    {"key": "weevil", "name": "Rice Weevil", "hp": 3, "desc": "Armoured. Charges in a straight line when it sees you, and gets dizzy when it hits a wall."},
+    {"key": "spider", "name": "Cellar Spider", "hp": 2, "desc": "Hides in the dark, then pounces when you come close."},
+    {"key": "wasp", "name": "Wasp", "hp": 1, "desc": "Flies over walls, hovers, then darts at you."},
+    {"key": "queen", "name": "Wasp Queen", "hp": 10, "desc": "Boss. Flies over walls, dives at you and calls her wasps.", "boss": True},
 ]
 PEST_KEYS = {p["key"] for p in PESTS}
+BOSSES = {p["key"] for p in PESTS if p.get("boss")}
+FLYERS = {"fly", "gull", "wasp", "queen"}  # may be placed over walls and water
 
 NPC_STYLES = [
     {"key": "grandma", "name": "Grandma Bao"},
@@ -155,6 +191,16 @@ THEMES = [
     {"key": "spice", "name": "Spice mountain"},
     {"key": "harbour", "name": "Harbour docks"},
     {"key": "banquet", "name": "Golden banquet"},
+    {"key": "noodle", "name": "Noodle alley"},
+    {"key": "bakery", "name": "Bakery lane"},
+    {"key": "garden", "name": "Tea garden"},
+    {"key": "lake", "name": "Lotus lake"},
+    {"key": "terrace", "name": "Rice terraces"},
+    {"key": "cellar", "name": "Pickle cellar (dark)"},
+    {"key": "orchard", "name": "Honey orchard"},
+    {"key": "frost", "name": "Frozen pantry"},
+    {"key": "festival", "name": "Lantern festival (night)"},
+    {"key": "dragon", "name": "Dragon's kitchen"},
 ]
 THEME_KEYS = {t["key"] for t in THEMES}
 
@@ -169,7 +215,7 @@ TILES = [
     {"ch": "~", "name": "Water", "solid": True},
     {"ch": "H", "name": "Bridge", "solid": False},
     {"ch": "^", "name": "Hot stove (hurts)", "solid": False},
-    {"ch": "=", "name": "Oil slick (slippery)", "solid": False},
+    {"ch": "=", "name": "Oil slick / ice (slippery)", "solid": False},
     {"ch": "%", "name": "Sticky sauce (slow)", "solid": False},
     {"ch": "R", "name": "Conveyor →", "solid": False},
     {"ch": "L", "name": "Conveyor ←", "solid": False},
@@ -186,7 +232,19 @@ PICKUPS = [
     {"key": "tea", "name": "Jasmine Tea (speed)", "emoji": "🍵"},
     {"key": "chopsticks", "name": "Golden Chopsticks", "emoji": "🥢"},
     {"key": "postcard", "name": "Grandma's Postcard", "emoji": "✉️"},
+    # Bonuses (they wear off) and oven knobs (they turn every hot stove in the level off).
+    {"key": "magnet", "name": "Magnet (pulls things in, 10 s)", "emoji": "🧲", "bonus": True},
+    {"key": "bubble", "name": "Shield Bubble (blocks a hit)", "emoji": "🛡️", "bonus": True},
+    {"key": "bag", "name": "Coin Bag (5 coins)", "emoji": "💰", "bonus": True},
+    {"key": "anise", "name": "Star Anise (bonk everything, 7 s)", "emoji": "🌟", "bonus": True},
+    {"key": "clock", "name": "Sand Timer (stops the clock, 8 s)", "emoji": "⏳", "bonus": True},
+    {"key": "knob", "name": "Oven Knob (stoves off for good)", "emoji": "🎛️"},
+    {"key": "timer", "name": "Kitchen Timer (stoves off, 12 s)", "emoji": "⏲️"},
 ]
+BONUS_KEYS = {p["key"] for p in PICKUPS if p.get("bonus")}
+PICKUP_KEYS = {p["key"] for p in PICKUPS}
+KNOB_KEYS = {"knob", "timer"}
+BAG_COINS = 5
 
 COINS = {"errand": 5, "first_clear": 20, "star": 10, "pest": 1, "crate": 1, "boss": 15, "nest": 3}
 DAILY = {"coins": 15, "streak_bonus": 5, "streak_cap": 7, "items": 3}
@@ -197,6 +255,6 @@ def public():
     """The catalog as the client sees it."""
     return {
         "rarity": RARITY, "categories": CATEGORIES, "items": [ITEMS[k] for k in ITEM_ORDER],
-        "recipes": RECIPES, "recipe_sell": RECIPE_SELL, "hats": HATS, "badges": BADGES, "pests": PESTS,
+        "recipes": RECIPES, "recipe_sell": RECIPE_SELL, "hats": HATS, "badges": BADGES, "pests": PESTS, "bag_coins": BAG_COINS,
         "npc_styles": NPC_STYLES, "themes": THEMES, "tiles": TILES, "pickups": PICKUPS, "coins": COINS,
     }

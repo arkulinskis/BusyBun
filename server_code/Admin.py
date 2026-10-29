@@ -89,10 +89,13 @@ def clean_data(d):
                         "say": str(e.get("say") or "")[:240], "thanks": str(e.get("thanks") or "")[:240]})
         ents.append(out)
     g = d.get("goals") or {}
-    return {"w": w, "h": h, "tiles": tiles, "ents": ents,
-            "goals": {"meat": max(0, min(200, int(g.get("meat") or 0))), "errands": bool(g.get("errands")),
-                      "nests": bool(g.get("nests"))},
-            "par": max(5, min(3600, int(d.get("par") or 60))), "intro": str(d.get("intro") or "")[:400]}
+    out = {"w": w, "h": h, "tiles": tiles, "ents": ents,
+           "goals": {"meat": max(0, min(200, int(g.get("meat") or 0))), "errands": bool(g.get("errands")),
+                     "nests": bool(g.get("nests"))},
+           "par": max(5, min(3600, int(d.get("par") or 60))), "intro": str(d.get("intro") or "")[:400]}
+    if d.get("bonus"):
+        out["bonus"] = True  # a bonus round (shown with a gift on the map)
+    return out
 
 
 def _territory(key):

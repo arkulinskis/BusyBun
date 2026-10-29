@@ -52,7 +52,7 @@ def check(data):
     if errors:
         return errors, warnings
     for e in ents:
-        if tiles[e["y"]][e["x"]] in C.SOLID and e["t"] not in ("pest",) or (e["t"] == "pest" and tiles[e["y"]][e["x"]] in C.SOLID and e.get("k") not in ("fly", "gull")):
+        if tiles[e["y"]][e["x"]] in C.SOLID and not (e["t"] == "pest" and e.get("k") in C.FLYERS):
             errors.append("%s at %d,%d sits inside a solid tile." % (_label(e), e["x"], e["y"]))
     # Reachability from the start (crates count as open: the bun can smash them).
     sx, sy = starts[0]["x"], starts[0]["y"]
@@ -101,6 +101,10 @@ def check(data):
     for e in ents:
         if e["t"] in ("pest", "nest") and e.get("k") not in C.PEST_KEYS:
             errors.append("Unknown pest %r." % e.get("k"))
+        if e["t"] == "nest" and e.get("k") in C.BOSSES:
+            errors.append("A boss can't come out of a nest.")
+        if e["t"] == "pickup" and e.get("k") not in C.PICKUP_KEYS:
+            errors.append("Unknown pickup %r." % e.get("k"))
     if not any(e["t"] == "item" for e in ents):
         warnings.append("No ingredients to collect.")
     return errors, warnings
@@ -119,7 +123,8 @@ def _label(e):
 
 def totals(data):
     """What a level holds: item counts, pickups, npcs, nests, crates, bosses (used to check results)."""
-    out = {"items": {}, "coins": 0, "chopsticks": 0, "postcard": 0, "npcs": 0, "nests": 0, "crates": 0, "kings": 0}
+    out = {"items": {}, "coins": 0, "chopsticks": 0, "postcard": 0, "npcs": 0, "nests": 0, "crates": 0, "kings": 0,
+           "bonuses": 0, "knobs": 0}
     for e in data.get("ents") or []:
         t = e.get("t")
         if t == "item":
@@ -128,14 +133,20 @@ def totals(data):
             k = e.get("k")
             if k == "coin":
                 out["coins"] += 1
+            elif k == "bag":
+                out["coins"] += C.BAG_COINS
             elif k in ("chopsticks", "postcard"):
                 out[k] += 1
+            if k in C.BONUS_KEYS:
+                out["bonuses"] += 1
+            if k in C.KNOB_KEYS:
+                out["knobs"] += 1
         elif t == "npc":
             out["npcs"] += 1
         elif t == "nest":
             out["nests"] += 1
-        elif t == "pest" and e.get("k") == "king":
-            out["kings"] += 1
+        elif t == "pest" and e.get("k") in C.BOSSES:
+            out["kings"] += 1  # "kings" = bosses (the Rat King, the Wasp Queen)
     out["crates"] = sum(r.count("X") for r in data.get("tiles") or [])
     return out
 
@@ -145,7 +156,11 @@ def totals(data):
 SYMBOLS = {"@": ("start", None), "E": ("exit", None), "*": ("pickup", "coin"), "+": ("pickup", "heart"),
            "!": ("pickup", "tea"), "$": ("pickup", "chopsticks"), "?": ("pickup", "postcard"),
            "a": ("pest", "ant"), "r": ("pest", "rat"), "f": ("pest", "fly"), "c": ("pest", "roach"),
-           "g": ("pest", "gull"), "K": ("pest", "king")}
+           "g": ("pest", "gull"), "K": ("pest", "king"),
+           "s": ("pest", "snail"), "m": ("pest", "mould"), "j": ("pest", "frog"), "v": ("pest", "weevil"),
+           "p": ("pest", "spider"), "w": ("pest", "wasp"), "Q": ("pest", "queen"),
+           "M": ("pickup", "magnet"), "B": ("pickup", "bubble"), "&": ("pickup", "bag"), "A": ("pickup", "anise"),
+           "Z": ("pickup", "clock"), "k": ("pickup", "knob"), "t": ("pickup", "timer")}
 
 
 def from_ascii(rows, legend=None, npcs=None, nests=None, nest_kind="ant", goals=None, par=60, intro=""):
@@ -714,6 +729,13 @@ for _lv in LEVELS:
     _lv["v1"]["ents"] = [dict(e) for e in _lv["data"]["ents"]]
     for _x, _y in HEARTS_V2.get(_lv["key"], []):
         _lv["data"]["ents"].append({"t": "pickup", "k": "heart", "x": _x, "y": _y})
+
+
+# ---------------------------------------------------------------- worlds 7-16 (2026-10-29)
+# 100 more levels, made by tools/gen_levels.py (which checks each one) and kept as plain data in LevelPack.
+from . import LevelPack as _pack  # noqa: E402
+TERRITORIES = TERRITORIES + _pack.TERRITORIES
+LEVELS = LEVELS + _pack.LEVELS
 
 
 def canon(d):
