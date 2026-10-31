@@ -455,21 +455,24 @@ native_deps:
     \ < 0.2 ? 1.8 : 0.9), m.wave, 0.09, null, Sound.musicGain);\n        }\n        if (step % 8 === 4) noise(next, 0.05,\
     \ 0.05, 6000, 'highpass');\n        next += beat; step++;\n      }\n    }, 120);\n    Sound.music = { mood: mood, timer:\
     \ timer };\n  };\n  Sound.stopMusic = function (forget) {\n    if (Sound.music) { clearInterval(Sound.music.timer); Sound.music\
-    \ = null; }\n    if (forget) Sound.wantMusic = Sound.wantMusic;\n  };\n})();\n</script>\n\n<!-- ===== lib/art.js =====\
-    \ -->\n<script>\n/* Busy Bun — art. Everything is drawn with canvas paths (no image files), so the game, the level\n \
-    \  editor and the menus all share these functions. Sizes are in canvas pixels. */\n(function () {\n  'use strict';\n \
-    \ var BB = window.BB = window.BB || {};\n  var Art = BB.Art = {};\n  var TAU = Math.PI * 2;\n  var INK = '#3d2416';\n\
-    \  var EMOJI_FONT = '\"Segoe UI Emoji\",\"Apple Color Emoji\",\"Noto Color Emoji\",sans-serif';\n\n  function hash(x,\
-    \ y) { var h = (x * 374761393 + y * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0)\
-    \ / 4294967295; }\n  Art.hash = hash;\n  function rr(ctx, x, y, w, h, r) {\n    ctx.beginPath();\n    ctx.moveTo(x + r,\
-    \ y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);\n    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x,\
-    \ y, x + w, y, r); ctx.closePath();\n  }\n  Art.rr = rr;\n  function circle(ctx, x, y, r, fill, stroke, lw) {\n    ctx.beginPath();\
-    \ ctx.arc(x, y, Math.max(0.1, r), 0, TAU);\n    if (fill) { ctx.fillStyle = fill; ctx.fill(); }\n    if (stroke) { ctx.strokeStyle\
-    \ = stroke; ctx.lineWidth = lw || 1; ctx.stroke(); }\n  }\n  function ellipse(ctx, x, y, rx, ry, fill, stroke, lw, rot)\
-    \ {\n    ctx.beginPath(); ctx.ellipse(x, y, Math.max(0.1, rx), Math.max(0.1, ry), rot || 0, 0, TAU);\n    if (fill) {\
-    \ ctx.fillStyle = fill; ctx.fill(); }\n    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1; ctx.stroke();\
-    \ }\n  }\n  Art.circle = circle; Art.ellipse = ellipse;\n  function shadow(ctx, x, y, rx, ry, a) { ellipse(ctx, x, y,\
-    \ rx, ry, 'rgba(30,15,10,' + (a == null ? 0.2 : a) + ')'); }\n  Art.shadow = shadow;\n\n  /* ================================================================\
+    \ = null; }\n    if (forget) Sound.wantMusic = Sound.wantMusic;\n  };\n})();\n</script>\n\n<!-- Prepsto feedback panel:\
+    \ the footer's \"Suggest an idea\" link (data-prepsto-open) slides it in. No floating button, no cookies, nothing loads\
+    \ until it is opened. Codes: APP_MAKER/prepsto-links.json -->\n<script src=\"https://prepsto.com/_/theme/widget.js\" data-prepsto=\"\
+    xww6ue9\" data-button=\"false\" data-label=\"Suggest an idea\" async></script>\n\n<!-- ===== lib/art.js ===== -->\n<script>\n\
+    /* Busy Bun — art. Everything is drawn with canvas paths (no image files), so the game, the level\n   editor and the menus\
+    \ all share these functions. Sizes are in canvas pixels. */\n(function () {\n  'use strict';\n  var BB = window.BB = window.BB\
+    \ || {};\n  var Art = BB.Art = {};\n  var TAU = Math.PI * 2;\n  var INK = '#3d2416';\n  var EMOJI_FONT = '\"Segoe UI Emoji\"\
+    ,\"Apple Color Emoji\",\"Noto Color Emoji\",sans-serif';\n\n  function hash(x, y) { var h = (x * 374761393 + y * 668265263)\
+    \ | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; }\n  Art.hash = hash;\n  function\
+    \ rr(ctx, x, y, w, h, r) {\n    ctx.beginPath();\n    ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x\
+    \ + w, y + h, x, y + h, r);\n    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();\n  }\n \
+    \ Art.rr = rr;\n  function circle(ctx, x, y, r, fill, stroke, lw) {\n    ctx.beginPath(); ctx.arc(x, y, Math.max(0.1,\
+    \ r), 0, TAU);\n    if (fill) { ctx.fillStyle = fill; ctx.fill(); }\n    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth\
+    \ = lw || 1; ctx.stroke(); }\n  }\n  function ellipse(ctx, x, y, rx, ry, fill, stroke, lw, rot) {\n    ctx.beginPath();\
+    \ ctx.ellipse(x, y, Math.max(0.1, rx), Math.max(0.1, ry), rot || 0, 0, TAU);\n    if (fill) { ctx.fillStyle = fill; ctx.fill();\
+    \ }\n    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1; ctx.stroke(); }\n  }\n  Art.circle = circle;\
+    \ Art.ellipse = ellipse;\n  function shadow(ctx, x, y, rx, ry, a) { ellipse(ctx, x, y, rx, ry, 'rgba(30,15,10,' + (a ==\
+    \ null ? 0.2 : a) + ')'); }\n  Art.shadow = shadow;\n\n  /* ================================================================\
     \ themes */\n  Art.THEMES = {\n    kitchen: { bg: '#4a2c1d', floorA: '#f6e4c4', floorB: '#eed6ad', floorStyle: 'checker',\
     \ alt: '#d9574a', altB: '#f3c66b', altStyle: 'rug',\n      wallTop: '#b07a52', wallFace: '#7d5236', wallLine: '#5a3823',\
     \ ctrTop: '#f1e2c6', ctrFace: '#b8865a', ctrStyle: 'plates',\n      decor: 'herb', water: '#6cc3e0', waterDeep: '#3d9cc0'\
@@ -1953,7 +1956,8 @@ native_deps:
     guest\">▶ ' + (gs ? 'Continue as guest' : 'Play now') + '</button>' +\n            '<button class=\"bb-btn green\" data-a=\"\
     auth\">Sign in / Create account</button>' +\n            '<div class=\"bb-muted\" style=\"font-weight:700;font-size:13px\"\
     >An account saves your progress and puts you on the leaderboards.</div>') +\n        '</div><div class=\"g-foot\"><a data-a=\"\
-    howto\">How to play</a> · <a data-a=\"feedback\">Send feedback</a> · <a data-a=\"admin\">Level builder</a> · <a data-lk-open=\"\
+    howto\">How to play</a> · <a data-a=\"feedback\">Send feedback</a> · <a href=\"https://prepsto.com/#f/xww6ue9\" target=\"\
+    _blank\" rel=\"noopener\" data-prepsto-open>Suggest an idea</a> · <a data-a=\"admin\">Level builder</a> · <a data-lk-open=\"\
     overview\">Privacy &amp; Terms</a></div>';\n      root.appendChild(el);\n      el.querySelector('.g-hero').appendChild(hatPortrait(190,\
     \ (st.progress && st.progress.hat) || BB.store.get('bb.lastHat', 'none')));\n      titleBg(el.querySelector('.g-bg'));\n\
     \      el.addEventListener('click', function (e) {\n        var a = e.target.closest('[data-a]'); if (!a) return;\n  \
@@ -2041,7 +2045,8 @@ native_deps:
     \ class=\"g-tab ' + (st.tab === tb[0] ? 'on' : '') + '\" data-tab=\"' + tb[0] + '\">' + em(tb[1]) + tb[2] + (dot ? '<span\
     \ class=\"dot\"></span>' : '') + '</button>';\n        }).join('') + '</nav>' +\n        '<main class=\"g-main\"><div\
     \ class=\"g-panel\"></div>' +\n        '<footer class=\"g-footer\"><a class=\"fb\" data-a=\"feedback\">\U0001F4AC Send\
-    \ feedback or report a bug</a><a data-a=\"howto\">How to play</a><a data-lk-open=\"overview\">Privacy &amp; Terms</a><span>Busy\
+    \ feedback or report a bug</a><a href=\"https://prepsto.com/#f/xww6ue9\" target=\"_blank\" rel=\"noopener\" data-prepsto-open>\U0001F4A1\
+    \ Suggest an idea</a><a data-a=\"howto\">How to play</a><a data-lk-open=\"overview\">Privacy &amp; Terms</a><span>Busy\
     \ Bun · a little bao on a big journey</span></footer></main>';\n      root.appendChild(el);\n      el.querySelector('.g-av').appendChild(hatPortrait(52,\
     \ p.hat));\n      var panel = el.querySelector('.g-panel');\n      ({ journey: renderJourney, pantry: renderPantry, kitchen:\
     \ renderKitchen, shop: renderShop, badges: renderBadges }[st.tab] || renderJourney)(panel);\n      el.addEventListener('click',\
