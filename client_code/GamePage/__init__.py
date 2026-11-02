@@ -27,7 +27,7 @@ class GamePage(GamePageTemplate):
             if fn not in bb_ui.GAME_CALLS:
                 return {"ok": False, "error": "Unknown action."}
             return bb_ui.call(fn, *(p.get("args") or []))
-        if event in ("login", "signup", "reset"):
+        if event in ("login", "signup", "reset", "google"):
             return bb_ui.auth(event, p)
         if event == "logout":
             anvil.users.logout()

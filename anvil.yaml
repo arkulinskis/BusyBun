@@ -280,7 +280,7 @@ metadata:
   title: 'Busy Bun: a cute bao bun adventure game in your browser'
 name: Busy Bun
 native_deps:
-  head_html: "<script src=\"_/theme/legal-kit.js?v=bef8547db0\"></script>\n\n<!-- seo:start (APP_MAKER/seo: edit seo/apps/busybun.json\
+  head_html: "<script src=\"_/theme/legal-kit.js?v=152a9eb7fe\"></script>\n\n<!-- seo:start (APP_MAKER/seo: edit seo/apps/busybun.json\
     \ and run seo.py, not here) -->\n<link rel=\"canonical\" href=\"https://busybun.com/\">\n<meta name=\"robots\" content=\"\
     index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">\n<meta name=\"keywords\" content=\"bao\
     \ bun game, cute browser game, top-down adventure game, food game online, play in browser no download, casual game for\
@@ -2022,23 +2022,31 @@ native_deps:
     \ to turn them off for 12 seconds.</p>' +\n        '<p><b>Lost?</b> The Journey tab always shows your next level at the\
     \ top, and every world with how far you got.</p>' +\n        '<p><b>Between levels:</b> fill your Pantry, cook recipes\
     \ in the Kitchen for permanent perks, buy hats, open the daily market box, and hunt for golden chopsticks and Grandma\\\
-    's postcards.</p>');\n    }\n\n    // ---------- auth\n    function authModal(mode) {\n      var m = BB.modal('<div class=\"\
-    g-auth\"></div>');\n      var box = m.el.querySelector('.g-auth');\n      function draw(mode2, msg) {\n        var signup\
-    \ = mode2 === 'signup', reset = mode2 === 'reset';\n        box.innerHTML = '<div style=\"text-align:center;margin:-6px\
-    \ 0 6px\"></div>' +\n          '<h2 style=\"text-align:center;margin-bottom:6px\">' + (signup ? 'Create your account'\
-    \ : reset ? 'Reset your password' : 'Welcome back!') + '</h2>' +\n          '<p class=\"bb-muted\" style=\"text-align:center;margin:0\
-    \ 0 14px;font-weight:700\">' + (signup ? 'Save your journey, cook in the cloud, and race on the leaderboards.' : reset\
-    \ ? 'We\\'ll email you a reset link.' : 'Sign in to pick up where you left off.') + '</p>' +\n          '<form>' +\n \
-    \         (signup ? '<div class=\"bb-field\"><label>Bun name</label><input class=\"bb-input\" name=\"name\" maxlength=\"\
-    24\" placeholder=\"e.g. Captain Dumpling\" autocomplete=\"nickname\"></div>' : '') +\n          '<div class=\"bb-field\"\
-    ><label>Email</label><input class=\"bb-input\" name=\"email\" type=\"email\" required autocomplete=\"email\"></div>' +\n\
-    \          (reset ? '' : '<div class=\"bb-field\"><label>Password</label><input class=\"bb-input\" name=\"password\" type=\"\
-    password\" required minlength=\"' + (signup ? 8 : 1) + '\" autocomplete=\"' + (signup ? 'new-password' : 'current-password')\
-    \ + '\">' + (signup ? '<small class=\"bb-muted\">At least 8 characters.</small>' : '') + '</div>') +\n          (signup\
-    \ && window.LegalKit ? LegalKit.consentField() : '') +\n          '<div class=\"bb-err\">' + (msg ? esc(msg) : '') + '</div>'\
-    \ +\n          '<button class=\"bb-btn red\" style=\"width:100%\" type=\"submit\">' + (signup ? 'Create account' : reset\
-    \ ? 'Send reset link' : 'Sign in') + '</button></form>' +\n          '<div style=\"text-align:center;margin-top:12px;font-weight:700\"\
-    >' +\n          (signup ? 'Already have an account? <a href=\"#\" data-m=\"login\">Sign in</a>'\n            : reset ?\
+    's postcards.</p>');\n    }\n\n    // ---------- auth\n    var GOOGLE_G = '<svg viewBox=\"0 0 48 48\" width=\"20\" height=\"\
+    20\" aria-hidden=\"true\"><path fill=\"#EA4335\" d=\"M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24\
+    \ 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z\"/>' +\n      '<path fill=\"#4285F4\" d=\"M46.98\
+    \ 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z\"\
+    />' +\n      '<path fill=\"#FBBC05\" d=\"M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46\
+    \ 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z\"/>' +\n      '<path fill=\"#34A853\" d=\"M24 48c6.48 0 11.93-2.13\
+    \ 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z\"\
+    /></svg>';\n    function authModal(mode) {\n      var m = BB.modal('<div class=\"g-auth\"></div>');\n      var box = m.el.querySelector('.g-auth');\n\
+    \      function draw(mode2, msg) {\n        var signup = mode2 === 'signup', reset = mode2 === 'reset';\n        box.innerHTML\
+    \ = '<div style=\"text-align:center;margin:-6px 0 6px\"></div>' +\n          '<h2 style=\"text-align:center;margin-bottom:6px\"\
+    >' + (signup ? 'Create your account' : reset ? 'Reset your password' : 'Welcome back!') + '</h2>' +\n          '<p class=\"\
+    bb-muted\" style=\"text-align:center;margin:0 0 14px;font-weight:700\">' + (signup ? 'Save your journey, cook in the cloud,\
+    \ and race on the leaderboards.' : reset ? 'We\\'ll email you a reset link.' : 'Sign in to pick up where you left off.')\
+    \ + '</p>' +\n          '<form>' +\n          (signup ? '<div class=\"bb-field\"><label>Bun name</label><input class=\"\
+    bb-input\" name=\"name\" maxlength=\"24\" placeholder=\"e.g. Captain Dumpling\" autocomplete=\"nickname\"></div>' : '')\
+    \ +\n          '<div class=\"bb-field\"><label>Email</label><input class=\"bb-input\" name=\"email\" type=\"email\" required\
+    \ autocomplete=\"email\"></div>' +\n          (reset ? '' : '<div class=\"bb-field\"><label>Password</label><input class=\"\
+    bb-input\" name=\"password\" type=\"password\" required minlength=\"' + (signup ? 8 : 1) + '\" autocomplete=\"' + (signup\
+    \ ? 'new-password' : 'current-password') + '\">' + (signup ? '<small class=\"bb-muted\">At least 8 characters.</small>'\
+    \ : '') + '</div>') +\n          (signup && window.LegalKit ? LegalKit.consentField() : '') +\n          '<div class=\"\
+    bb-err\">' + (msg ? esc(msg) : '') + '</div>' +\n          '<button class=\"bb-btn red\" style=\"width:100%\" type=\"\
+    submit\">' + (signup ? 'Create account' : reset ? 'Send reset link' : 'Sign in') + '</button></form>' +\n          (reset\
+    \ ? '' : '<button class=\"bb-btn cream\" style=\"width:100%;margin-top:10px\" type=\"button\" data-google>' + GOOGLE_G\
+    \ + 'Continue with Google</button>') +\n          '<div style=\"text-align:center;margin-top:12px;font-weight:700\">'\
+    \ +\n          (signup ? 'Already have an account? <a href=\"#\" data-m=\"login\">Sign in</a>'\n            : reset ?\
     \ '<a href=\"#\" data-m=\"login\">Back to sign in</a>'\n              : 'New here? <a href=\"#\" data-m=\"signup\">Create\
     \ an account</a> · <a href=\"#\" data-m=\"reset\">Forgot password?</a>') + '</div>';\n        box.firstChild.appendChild(hatPortrait(84,\
     \ 'none'));\n        var f = box.querySelector('form');\n        f.addEventListener('submit', function (e) {\n       \
@@ -2048,7 +2056,13 @@ native_deps:
     \ = false;\n            if (!r) return;\n            if (!r.ok) { box.querySelector('.bb-err').textContent = r.error ||\
     \ 'That didn\\'t work.'; return; }\n            if (r.message) { draw(r.mode || 'login', null); BB.toast(esc(r.message));\
     \ return; }\n            m.close(); st.signedIn = true; onSignedIn(mode2 === 'signup');\n          });\n        });\n\
-    \        box.querySelectorAll('[data-m]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault();\
+    \        var g = box.querySelector('[data-google]');\n        if (g) g.addEventListener('click', function () {\n     \
+    \     // sign in, or make the account on the first visit (sign-up asks for the Privacy & Terms tick here too)\n      \
+    \    if (signup && window.LegalKit && !LegalKit.consentChecked(f)) return;\n          g.disabled = true;\n          emit('google',\
+    \ { name: signup && f.elements.name ? f.elements.name.value : '' }).then(function (r) {\n            g.disabled = false;\n\
+    \            if (!r) return;\n            if (!r.ok) { box.querySelector('.bb-err').textContent = r.error || 'That didn\\\
+    't work.'; return; }\n            m.close(); st.signedIn = true; onSignedIn(!!r.new);\n          });\n        });\n  \
+    \      box.querySelectorAll('[data-m]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault();\
     \ draw(a.dataset.m); }); });\n        var first = box.querySelector('input'); if (first) setTimeout(function () { first.focus();\
     \ }, 50);\n      }\n      draw(mode || 'login');\n    }\n    function onSignedIn(isNew) {\n      var guest = BB.store.get(GUEST_KEY,\
     \ null);\n      st.guest = false;\n      busy(true, 'Opening your pantry…');\n      var p = (guest && Object.keys(guest.levels\
@@ -3088,9 +3102,13 @@ services:
     confirm_email: false
     enable_automatically: true
     use_email: true
+    use_google: true
   server_config:
     user_table: users
   source: /runtime/services/anvil/users.yml
+- client_config: {}
+  server_config: {}
+  source: /runtime/services/google.yml
 startup:
   module: Main
   type: form

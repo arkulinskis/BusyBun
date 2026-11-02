@@ -57,6 +57,15 @@ def call(name, *args):
         return {"ok": False, "error": "Something went wrong in the kitchen. Please try again."}
 
 
+def _google_step_done():
+    """After login_with_google() gave None: did the person finish the Google window (they just have no account yet)?"""
+    try:
+        import anvil.google.auth
+        return bool(anvil.google.auth.get_user_email())
+    except Exception:
+        return True  # can't tell: go on to sign-up, which asks Google again if needed
+
+
 def auth(event, p):
     """Sign in / sign up / password reset, for the game and the admin page."""
     try:
@@ -72,6 +81,18 @@ def auth(event, p):
             if name:
                 call("set_name", name)
             legal.refresh_soon()  # records the sign-up tick box
+        elif event == "google":
+            # Continue with Google: sign in, or create the account on the first visit.
+            new = False
+            if anvil.users.login_with_google(remember=True) is None:
+                if not _google_step_done() or anvil.users.signup_with_google(remember=True) is None:
+                    return {"ok": False, "error": "Google sign-in was cancelled."}
+                new = True
+                name = (p.get("name") or "").strip()
+                if name:
+                    call("set_name", name)
+            legal.refresh_soon()  # records the sign-up tick box, or reminds about the Privacy & Terms
+            return {"ok": True, "new": new}
         elif event == "reset":
             try:
                 anvil.users.send_password_reset_email(p.get("email", "").strip())
