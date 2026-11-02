@@ -280,7 +280,7 @@ metadata:
   title: 'Busy Bun: a cute bao bun adventure game in your browser'
 name: Busy Bun
 native_deps:
-  head_html: "<script src=\"_/theme/legal-kit.js?v=152a9eb7fe\"></script>\n\n<!-- seo:start (APP_MAKER/seo: edit seo/apps/busybun.json\
+  head_html: "<script src=\"_/theme/legal-kit.js?v=c145e3a64c\"></script>\n\n<!-- seo:start (APP_MAKER/seo: edit seo/apps/busybun.json\
     \ and run seo.py, not here) -->\n<link rel=\"canonical\" href=\"https://busybun.com/\">\n<meta name=\"robots\" content=\"\
     index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">\n<meta name=\"keywords\" content=\"bao\
     \ bun game, cute browser game, top-down adventure game, food game online, play in browser no download, casual game for\
@@ -387,40 +387,110 @@ native_deps:
     \ #loadingSpinner::before, .bb-hop::after, .bb-hop::before { animation-duration: 2.4s; } }\n  .bb-loading { position:\
     \ fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;\n \
     \   background: var(--bb-dough); z-index: 5; font-family: var(--bb-title); font-size: 20px; }\n  .bb-loading .bb-emoji\
-    \ { font-size: 54px; animation: bbBob .8s ease-in-out infinite; }\n</style>\n<script>\n(function () {\n  'use strict';\n\
-    \  var BB = window.BB = window.BB || {};\n  BB.components = BB.components || {};\n\n  /* ---------- Python ⇄ JS bridge\
-    \ ----------\n     Python mounts a component with window.BB.mount(name, rootNode, jsonString, emit).\n     The component\
-    \ calls emit(event, payload) and gets a Promise of whatever Python returned\n     (bb_ui sends it back as a JSON string;\
-    \ we parse it here). */\n  BB.wrapEmit = function (emit) {\n    return function (name, payload) {\n      var r;\n    \
-    \  try { r = emit ? emit(name, JSON.stringify(payload == null ? {} : payload)) : null; }\n      catch (e) { console.error(e);\
-    \ return Promise.reject(e); }\n      return Promise.resolve(r).then(function (v) {\n        if (typeof v === 'string')\
-    \ { try { return JSON.parse(v); } catch (e) { return v; } }\n        return v;\n      });\n    };\n  };\n  BB.define =\
-    \ function (name, mountFn) { BB.components[name] = mountFn; };\n  BB.mount = function (name, root, json, emit) {\n   \
-    \ var fn = BB.components[name];\n    if (!fn) { console.error('BB component not loaded: ' + name); return null; }\n  \
-    \  if (!root) { console.error('BB mount: no root node for ' + name); return null; }\n    var data = typeof json === 'string'\
-    \ ? JSON.parse(json || '{}') : (json || {});\n    return fn(root, data, BB.wrapEmit(emit));\n  };\n\n  /* ---------- small\
-    \ helpers ---------- */\n  BB.esc = function (s) {\n    return String(s == null ? '' : s).replace(/[&<>\"']/g, function\
-    \ (c) {\n      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;', \"'\": '&#39;' }[c];\n    });\n  };\n\
-    \  BB.store = {\n    get: function (k, dflt) { try { var v = localStorage.getItem(k); return v == null ? dflt : JSON.parse(v);\
-    \ } catch (e) { return dflt; } },\n    set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch\
-    \ (e) {} },\n    del: function (k) { try { localStorage.removeItem(k); } catch (e) {} }\n  };\n  BB.today = function ()\
-    \ {\n    var d = new Date();\n    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2,\
-    \ '0');\n  };\n  BB.fmtTime = function (s) {\n    if (s == null) return '–';\n    s = Math.max(0, s);\n    var m = Math.floor(s\
-    \ / 60), r = s - m * 60;\n    return (m ? m + ':' + (r < 10 ? '0' : '') + r.toFixed(1) : r.toFixed(1) + 's');\n  };\n\
-    \  BB.isTouch = function () { return ('ontouchstart' in window) || navigator.maxTouchPoints > 0; };\n\n  BB.toast = function\
-    \ (msg, kind) {\n    var box = document.querySelector('.bb-toasts');\n    if (!box) { box = document.createElement('div');\
-    \ box.className = 'bb bb-toasts'; document.body.appendChild(box); }\n    var t = document.createElement('div');\n    t.className\
-    \ = 'bb-toast' + (kind === true || kind === 'err' ? ' err' : kind === 'gold' ? ' gold' : '');\n    t.innerHTML = msg;\n\
-    \    box.appendChild(t);\n    setTimeout(function () { t.style.transition = 'opacity .3s, transform .3s'; t.style.opacity\
-    \ = '0'; t.style.transform = 'translateY(-10px)'; }, 2600);\n    setTimeout(function () { t.remove(); }, 3000);\n  };\n\
-    \n  // BB.modal(html, {onClose, cls}) → {el, close}. Clicking the backdrop or × closes it.\n  BB.modal = function (html,\
-    \ opts) {\n    opts = opts || {};\n    var bg = document.createElement('div');\n    bg.className = 'bb bb-modal-bg';\n\
-    \    bg.innerHTML = '<div class=\"bb-card bb-modal ' + (opts.cls || '') + '\">' + (opts.noClose ? '' : '<button class=\"\
-    bb-x\" aria-label=\"Close\">✕</button>') + html + '</div>';\n    document.body.appendChild(bg);\n    var closed = false;\n\
-    \    function close() {\n      if (closed) return; closed = true;\n      bg.remove();\n      document.removeEventListener('keydown',\
-    \ onKey);\n      if (opts.onClose) opts.onClose();\n    }\n    function onKey(e) { if (e.key === 'Escape' && !opts.noClose)\
-    \ close(); }\n    document.addEventListener('keydown', onKey);\n    bg.addEventListener('click', function (e) {\n    \
-    \  if ((e.target === bg && !opts.noClose) || (e.target.closest && e.target.closest('.bb-x'))) { BB.Sound.play('click');\
+    \ { font-size: 54px; animation: bbBob .8s ease-in-out infinite; }\n</style>\n<!-- ark-music:start -->\n<script>\n/* ark-music.js:\
+    \ the shared background-music player for Arkvital apps (canonical copy:\n   APP_MAKER/media/public/ark-music.js; tools/music_sync.py\
+    \ copies it into each app).\n   The music files are on Firebase Hosting: https://arkvital-media.web.app/music/<slug>.mp3\n\
+    \   (track list and which app uses what: APP_MAKER/media/manifest.json). Set window.ARK_MEDIA_BASE first to move them.\n\
+    \n   ArkMusic.play('dont-stress-out')            loop one track\n   ArkMusic.play(['cosmic', 'high-notes'])     playlist,\
+    \ loops the list\n   ArkMusic.play(list, {shuffle: true, volume: 0.5, fade: 2, from: 'random'})\n   ArkMusic.stop(fadeSeconds)\
+    \                  fade out and stop\n   ArkMusic.volume(0..1)                       app's music volume (slider)\n   ArkMusic.duck(0..1)\
+    \                         extra dip, e.g. 0.3 while a voice speaks; duck(1) to undo\n   ArkMusic.enabled(bool)       \
+    \               off = silent and nothing loads; on = resumes the last request\n   ArkMusic.pause() / ArkMusic.resume()\
+    \        hold the track where it is (a paused session), then carry on\n   ArkMusic.onfail(fn)                        \
+    \ fn(slug) when a file can't load (play your synth music instead)\n   ArkMusic.current()                          slug\
+    \ playing now, or null\n   ArkMusic.state()                            {slug, time, paused, list, ...} for tests\n\n \
+    \  Volume goes through Web Audio when it can (iPhones ignore <audio>.volume), so the files are served with CORS.\n   Browsers\
+    \ block sound until the first tap or key press; requests made before that start on the first gesture. */\n(function ()\
+    \ {\n  if (window.ArkMusic) return;\n  var BASE = (window.ARK_MEDIA_BASE || 'https://arkvital-media.web.app/') + 'music/';\n\
+    \  var ctx = null, master = null, useGraph = true;\n  var vol = 0.6, duckLvl = 1, on = true, held = false, failFns = [];\n\
+    \  var want = null;          // last request {list, opts}\n  var cur = null;           // {el, gain, slug}\n  var unlocked\
+    \ = false, pendingStart = false, idx = 0, order = [];\n\n  function graph() {\n    if (ctx || !useGraph) return ctx;\n\
+    \    try {\n      var AC = window.AudioContext || window.webkitAudioContext;\n      ctx = new AC(); master = ctx.createGain();\
+    \ master.connect(ctx.destination);\n    } catch (e) { useGraph = false; ctx = null; }\n    return ctx;\n  }\n  function\
+    \ level() { return on ? vol * duckLvl : 0; }\n  function applyMaster(t) {\n    t = t == null ? 0.25 : t;\n    if (master)\
+    \ { var now = ctx.currentTime; master.gain.cancelScheduledValues(now); master.gain.setTargetAtTime(level(), now, t / 3);\
+    \ }\n    else if (cur) cur.el.volume = Math.max(0, Math.min(1, level() * cur.mix));\n  }\n\n  function makeVoice(slug)\
+    \ {\n    var el = new Audio();\n    el.crossOrigin = 'anonymous'; el.preload = 'auto'; el.src = BASE + slug + '.mp3';\n\
+    \    var v = { el: el, slug: slug, gain: null, mix: 0 };\n    if (graph()) {\n      try { var src = ctx.createMediaElementSource(el);\
+    \ v.gain = ctx.createGain(); v.gain.gain.value = 0; src.connect(v.gain); v.gain.connect(master); }\n      catch (e) {\
+    \ v.gain = null; }\n    }\n    el.addEventListener('error', function () { if (cur === v) { failFns.forEach(function (f)\
+    \ { try { f(slug); } catch (e) {} }); cur = null; } });\n    el.addEventListener('ended', function () { if (cur === v)\
+    \ advance(); });\n    return v;\n  }\n  function fadeVoice(v, to, sec, then) {\n    if (v.gain) {\n      var now = ctx.currentTime;\
+    \ v.gain.gain.cancelScheduledValues(now);\n      v.gain.gain.setValueAtTime(v.gain.gain.value, now); v.gain.gain.linearRampToValueAtTime(to,\
+    \ now + Math.max(0.01, sec));\n      v.mix = to; if (then) setTimeout(then, sec * 1000 + 30);\n      return;\n    }\n\
+    \    var from = v.mix, t0 = Date.now(), dur = Math.max(10, sec * 1000);\n    (function step() {\n      var k = Math.min(1,\
+    \ (Date.now() - t0) / dur); v.mix = from + (to - from) * k;\n      v.el.volume = Math.max(0, Math.min(1, level() * v.mix));\n\
+    \      if (k < 1) setTimeout(step, 40); else if (then) then();\n    })();\n  }\n  function retire(v, sec) { fadeVoice(v,\
+    \ 0, sec, function () { try { v.el.pause(); v.el.removeAttribute('src'); v.el.load(); } catch (e) {} }); }\n\n  function\
+    \ startSlug(slug, opts) {\n    var old = cur, fade = opts.fade == null ? 1.5 : opts.fade;\n    var v = makeVoice(slug);\
+    \ cur = v;\n    v.el.loop = order.length === 1 && opts.loop !== false;\n    if (opts.from === 'random' && !old) {\n  \
+    \    v.el.addEventListener('loadedmetadata', function once() { v.el.removeEventListener('loadedmetadata', once); if (v.el.duration\
+    \ > 60) v.el.currentTime = Math.random() * v.el.duration * 0.6; });\n    }\n    if (old) retire(old, fade);\n    if (ctx\
+    \ && ctx.state === 'suspended') ctx.resume().catch(function () {});\n    var p = v.el.play();\n    if (p && p.catch) p.catch(function\
+    \ (e) { if (e && e.name === 'NotAllowedError') { pendingStart = true; } });\n    applyMaster(0); fadeVoice(v, 1, old ?\
+    \ fade : Math.min(fade, 1));\n  }\n  function advance() {\n    if (!want || !order.length) return;\n    idx = (idx + 1)\
+    \ % order.length;\n    if (idx === 0 && want.opts.shuffle) order = shuffled(order);\n    startSlug(order[idx], want.opts);\n\
+    \  }\n  function shuffled(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random()\
+    \ * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }\n  function same(a, b) { return a && b && a.length === b.length\
+    \ && a.every(function (x, i) { return x === b[i]; }); }\n\n  function gesture() {\n    unlocked = true;\n    if (ctx &&\
+    \ ctx.state === 'suspended') ctx.resume().catch(function () {});\n    if (pendingStart && cur && on && !held) { pendingStart\
+    \ = false; var p = cur.el.play(); if (p && p.catch) p.catch(function () { pendingStart = true; }); }\n  }\n  ['pointerdown',\
+    \ 'keydown', 'touchend', 'click'].forEach(function (ev) { window.addEventListener(ev, gesture, { capture: true, passive:\
+    \ true }); });\n  document.addEventListener('visibilitychange', function () {\n    if (!cur) return;\n    if (document.hidden)\
+    \ { cur.el.pause(); } else if (on && want && !held) { var p = cur.el.play(); if (p && p.catch) p.catch(function () { pendingStart\
+    \ = true; }); }\n  });\n\n  window.ArkMusic = {\n    base: BASE,\n    url: function (slug) { return BASE + slug + '.mp3';\
+    \ },\n    play: function (list, opts) {\n      opts = opts || {}; list = [].concat(list || []).filter(Boolean);\n    \
+    \  if (opts.volume != null) vol = +opts.volume;\n      if (!list.length) return this.stop(opts.fade);\n      if (want\
+    \ && same(want.list, list) && cur) { if (held) this.resume(); applyMaster(); return this; }  // already playing this\n\
+    \      held = false;\n      want = { list: list, opts: opts };\n      order = opts.shuffle ? shuffled(list) : list.slice();\
+    \ idx = 0;\n      if (on) startSlug(order[0], opts);\n      return this;\n    },\n    pause: function () {\n      if (!cur\
+    \ || held) return this;\n      held = true; var v = cur;\n      fadeVoice(v, 0, 0.5, function () { if (held && cur ===\
+    \ v) v.el.pause(); });\n      return this;\n    },\n    resume: function () {\n      if (!held) return this;\n      held\
+    \ = false;\n      if (cur && on) { var p = cur.el.play(); if (p && p.catch) p.catch(function () { pendingStart = true;\
+    \ }); fadeVoice(cur, 1, 0.8); }\n      return this;\n    },\n    stop: function (fade) {\n      want = null; pendingStart\
+    \ = false; held = false;\n      if (cur) { retire(cur, fade == null ? 1 : fade); cur = null; }\n      return this;\n \
+    \   },\n    volume: function (v) { if (v == null) return vol; vol = Math.max(0, Math.min(1, +v)); applyMaster(); return\
+    \ this; },\n    duck: function (k, sec) { duckLvl = Math.max(0, Math.min(1, k == null ? 1 : +k)); applyMaster(sec == null\
+    \ ? 0.4 : sec); return this; },\n    enabled: function (b) {\n      if (b == null) return on;\n      b = !!b; if (b ===\
+    \ on) return this; on = b;\n      if (!on) { if (cur) { var c = cur; cur = null; retire(c, 0.6); } }\n      else if (want)\
+    \ { var w = want; want = null; this.play(w.list, w.opts); }\n      return this;\n    },\n    onfail: function (fn) { failFns.push(fn);\
+    \ return this; },\n    current: function () { return cur ? cur.slug : null; },\n    state: function () {  // for tests:\
+    \ what is playing and how far in\n      return { slug: cur ? cur.slug : null, time: cur ? cur.el.currentTime : 0, paused:\
+    \ cur ? cur.el.paused : true, held: held,\n        on: on, volume: vol, duck: duckLvl, list: want ? want.list.slice()\
+    \ : [], webAudio: !!(cur && cur.gain) };\n    },\n    unlocked: function () { return unlocked; }\n  };\n})();\n</script>\n\
+    <!-- ark-music:end -->\n<script>\n(function () {\n  'use strict';\n  var BB = window.BB = window.BB || {};\n  BB.components\
+    \ = BB.components || {};\n\n  /* ---------- Python ⇄ JS bridge ----------\n     Python mounts a component with window.BB.mount(name,\
+    \ rootNode, jsonString, emit).\n     The component calls emit(event, payload) and gets a Promise of whatever Python returned\n\
+    \     (bb_ui sends it back as a JSON string; we parse it here). */\n  BB.wrapEmit = function (emit) {\n    return function\
+    \ (name, payload) {\n      var r;\n      try { r = emit ? emit(name, JSON.stringify(payload == null ? {} : payload)) :\
+    \ null; }\n      catch (e) { console.error(e); return Promise.reject(e); }\n      return Promise.resolve(r).then(function\
+    \ (v) {\n        if (typeof v === 'string') { try { return JSON.parse(v); } catch (e) { return v; } }\n        return\
+    \ v;\n      });\n    };\n  };\n  BB.define = function (name, mountFn) { BB.components[name] = mountFn; };\n  BB.mount\
+    \ = function (name, root, json, emit) {\n    var fn = BB.components[name];\n    if (!fn) { console.error('BB component\
+    \ not loaded: ' + name); return null; }\n    if (!root) { console.error('BB mount: no root node for ' + name); return\
+    \ null; }\n    var data = typeof json === 'string' ? JSON.parse(json || '{}') : (json || {});\n    return fn(root, data,\
+    \ BB.wrapEmit(emit));\n  };\n\n  /* ---------- small helpers ---------- */\n  BB.esc = function (s) {\n    return String(s\
+    \ == null ? '' : s).replace(/[&<>\"']/g, function (c) {\n      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"':\
+    \ '&quot;', \"'\": '&#39;' }[c];\n    });\n  };\n  BB.store = {\n    get: function (k, dflt) { try { var v = localStorage.getItem(k);\
+    \ return v == null ? dflt : JSON.parse(v); } catch (e) { return dflt; } },\n    set: function (k, v) { try { localStorage.setItem(k,\
+    \ JSON.stringify(v)); } catch (e) {} },\n    del: function (k) { try { localStorage.removeItem(k); } catch (e) {} }\n\
+    \  };\n  BB.today = function () {\n    var d = new Date();\n    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2,\
+    \ '0') + '-' + String(d.getDate()).padStart(2, '0');\n  };\n  BB.fmtTime = function (s) {\n    if (s == null) return '–';\n\
+    \    s = Math.max(0, s);\n    var m = Math.floor(s / 60), r = s - m * 60;\n    return (m ? m + ':' + (r < 10 ? '0' : '')\
+    \ + r.toFixed(1) : r.toFixed(1) + 's');\n  };\n  BB.isTouch = function () { return ('ontouchstart' in window) || navigator.maxTouchPoints\
+    \ > 0; };\n\n  BB.toast = function (msg, kind) {\n    var box = document.querySelector('.bb-toasts');\n    if (!box) {\
+    \ box = document.createElement('div'); box.className = 'bb bb-toasts'; document.body.appendChild(box); }\n    var t =\
+    \ document.createElement('div');\n    t.className = 'bb-toast' + (kind === true || kind === 'err' ? ' err' : kind ===\
+    \ 'gold' ? ' gold' : '');\n    t.innerHTML = msg;\n    box.appendChild(t);\n    setTimeout(function () { t.style.transition\
+    \ = 'opacity .3s, transform .3s'; t.style.opacity = '0'; t.style.transform = 'translateY(-10px)'; }, 2600);\n    setTimeout(function\
+    \ () { t.remove(); }, 3000);\n  };\n\n  // BB.modal(html, {onClose, cls}) → {el, close}. Clicking the backdrop or × closes\
+    \ it.\n  BB.modal = function (html, opts) {\n    opts = opts || {};\n    var bg = document.createElement('div');\n   \
+    \ bg.className = 'bb bb-modal-bg';\n    bg.innerHTML = '<div class=\"bb-card bb-modal ' + (opts.cls || '') + '\">' + (opts.noClose\
+    \ ? '' : '<button class=\"bb-x\" aria-label=\"Close\">✕</button>') + html + '</div>';\n    document.body.appendChild(bg);\n\
+    \    var closed = false;\n    function close() {\n      if (closed) return; closed = true;\n      bg.remove();\n     \
+    \ document.removeEventListener('keydown', onKey);\n      if (opts.onClose) opts.onClose();\n    }\n    function onKey(e)\
+    \ { if (e.key === 'Escape' && !opts.noClose) close(); }\n    document.addEventListener('keydown', onKey);\n    bg.addEventListener('click',\
+    \ function (e) {\n      if ((e.target === bg && !opts.noClose) || (e.target.closest && e.target.closest('.bb-x'))) { BB.Sound.play('click');\
     \ close(); }\n    });\n    return { el: bg.querySelector('.bb-modal'), close: close };\n  };\n\n  /* ---------- Sound:\
     \ everything is synthesized, no files ---------- */\n  var Sound = BB.Sound = { ctx: null, master: null, sfxOn: BB.store.get('bb.sfx',\
     \ true), musicOn: BB.store.get('bb.music', true) };\n  Sound.init = function () {\n    if (Sound.ctx) { if (Sound.ctx.state\
@@ -477,21 +547,31 @@ native_deps:
     \ bass: [0, -2, -5, -4] },\n    orchard: { bpm: 124, root: 64, scale: [0, 2, 4, 7, 9], wave: 'square', bass: [0, -5, -3,\
     \ -8] },\n    frost: { bpm: 96, root: 69, scale: [0, 2, 4, 7, 11], wave: 'sine', bass: [0, -5, -7, -4] },\n    festival:\
     \ { bpm: 126, root: 58, scale: [0, 2, 4, 7, 9], wave: 'square', bass: [0, -3, -5, -7] },\n    dragon: { bpm: 132, root:\
-    \ 53, scale: [0, 1, 5, 7, 8], wave: 'sawtooth', bass: [0, -4, -2, -5] }\n  };\n  Sound.startMusic = function (mood) {\n\
-    \    Sound.wantMusic = mood;\n    if (!Sound.musicOn || !Sound.ctx || Sound.ctx.state !== 'running') return;\n    if (Sound.music\
-    \ && Sound.music.mood === mood) return;\n    Sound.stopMusic();\n    var m = MOODS[mood] || MOODS.menu, beat = 60 / m.bpm\
-    \ / 2, next = Sound.ctx.currentTime + 0.1, step = 0, deg = 2;\n    var timer = setInterval(function () {\n      var c\
-    \ = Sound.ctx;\n      if (!c) return;\n      while (next < c.currentTime + 0.4) {\n        var bar = Math.floor(step /\
-    \ 16) % 4;\n        if (step % 4 === 0) tone(440 * Math.pow(2, (m.root - 24 + m.bass[bar] - 69) / 12), next, beat * 3.6,\
-    \ 'triangle', 0.22, null, Sound.musicGain);\n        if (Math.random() < (step % 2 ? 0.45 : 0.8)) {\n          deg = Math.max(0,\
-    \ Math.min(9, deg + [-2, -1, -1, 0, 1, 1, 2][Math.floor(Math.random() * 7)]));\n          var semi = m.scale[deg % 5]\
-    \ + 12 * Math.floor(deg / 5);\n          tone(440 * Math.pow(2, (m.root + semi - 69) / 12), next, beat * (Math.random()\
-    \ < 0.2 ? 1.8 : 0.9), m.wave, 0.09, null, Sound.musicGain);\n        }\n        if (step % 8 === 4) noise(next, 0.05,\
-    \ 0.05, 6000, 'highpass');\n        next += beat; step++;\n      }\n    }, 120);\n    Sound.music = { mood: mood, timer:\
-    \ timer };\n  };\n  Sound.stopMusic = function (forget) {\n    if (Sound.music) { clearInterval(Sound.music.timer); Sound.music\
-    \ = null; }\n    if (forget) Sound.wantMusic = Sound.wantMusic;\n  };\n})();\n</script>\n\n<!-- Prepsto feedback panel:\
-    \ every \"Submit feedback\" link and button slides it in (it is the only feedback channel). No floating button, no cookies,\
-    \ nothing loads until it is opened. Codes: APP_MAKER/prepsto-links.json -->\n<script src=\"https://prepsto.com/_/theme/widget.js\"\
+    \ 53, scale: [0, 1, 5, 7, 8], wave: 'sawtooth', bass: [0, -4, -2, -5] }\n  };\n  /* Real music: Audiio tracks streamed\
+    \ by ArkMusic (the ark-music block above). The synth tune is the fallback\n     when the files can't load. Track list:\
+    \ APP_MAKER/media/manifest.json. */\n  var TRACKS = {\n    menu: ['dont-stress-out'], upbeat: ['dont-stress-out', 'my-love-for-you'],\
+    \ calm: ['bright-road', 'toulouse'],\n    cellar: ['spiralis'], dragon: ['dark-terrain']\n  };\n  var MOOD_TRACKS = {\
+    \ menu: 'menu', garden: 'calm', lake: 'calm', harbour: 'calm', frost: 'calm', terrace: 'calm', cellar: 'cellar', dragon:\
+    \ 'dragon' };\n  Sound.tracksFor = function (mood) { return TRACKS[MOOD_TRACKS[mood] || 'upbeat']; };\n  Sound.useFiles\
+    \ = !!window.ArkMusic;\n  if (window.ArkMusic) ArkMusic.onfail(function () {\n    Sound.useFiles = false; Sound.music\
+    \ = null;\n    if (Sound.wantMusic && Sound.musicOn) Sound.startMusic(Sound.wantMusic);\n  });\n  Sound.startMusic = function\
+    \ (mood) {\n    Sound.wantMusic = mood;\n    if (Sound.useFiles) {\n      if (!Sound.musicOn) return;\n      var list\
+    \ = Sound.tracksFor(mood);\n      ArkMusic.play(list, { volume: 0.35, shuffle: list.length > 1 });\n      Sound.music\
+    \ = { mood: mood, file: true };\n      return;\n    }\n    if (!Sound.musicOn || !Sound.ctx || Sound.ctx.state !== 'running')\
+    \ return;\n    if (Sound.music && Sound.music.mood === mood) return;\n    Sound.stopMusic();\n    var m = MOODS[mood]\
+    \ || MOODS.menu, beat = 60 / m.bpm / 2, next = Sound.ctx.currentTime + 0.1, step = 0, deg = 2;\n    var timer = setInterval(function\
+    \ () {\n      var c = Sound.ctx;\n      if (!c) return;\n      while (next < c.currentTime + 0.4) {\n        var bar =\
+    \ Math.floor(step / 16) % 4;\n        if (step % 4 === 0) tone(440 * Math.pow(2, (m.root - 24 + m.bass[bar] - 69) / 12),\
+    \ next, beat * 3.6, 'triangle', 0.22, null, Sound.musicGain);\n        if (Math.random() < (step % 2 ? 0.45 : 0.8)) {\n\
+    \          deg = Math.max(0, Math.min(9, deg + [-2, -1, -1, 0, 1, 1, 2][Math.floor(Math.random() * 7)]));\n          var\
+    \ semi = m.scale[deg % 5] + 12 * Math.floor(deg / 5);\n          tone(440 * Math.pow(2, (m.root + semi - 69) / 12), next,\
+    \ beat * (Math.random() < 0.2 ? 1.8 : 0.9), m.wave, 0.09, null, Sound.musicGain);\n        }\n        if (step % 8 ===\
+    \ 4) noise(next, 0.05, 0.05, 6000, 'highpass');\n        next += beat; step++;\n      }\n    }, 120);\n    Sound.music\
+    \ = { mood: mood, timer: timer };\n  };\n  Sound.stopMusic = function (forget) {\n    if (Sound.music && Sound.music.file)\
+    \ { if (window.ArkMusic) ArkMusic.stop(); Sound.music = null; }\n    if (Sound.music) { clearInterval(Sound.music.timer);\
+    \ Sound.music = null; }\n    if (forget) Sound.wantMusic = Sound.wantMusic;\n  };\n})();\n</script>\n\n<!-- Prepsto feedback\
+    \ panel: every \"Submit feedback\" link and button slides it in (it is the only feedback channel). No floating button,\
+    \ no cookies, nothing loads until it is opened. Codes: APP_MAKER/prepsto-links.json -->\n<script src=\"https://prepsto.com/_/theme/widget.js\"\
     \ data-prepsto=\"xww6ue9\" data-button=\"false\" data-label=\"Submit feedback\" async></script>\n\n<!-- ===== lib/art.js\
     \ ===== -->\n<script>\n/* Busy Bun — art. Everything is drawn with canvas paths (no image files), so the game, the level\n\
     \   editor and the menus all share these functions. Sizes are in canvas pixels. */\n(function () {\n  'use strict';\n\
