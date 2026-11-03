@@ -280,7 +280,7 @@ metadata:
   title: 'Busy Bun: a cute bao bun adventure game in your browser'
 name: Busy Bun
 native_deps:
-  head_html: "<script src=\"_/theme/legal-kit.js?v=c145e3a64c\"></script>\n\n<!-- seo:start (APP_MAKER/seo: edit seo/apps/busybun.json\
+  head_html: "<script src=\"_/theme/legal-kit.js?v=dca08b501b\"></script>\n\n<!-- seo:start (APP_MAKER/seo: edit seo/apps/busybun.json\
     \ and run seo.py, not here) -->\n<link rel=\"canonical\" href=\"https://busybun.com/\">\n<meta name=\"robots\" content=\"\
     index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">\n<meta name=\"keywords\" content=\"bao\
     \ bun game, cute browser game, top-down adventure game, food game online, play in browser no download, casual game for\
@@ -2003,7 +2003,26 @@ native_deps:
     \ 22px; }\n    .g-world.cur::after { content: '▶'; }\n    .g-continue { padding: 10px; gap: 10px; }\n    .g-continue .pv\
     \ { width: 52px; height: 52px; }\n    .g-continue b { font-size: 18px; }\n    .g-buffs { max-width: calc(100vw - 150px);\
     \ }\n  }\n  .g-buffs { display: flex; gap: 6px; flex-wrap: wrap; }\n  .g-buffs .g-gchip { background: #fff1c9; }\n  .g-buffs\
-    \ .g-gchip.hot { background: #ffd9d4; }\n  .g-buffs .g-gchip.cool { background: #d6efff; }\n</style>\n<script>\n(function\
+    \ .g-gchip.hot { background: #ffd9d4; }\n  .g-buffs .g-gchip.cool { background: #d6efff; }\n/* Watch section: the app's\
+    \ YouTube video. Click to play; nothing loads from YouTube before the click. */\n.ytf .ytf-in { display: grid; grid-template-columns:\
+    \ minmax(0, .8fr) minmax(0, 1.2fr); gap: 40px; align-items: center; max-width: 1040px; margin: 0 auto; }\n.ytf .ytf-copy\
+    \ .eyebrow { display: inline-flex; align-items: center; gap: 8px; }\n.ytf .ytf-copy h2 { margin: 6px 0 10px; }\n.ytf .ytf-copy\
+    \ p { color: var(--c-muted); margin: 0 0 16px; }\n.ytf .ytf-link { font-weight: 700; }\n.ytf .ytf-frame { position: relative;\
+    \ aspect-ratio: 16 / 9; border-radius: var(--radius, 16px); overflow: hidden; background: #000; border: 1px solid var(--c-line);\
+    \ box-shadow: var(--shadow-lg); }\n.ytf .ytf-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border:\
+    \ 0; }\n.ytf .ytf-cover { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; padding: 0; margin:\
+    \ 0; border: 0; border-radius: 0; background: none; box-shadow: none; color: inherit; font: inherit; cursor: pointer;\
+    \ display: block; }\n.ytf .ytf-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform\
+    \ .4s ease, filter .3s; }\n.ytf .ytf-cover:hover img { transform: scale(1.02); filter: brightness(.92); }\n.ytf .ytf-play\
+    \ { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); line-height: 0; filter: drop-shadow(0 6px\
+    \ 18px rgba(0, 0, 0, .35)); transition: transform .2s; }\n.ytf .ytf-cover:hover .ytf-play, .ytf .ytf-cover:focus-visible\
+    \ .ytf-play { transform: translate(-50%, -50%) scale(1.08); }\n.ytf .ytf-cover:focus-visible { outline: 3px solid var(--c-brand);\
+    \ outline-offset: -3px; }\n.ytf .ytf-len { position: absolute; right: 10px; bottom: 10px; background: rgba(0, 0, 0, .78);\
+    \ color: #fff; font-size: .78rem; font-weight: 700; line-height: 1.3; padding: 3px 7px; border-radius: 5px; }\n.ytf .ytf-note\
+    \ { font-size: .8rem; color: var(--c-muted); margin: 10px 2px 0; }\n@media (max-width: 800px) { .ytf .ytf-in { grid-template-columns:\
+    \ minmax(0, 1fr); gap: 22px; } }\n@media (max-width: 480px) { .ytf .ytf-play svg { width: 56px; height: 40px; } }\n  .ytf\
+    \ { --c-muted: var(--bb-ink-2); --c-line: var(--bb-line); --shadow-lg: none; --c-brand: var(--bb-red); --radius: 14px;\
+    \ }\n  .bb-modal.g-watch { max-width: 720px; }\n  .g-watch .ytf-frame { border-width: 2.5px; }\n</style>\n<script>\n(function\
     \ () {\n  'use strict';\n  var BB = window.BB;\n  var esc = function (s) { return BB.esc(s); };\n  var GUEST_KEY = 'bb.guest.v1';\n\
     \  var RARITY_ORDER = { common: 0, uncommon: 1, rare: 2, legendary: 3 };\n\n  BB.define('game', function (root, init,\
     \ emit) {\n    var Art = BB.Art;\n    var st = { signedIn: !!init.signed_in, guest: false, screen: null, tab: BB.store.get('bb.tab',\
@@ -2070,30 +2089,48 @@ native_deps:
     guest\">▶ ' + (gs ? 'Continue as guest' : 'Play now') + '</button>' +\n            '<button class=\"bb-btn green\" data-a=\"\
     auth\">Sign in / Create account</button>' +\n            '<div class=\"bb-muted\" style=\"font-weight:700;font-size:13px\"\
     >An account saves your progress and puts you on the leaderboards.</div>') +\n        '</div><div class=\"g-foot\"><a data-a=\"\
-    howto\">How to play</a> · <a href=\"https://prepsto.com/#f/xww6ue9\" target=\"_blank\" rel=\"noopener\" data-prepsto-open>Submit\
-    \ feedback</a> · <a data-a=\"admin\">Level builder</a> · <a data-lk-open=\"overview\">Privacy &amp; Terms</a></div>';\n\
-    \      root.appendChild(el);\n      el.querySelector('.g-hero').appendChild(hatPortrait(190, (st.progress && st.progress.hat)\
-    \ || BB.store.get('bb.lastHat', 'none')));\n      titleBg(el.querySelector('.g-bg'));\n      el.addEventListener('click',\
-    \ function (e) {\n        var a = e.target.closest('[data-a]'); if (!a) return;\n        BB.Sound.play('click');\n   \
-    \     var act2 = a.dataset.a;\n        if (act2 === 'play') startSignedIn();\n        else if (act2 === 'guest') startGuest();\n\
-    \        else if (act2 === 'auth') authModal('login');\n        else if (act2 === 'signout') emit('logout').then(function\
-    \ () { st.signedIn = false; renderTitle(); });\n        else if (act2 === 'howto') howTo();\n        else if (act2 ===\
-    \ 'feedback') feedbackModal({});\n        else if (act2 === 'admin') emit('admin');\n      });\n    }\n    function titleBg(cv)\
-    \ {\n      var ctx = cv.getContext('2d'), fl = [], t0 = performance.now();\n      var em2 = ['\U0001F953', '\U0001F357\
-    ', '\U0001F33F', '\U0001F95A', '\U0001F990', '\U0001F344', '\U0001F336️', '\U0001F36F', '\U0001F96C', '\U0001F9C4', '\U0001F980\
-    ', '\U0001F356', '\U0001F33D'];\n      for (var i = 0; i < 26; i++) fl.push({ x: Math.random(), y: Math.random(), s: 18\
-    \ + Math.random() * 26, v: 0.02 + Math.random() * 0.04, e: em2[i % em2.length], r: Math.random() * 6, vr: (Math.random()\
-    \ - 0.5) * 0.6 });\n      function frame(now) {\n        titleAnim = requestAnimationFrame(frame);\n        var dpr =\
-    \ Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth, h = cv.clientHeight;\n        if (cv.width !== Math.round(w\
-    \ * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }\n        ctx.setTransform(dpr, 0, 0, dpr,\
-    \ 0, 0); ctx.clearRect(0, 0, w, h);\n        var t = (now - t0) / 1000;\n        fl.forEach(function (f) {\n         \
-    \ f.y += f.v / 60; if (f.y > 1.1) { f.y = -0.1; f.x = Math.random(); }\n          ctx.save(); ctx.globalAlpha = 0.55;\
-    \ ctx.translate(f.x * w, f.y * h); ctx.rotate(f.r + t * f.vr);\n          Art.drawEmoji(ctx, f.e, 0, 0, f.s); ctx.restore();\n\
-    \        });\n      }\n      titleAnim = requestAnimationFrame(frame);\n    }\n    function howTo() {\n      BB.modal('<h2\
-    \ style=\"margin-right:40px\">How to play</h2>' +\n        '<p>You are a little bao on a culinary journey. Each territory\
-    \ is overrun by kitchen pests. Clear the levels to free it!</p>' +\n        '<div class=\"g-ctrls\">' +\n        '<kbd>WASD\
-    \ / ←↑↓→</kbd><span>Roll around (on phones: drag on the left side)</span>' +\n        '<kbd>Space / Shift</kbd><span>Steam\
-    \ Dash: bonk pests, smash crates, wreck nests (on phones: the \U0001F4A8 button)</span>' +\n        '<kbd>Esc / P</kbd><span>Pause</span></div>'\
+    watch\">▶ Watch the trailer</a> · <a data-a=\"howto\">How to play</a> · <a href=\"https://prepsto.com/#f/xww6ue9\" target=\"\
+    _blank\" rel=\"noopener\" data-prepsto-open>Submit feedback</a> · <a data-a=\"admin\">Level builder</a> · <a data-lk-open=\"\
+    overview\">Privacy &amp; Terms</a></div>';\n      root.appendChild(el);\n      el.querySelector('.g-hero').appendChild(hatPortrait(190,\
+    \ (st.progress && st.progress.hat) || BB.store.get('bb.lastHat', 'none')));\n      titleBg(el.querySelector('.g-bg'));\n\
+    \      el.addEventListener('click', function (e) {\n        var a = e.target.closest('[data-a]'); if (!a) return;\n  \
+    \      BB.Sound.play('click');\n        var act2 = a.dataset.a;\n        if (act2 === 'play') startSignedIn();\n     \
+    \   else if (act2 === 'guest') startGuest();\n        else if (act2 === 'auth') authModal('login');\n        else if (act2\
+    \ === 'signout') emit('logout').then(function () { st.signedIn = false; renderTitle(); });\n        else if (act2 ===\
+    \ 'howto') howTo();\n        else if (act2 === 'watch') watchTrailer();\n        else if (act2 === 'feedback') feedbackModal({});\n\
+    \        else if (act2 === 'admin') emit('admin');\n      });\n    }\n    function titleBg(cv) {\n      var ctx = cv.getContext('2d'),\
+    \ fl = [], t0 = performance.now();\n      var em2 = ['\U0001F953', '\U0001F357', '\U0001F33F', '\U0001F95A', '\U0001F990\
+    ', '\U0001F344', '\U0001F336️', '\U0001F36F', '\U0001F96C', '\U0001F9C4', '\U0001F980', '\U0001F356', '\U0001F33D'];\n\
+    \      for (var i = 0; i < 26; i++) fl.push({ x: Math.random(), y: Math.random(), s: 18 + Math.random() * 26, v: 0.02\
+    \ + Math.random() * 0.04, e: em2[i % em2.length], r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.6 });\n      function\
+    \ frame(now) {\n        titleAnim = requestAnimationFrame(frame);\n        var dpr = Math.min(2, window.devicePixelRatio\
+    \ || 1), w = cv.clientWidth, h = cv.clientHeight;\n        if (cv.width !== Math.round(w * dpr)) { cv.width = Math.round(w\
+    \ * dpr); cv.height = Math.round(h * dpr); }\n        ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);\n\
+    \        var t = (now - t0) / 1000;\n        fl.forEach(function (f) {\n          f.y += f.v / 60; if (f.y > 1.1) { f.y\
+    \ = -0.1; f.x = Math.random(); }\n          ctx.save(); ctx.globalAlpha = 0.55; ctx.translate(f.x * w, f.y * h); ctx.rotate(f.r\
+    \ + t * f.vr);\n          Art.drawEmoji(ctx, f.e, 0, 0, f.s); ctx.restore();\n        });\n      }\n      titleAnim =\
+    \ requestAnimationFrame(frame);\n    }\n    // The Busy Bun video on the Addanapp YouTube channel (APP_MAKER/youtube/manifest.json).\
+    \ Nothing loads from\n    // YouTube until the play button is pressed; the menu music stops while it plays and comes back\
+    \ on close.\n    var YT_VIDEO = 'mFIuuENN_nI';\n    function watchTrailer() {\n      var played = false;\n      var m\
+    \ = BB.modal('<div class=\"ytf\"><h2 style=\"margin-right:40px\">Watch Busy Bun in about a minute</h2>' +\n        '<p\
+    \ class=\"bb-muted\">A short video tour of the game: the levels, the pests, the pantry and the kitchen.</p>' +\n     \
+    \   '<div class=\"ytf-frame\"><button type=\"button\" class=\"ytf-cover\" aria-label=\"Play the Busy Bun video (1:09)\"\
+    >' +\n        '<img src=\"_/theme/yt-cover.jpg\" alt=\"\" decoding=\"async\" width=\"960\" height=\"540\">' +\n      \
+    \  '<span class=\"ytf-play\" aria-hidden=\"true\"><svg viewBox=\"0 0 68 48\" width=\"68\" height=\"48\"><path d=\"M66.5\
+    \ 7.7a8.5 8.5 0 0 0-6-6C55.3.3 34 .3 34 .3s-21.3 0-26.5 1.4a8.5 8.5 0 0 0-6 6C.1 13 .1 24 .1 24s0 11 1.4 16.3a8.5 8.5\
+    \ 0 0 0 6 6c5.2 1.4 26.5 1.4 26.5 1.4s21.3 0 26.5-1.4a8.5 8.5 0 0 0 6-6C67.9 35 67.9 24 67.9 24s0-11-1.4-16.3z\" fill=\"\
+    #FF0033\"/><path d=\"M45 24 27 14v20z\" fill=\"#fff\"/></svg></span>' +\n        '<span class=\"ytf-len\">1:09</span></button></div>'\
+    \ +\n        '<p class=\"ytf-note\">The video loads from YouTube when you press play. <a href=\"https://www.youtube.com/watch?v='\
+    \ + YT_VIDEO + '\" target=\"_blank\" rel=\"noopener\">Watch on YouTube ↗</a></p></div>',\n        { cls: 'g-watch', onClose:\
+    \ function () { if (played && st.screen === 'title') BB.Sound.startMusic('menu'); } });\n      m.el.querySelector('.ytf-cover').addEventListener('click',\
+    \ function () {\n        played = true;\n        BB.Sound.stopMusic();\n        m.el.querySelector('.ytf-frame').innerHTML\
+    \ = '<iframe src=\"https://www.youtube-nocookie.com/embed/' + YT_VIDEO + '?autoplay=1&rel=0&playsinline=1\" ' +\n    \
+    \      'title=\"Busy Bun video\" allow=\"autoplay; encrypted-media; picture-in-picture; fullscreen\" allowfullscreen referrerpolicy=\"\
+    strict-origin-when-cross-origin\"></iframe>';\n      });\n    }\n    function howTo() {\n      BB.modal('<h2 style=\"\
+    margin-right:40px\">How to play</h2>' +\n        '<p>You are a little bao on a culinary journey. Each territory is overrun\
+    \ by kitchen pests. Clear the levels to free it!</p>' +\n        '<div class=\"g-ctrls\">' +\n        '<kbd>WASD / ←↑↓→</kbd><span>Roll\
+    \ around (on phones: drag on the left side)</span>' +\n        '<kbd>Space / Shift</kbd><span>Steam Dash: bonk pests,\
+    \ smash crates, wreck nests (on phones: the \U0001F4A8 button)</span>' +\n        '<kbd>Esc / P</kbd><span>Pause</span></div>'\
     \ +\n        '<p><b>In each level:</b> collect the meat, help the neighbours with their errands, destroy the pest nests,\
     \ then hop into the bamboo steamer.</p>' +\n        '<p><b>Stars:</b> ⭐ finish · ⭐ collect every ingredient · ⭐ beat the\
     \ par time.</p>' +\n        '<p><b>Bonuses</b> glow in bubbles: \U0001F9F2 magnet, \U0001F6E1️ shield, \U0001F4B0 coin\
