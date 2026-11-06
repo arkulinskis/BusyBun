@@ -2211,38 +2211,40 @@ native_deps:
     \ class=\"dot\"></span>' : '') + '</button>';\n        }).join('') + '</nav>' +\n        '<main class=\"g-main\"><div\
     \ class=\"g-panel\"></div>' +\n        '<footer class=\"g-footer\"><a class=\"fb\" href=\"https://prepsto.com/#f/xww6ue9\"\
     \ target=\"_blank\" rel=\"noopener\" data-prepsto-open>\U0001F4AC Submit feedback</a><a data-a=\"howto\">How to play</a><a\
-    \ data-lk-open=\"overview\">Privacy &amp; Terms</a><span>Busy Bun · a little bao on a big journey</span></footer></main>';\n\
-    \      root.appendChild(el);\n      el.querySelector('.g-av').appendChild(hatPortrait(52, p.hat));\n      var panel =\
-    \ el.querySelector('.g-panel');\n      ({ journey: renderJourney, pantry: renderPantry, kitchen: renderKitchen, shop:\
-    \ renderShop, badges: renderBadges }[st.tab] || renderJourney)(panel);\n      el.addEventListener('click', function (e)\
-    \ {\n        var tb = e.target.closest('[data-tab]');\n        if (tb) { BB.Sound.play('click'); renderHub(tb.dataset.tab);\
-    \ return; }\n        var a = e.target.closest('[data-a]'); if (!a) return;\n        var k = a.dataset.a;\n        if (k\
-    \ === 'settings') { BB.Sound.play('click'); settings(); }\n        else if (k === 'daily') { BB.Sound.play('click'); daily();\
-    \ }\n        else if (k === 'auth') { BB.Sound.play('click'); authModal('signup'); }\n        else if (k === 'feedback')\
-    \ { BB.Sound.play('click'); feedbackModal({ screen: 'menu: ' + st.tab }); }\n        else if (k === 'howto') { BB.Sound.play('click');\
-    \ howTo(); }\n      });\n    }\n\n    // ---------- journey\n    // The Journey: a \"continue\" card, the overall progress,\
-    \ a picker with every world, then one world's road.\n    function renderJourney(panel) {\n      var s = st.status, nxt\
-    \ = nextLevel(), worlds = st.journey.filter(function (t) { return t.levels.length; });\n      var nxtWorld = worldOfLevel(nxt);\n\
-    \      if (!st.world || !worlds.some(function (t) { return t.key === st.world; })) st.world = nxtWorld || (worlds[worlds.length\
-    \ - 1] || {}).key;\n      var html = '<div class=\"g-h\"><div><h2>The Journey</h2><p>' + worlds.length + ' worlds to free\
-    \ from the pests. Clear every level in a world to open the next one.</p></div></div>';\n      if (st.guest) html += '<div\
-    \ class=\"g-guestbar\">' + em('\U0001F4BE') + ' <span style=\"flex:1\">You\\'re playing as a guest. Progress is kept in\
-    \ this browser only.</span><button class=\"bb-btn small green\" data-a=\"auth\">Create free account</button></div><div\
-    \ style=\"height:14px\"></div>';\n      // Continue where you left off.\n      var nf = nxt && findLevel(nxt);\n     \
-    \ if (nf) {\n        html += '<div class=\"g-continue\"><div class=\"pv\"></div><div class=\"tx\"><small>Next up · ' +\
-    \ esc(levelLabel(nf)) + '</small><b>' + esc(nf.l.name) + '</b>' +\n          '<span class=\"w\">' + esc(nf.t.emoji + '\
-    \ ' + nf.t.name) + '</span></div><button class=\"bb-btn red\" data-go=\"' + esc(nxt) + '\">▶ Play</button></div>';\n \
-    \     } else if (s.cleared.length && s.cleared.length === worlds.length) {\n        html += '<div class=\"g-banner free\"\
-    \ style=\"text-align:center;font-size:19px\">\U0001F389 Every world is free! Hunt for 3 stars, golden chopsticks and the\
-    \ rarest ingredients.</div>';\n      }\n      var pct = Math.round(100 * (s.clears || 0) / Math.max(1, s.levels_max ||\
-    \ 1));\n      html += '<div class=\"g-progress\"><span>\U0001F5FA️ ' + (s.clears || 0) + ' / ' + (s.levels_max || 0) +\
-    \ ' levels</span><div class=\"g-bar\"><i style=\"width:' + pct + '%\"></i></div>' +\n        '<span>\U0001F3EE ' + s.cleared.length\
-    \ + ' / ' + worlds.length + ' worlds free</span></div>';\n      // Every world at a glance.\n      html += '<div class=\"\
-    g-worlds\" role=\"list\">' + worlds.map(function (t, i) {\n        var done = t.levels.filter(function (l) { return levelRec(l.key).stars[0];\
-    \ }).length;\n        var stars = t.levels.reduce(function (a, l) { return a + starsOf(l.key); }, 0);\n        var locked\
-    \ = !t.levels.some(function (l) { return isUnlocked(l.key); });\n        var cls = 'th-' + esc(t.theme) + (DARK_THEMES[t.theme]\
-    \ ? ' dark' : '') + (t.key === st.world ? ' sel' : '') + (t.key === nxtWorld ? ' cur' : '') +\n          (s.cleared.indexOf(t.key)\
-    \ >= 0 ? ' free' : '') + (locked ? ' locked' : '');\n        return '<button class=\"g-world ' + cls + '\" data-world=\"\
+    \ data-lk-open=\"overview\">Privacy &amp; Terms</a><span class=\"g-org\">Contact developer: <a href=\"https://arkvital.com\"\
+    \ target=\"_blank\" rel=\"noopener\">arkvital.com</a> · Parent company: <a href=\"https://addanapp.com\" target=\"_blank\"\
+    \ rel=\"noopener\">addanapp.com</a></span><span>Busy Bun · a little bao on a big journey</span></footer></main>';\n  \
+    \    root.appendChild(el);\n      el.querySelector('.g-av').appendChild(hatPortrait(52, p.hat));\n      var panel = el.querySelector('.g-panel');\n\
+    \      ({ journey: renderJourney, pantry: renderPantry, kitchen: renderKitchen, shop: renderShop, badges: renderBadges\
+    \ }[st.tab] || renderJourney)(panel);\n      el.addEventListener('click', function (e) {\n        var tb = e.target.closest('[data-tab]');\n\
+    \        if (tb) { BB.Sound.play('click'); renderHub(tb.dataset.tab); return; }\n        var a = e.target.closest('[data-a]');\
+    \ if (!a) return;\n        var k = a.dataset.a;\n        if (k === 'settings') { BB.Sound.play('click'); settings(); }\n\
+    \        else if (k === 'daily') { BB.Sound.play('click'); daily(); }\n        else if (k === 'auth') { BB.Sound.play('click');\
+    \ authModal('signup'); }\n        else if (k === 'feedback') { BB.Sound.play('click'); feedbackModal({ screen: 'menu:\
+    \ ' + st.tab }); }\n        else if (k === 'howto') { BB.Sound.play('click'); howTo(); }\n      });\n    }\n\n    // ----------\
+    \ journey\n    // The Journey: a \"continue\" card, the overall progress, a picker with every world, then one world's\
+    \ road.\n    function renderJourney(panel) {\n      var s = st.status, nxt = nextLevel(), worlds = st.journey.filter(function\
+    \ (t) { return t.levels.length; });\n      var nxtWorld = worldOfLevel(nxt);\n      if (!st.world || !worlds.some(function\
+    \ (t) { return t.key === st.world; })) st.world = nxtWorld || (worlds[worlds.length - 1] || {}).key;\n      var html =\
+    \ '<div class=\"g-h\"><div><h2>The Journey</h2><p>' + worlds.length + ' worlds to free from the pests. Clear every level\
+    \ in a world to open the next one.</p></div></div>';\n      if (st.guest) html += '<div class=\"g-guestbar\">' + em('\U0001F4BE\
+    ') + ' <span style=\"flex:1\">You\\'re playing as a guest. Progress is kept in this browser only.</span><button class=\"\
+    bb-btn small green\" data-a=\"auth\">Create free account</button></div><div style=\"height:14px\"></div>';\n      // Continue\
+    \ where you left off.\n      var nf = nxt && findLevel(nxt);\n      if (nf) {\n        html += '<div class=\"g-continue\"\
+    ><div class=\"pv\"></div><div class=\"tx\"><small>Next up · ' + esc(levelLabel(nf)) + '</small><b>' + esc(nf.l.name) +\
+    \ '</b>' +\n          '<span class=\"w\">' + esc(nf.t.emoji + ' ' + nf.t.name) + '</span></div><button class=\"bb-btn\
+    \ red\" data-go=\"' + esc(nxt) + '\">▶ Play</button></div>';\n      } else if (s.cleared.length && s.cleared.length ===\
+    \ worlds.length) {\n        html += '<div class=\"g-banner free\" style=\"text-align:center;font-size:19px\">\U0001F389\
+    \ Every world is free! Hunt for 3 stars, golden chopsticks and the rarest ingredients.</div>';\n      }\n      var pct\
+    \ = Math.round(100 * (s.clears || 0) / Math.max(1, s.levels_max || 1));\n      html += '<div class=\"g-progress\"><span>\U0001F5FA\
+    ️ ' + (s.clears || 0) + ' / ' + (s.levels_max || 0) + ' levels</span><div class=\"g-bar\"><i style=\"width:' + pct + '%\"\
+    ></i></div>' +\n        '<span>\U0001F3EE ' + s.cleared.length + ' / ' + worlds.length + ' worlds free</span></div>';\n\
+    \      // Every world at a glance.\n      html += '<div class=\"g-worlds\" role=\"list\">' + worlds.map(function (t, i)\
+    \ {\n        var done = t.levels.filter(function (l) { return levelRec(l.key).stars[0]; }).length;\n        var stars\
+    \ = t.levels.reduce(function (a, l) { return a + starsOf(l.key); }, 0);\n        var locked = !t.levels.some(function\
+    \ (l) { return isUnlocked(l.key); });\n        var cls = 'th-' + esc(t.theme) + (DARK_THEMES[t.theme] ? ' dark' : '')\
+    \ + (t.key === st.world ? ' sel' : '') + (t.key === nxtWorld ? ' cur' : '') +\n          (s.cleared.indexOf(t.key) >=\
+    \ 0 ? ' free' : '') + (locked ? ' locked' : '');\n        return '<button class=\"g-world ' + cls + '\" data-world=\"\
     ' + esc(t.key) + '\" role=\"listitem\" aria-label=\"World ' + (i + 1) + ': ' + esc(t.name) + ', ' + done + ' of ' + t.levels.length\
     \ + ' levels\">' +\n          '<span class=\"n\">' + (i + 1) + '</span><span class=\"em bb-emoji\">' + esc(t.emoji) +\
     \ '</span><b>' + esc(t.name) + '</b>' +\n          '<small>' + done + '/' + t.levels.length + ' · ⭐' + stars + '</small><span\
