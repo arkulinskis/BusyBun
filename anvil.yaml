@@ -280,7 +280,7 @@ metadata:
   title: 'Busy Bun: a cute bao bun adventure game in your browser'
 name: Busy Bun
 native_deps:
-  head_html: "<script src=\"_/theme/legal-kit.js?v=dca08b501b\"></script>\n\n<!-- seo:start (APP_MAKER/seo: edit seo/apps/busybun.json\
+  head_html: "<script src=\"_/theme/legal-kit.js?v=28f1e010b9\"></script>\n\n<!-- seo:start (APP_MAKER/seo: edit seo/apps/busybun.json\
     \ and run seo.py, not here) -->\n<link rel=\"canonical\" href=\"https://busybun.com/\">\n<meta name=\"robots\" content=\"\
     index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">\n<meta name=\"keywords\" content=\"bao\
     \ bun game, cute browser game, top-down adventure game, food game online, play in browser no download, casual game for\
