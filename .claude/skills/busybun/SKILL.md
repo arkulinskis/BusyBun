@@ -13,9 +13,9 @@ leaderboards, and a level builder at `#admin`.
 
 **Where it lives:**
 - Folder `C:\Users\arkvi\Documents\CLAUDE\BusyBun-forms\` = the git clone of **github.com/arkulinskis/BusyBun**.
-  "git" layout: the folder *is* the Anvil app; pushing is the deploy. Converted to native Forms on branch `forms`
-  (2026-11-08); until the user merges it, master still runs the old Custom-HTML version from
-  `C:\Users\arkvi\Documents\CLAUDE\BusyBun` (source layout + tools/deploy.py; retire it after the merge).
+  "git" layout: the folder *is* the Anvil app; pushing is the deploy. Native Forms on master since
+  2026-11-08 (forms branch merged). The old source folder `C:\Users\arkvi\Documents\CLAUDE\BusyBun` is retired
+  (RETIRED.md; its deploy.py refuses to run): never deploy from it.
 - Made in the shape of `APP_MAKER\template-forms` (read its guide for the general patterns: pages, layout, items,
   dialogs, accessibility, design kit). `APP_MAP.md` is the code map: read it first.
 
@@ -133,5 +133,5 @@ into this folder, then `python tools/assets.py`. Don't edit `theme/assets/legal-
 ## Music
 
 Mood -> tracks in `Sound.startMusic` (TRACKS / MOOD_TRACKS in bb-kit.js); the synth tune is the fallback. Player =
-`window.ArkMusic` (theme/assets/ark-music.js, a copy written by `APP_MAKER/tools/music_sync.py`: after the merge, point
-music_sync at this file).
+`window.ArkMusic` (theme/assets/ark-music.js, a copy written by `APP_MAKER/tools/music_sync.py`: edit the
+canonical copy and re-sync, never this one).
