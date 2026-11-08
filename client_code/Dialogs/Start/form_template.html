@@ -1,0 +1,13 @@
+<div class="bb bb-dlg g-lv">
+  <div class="sub" anvil:dom-node="where"></div>
+  <h2 class="dlg-h" anvil:dom-node="name"></h2>
+  <p class="g-intro" anvil:dom-node="intro"></p>
+  <anvil-component type="RepeatingPanel" name="goals_panel" prop:item_template="BusyBun.Items.Goal" prop:role='["g-goals"]'></anvil-component>
+  <div class="g-ctrls" anvil:name="keys_help"><kbd>WASD / arrows</kbd><span>Move</span><kbd>Space</kbd><span>Steam Dash (bonk, smash, wreck nests)</span></div>
+  <div class="g-ctrls" anvil:name="touch_help"><kbd>Left side</kbd><span>Drag to move</span><kbd>💨</kbd><span>Steam Dash</span></div>
+  <anvil-component type="RepeatingPanel" name="perks_panel" prop:item_template="BusyBun.Items.Chip" prop:role='["g-chips"]'></anvil-component>
+  <div class="g-row">
+    <anvil-component type="Button" name="go_button" prop:text="Let's roll! 🥟" prop:role='["bb-btn", "big", "red"]'></anvil-component>
+    <anvil-component type="Button" name="map_button" prop:text="Back to map" prop:role='["bb-btn", "cream"]'></anvil-component>
+  </div>
+</div>

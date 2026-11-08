@@ -341,7 +341,7 @@ def apply_finish(p, lv, jr, result, today):
     t = max(3.0, min(t, 24 * 3600.0))
     all_items = all(picked.get(k, 0) >= n for k, n in tot["items"].items())
     stars = [True, all_items, t <= float(data.get("par") or 60)]
-    rec = p["levels"].get(key) or {"stars": [False, False, False], "best": None, "chop": False, "clears": 0}
+    rec: dict = p["levels"].get(key) or {"stars": [False, False, False], "best": None, "chop": False, "clears": 0}
     first_clear = not rec["stars"][0]
     new_stars = [i for i in range(3) if stars[i] and not rec["stars"][i]]
     rec["stars"] = [rec["stars"][i] or stars[i] for i in range(3)]
@@ -759,7 +759,7 @@ def submit_feedback(kind, message, email=None, context=None):
     recent = [t for t in (anvil.server.session.get("feedback_times") or []) if (now - dt.datetime.fromisoformat(t)).total_seconds() < 3600]
     if len(recent) >= FEEDBACK_LIMIT:
         return {"ok": False, "error": "Thanks! You've sent a lot of messages this hour. Please try again a bit later."}
-    anvil.server.session["feedback_times"] = recent + [now.isoformat()]
+    getattr(anvil.server, "session")["feedback_times"] = recent + [now.isoformat()]
     u = anvil.users.get_user()
     email = re.sub(r"\s+", "", str(email or ""))[:120] or (u["email"] if u else None)
     app_tables.feedback.add_row(

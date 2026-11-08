@@ -1,0 +1,20 @@
+<anvil-form layout="BusyBun.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="g-page">
+      <div class="g-h">
+        <div><h1 class="g-h1">The Pantry</h1><p>Everything you've ever found. Discover them all!</p></div>
+        <div class="g-h-side"><b anvil:dom-node="found"></b><div class="g-bar" role="progressbar" aria-label="Ingredients discovered" anvil:dom-node="found_bar"><i anvil:dom-node="found_fill"></i></div></div>
+      </div>
+      <anvil-component type="RepeatingPanel" name="sections_panel" prop:item_template="BusyBun.Items.PantrySection"></anvil-component>
+      <div class="g-sec"><span class="bb-emoji" aria-hidden="true">💎</span><h2>Treasures</h2></div>
+      <div class="g-grid">
+        <div class="g-it still"><span class="bb-emoji" aria-hidden="true">🥢</span><b>Golden Chopsticks</b><small anvil:dom-node="t_chop"></small></div>
+        <div class="g-it still"><span class="bb-emoji" aria-hidden="true">🥟</span><b>Recipes</b><small anvil:dom-node="t_recipes"></small></div>
+        <div class="g-it still"><span class="bb-emoji" aria-hidden="true">🎩</span><b>Hats</b><small anvil:dom-node="t_hats"></small></div>
+        <div class="g-it still"><span class="bb-emoji" aria-hidden="true">🏮</span><b>Territories</b><small anvil:dom-node="t_terr"></small></div>
+      </div>
+      <div class="g-sec"><span class="bb-emoji" aria-hidden="true">✉️</span><h2>Grandma's postcards</h2><span class="g-sec-note">One is hidden in each territory.</span></div>
+      <anvil-component type="RepeatingPanel" name="cards_panel" prop:item_template="BusyBun.Items.PostcardTile" prop:role='["g-cards"]'></anvil-component>
+    </div>
+  </anvil-block>
+</anvil-form>

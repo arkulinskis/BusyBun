@@ -1,0 +1,13 @@
+<div class="bb bb-dlg g-center">
+  <button type="button" class="bb-x" aria-label="Close" anvil:on-dom:click="self.close_click">✕</button>
+  <h2 class="dlg-h">Paused</h2>
+  <p class="g-muted g-strong" anvil:dom-node="where"></p>
+  <div class="g-stack">
+    <anvil-component type="Button" name="resume_button" prop:text="▶ Resume" prop:role='["bb-btn", "red", "block"]'></anvil-component>
+    <anvil-component type="Button" name="restart_button" prop:text="↻ Restart level" prop:role='["bb-btn", "block"]'></anvil-component>
+    <anvil-component type="Button" name="sfx_button" prop:role='["bb-btn", "cream", "block"]'></anvil-component>
+    <anvil-component type="Button" name="music_button" prop:role='["bb-btn", "cream", "block"]'></anvil-component>
+    <anvil-component type="Button" name="feedback_button" prop:text="💬 Submit feedback" prop:role='["bb-btn", "cream", "block"]'></anvil-component>
+    <anvil-component type="Button" name="quit_button" prop:text="🗺️ Quit to map" prop:role='["bb-btn", "cream", "block"]'></anvil-component>
+  </div>
+</div>

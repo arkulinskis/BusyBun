@@ -1,0 +1,45 @@
+<anvil-form layout="BusyBun.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="g-page">
+      <div class="g-h"><div><h1 class="g-h1">The Journey</h1><p anvil:dom-node="lead"></p></div></div>
+      <div class="g-guestbar" anvil:name="guestbar">
+        <span class="bb-emoji" aria-hidden="true">💾</span><span class="grow">You're playing as a guest. Progress is kept in this browser only.</span>
+        <anvil-component type="Button" name="save_button" prop:text="Create free account" prop:role='["bb-btn", "small", "green"]'></anvil-component>
+      </div>
+      <div class="g-continue" anvil:name="continue_card">
+        <div class="pv"><anvil-component type="BusyBun.Components.Portrait" name="next_pv" prop:size="68"></anvil-component></div>
+        <div class="tx"><small anvil:dom-node="next_where"></small><b anvil:dom-node="next_name"></b><span class="w" anvil:dom-node="next_world"></span></div>
+        <anvil-component type="Button" name="continue_button" prop:text="▶ Play" prop:role='["bb-btn", "red"]'></anvil-component>
+      </div>
+      <div class="g-banner free g-allfree" anvil:name="all_free">🎉 Every world is free! Hunt for 3 stars, golden chopsticks and the rarest ingredients.</div>
+      <div class="g-progress">
+        <span anvil:dom-node="prog_levels"></span>
+        <div class="g-bar" role="progressbar" aria-label="Levels finished" anvil:dom-node="prog_bar"><i anvil:dom-node="prog_fill"></i></div>
+        <span anvil:dom-node="prog_worlds"></span>
+      </div>
+      <anvil-component type="RepeatingPanel" name="worlds_panel" prop:item_template="BusyBun.Items.WorldCard" prop:role='["g-worlds"]'></anvil-component>
+      <div class="g-wnav" anvil:dom-node="wnav">
+        <anvil-component type="Button" name="prev_button" prop:text="◀" prop:role='["bb-btn", "small", "cream"]'></anvil-component>
+        <span anvil:dom-node="wnav_label"></span>
+        <anvil-component type="Button" name="next_button" prop:text="▶" prop:role='["bb-btn", "small", "cream"]'></anvil-component>
+      </div>
+      <section class="g-terr" anvil:dom-node="terr">
+        <div class="wm bb-emoji" aria-hidden="true" anvil:dom-node="terr_wm"></div>
+        <div class="g-terr-head">
+          <div class="em bb-emoji" aria-hidden="true" anvil:dom-node="terr_em"></div>
+          <div class="tx"><h2 anvil:dom-node="terr_name"></h2><p anvil:dom-node="terr_blurb"></p></div>
+          <div class="meta">
+            <span class="g-flag" anvil:dom-node="terr_flag"></span>
+            <span class="g-flag" anvil:dom-node="terr_stars"></span>
+            <anvil-component type="Button" name="postcard_button" prop:text="✉️ Postcard" prop:role='["bb-btn", "small", "cream"]'></anvil-component>
+          </div>
+        </div>
+        <div class="g-road" anvil:dom-node="road">
+          <svg preserveAspectRatio="none" aria-hidden="true"></svg>
+          <anvil-component type="RepeatingPanel" name="nodes_panel" prop:item_template="BusyBun.Items.RoadNode" prop:role='["contents"]'></anvil-component>
+        </div>
+        <div class="fog" anvil:dom-node="fog"><span class="bb-emoji" aria-hidden="true">🐀</span><div anvil:dom-node="fog_text"></div></div>
+      </section>
+    </div>
+  </anvil-block>
+</anvil-form>

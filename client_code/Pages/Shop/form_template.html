@@ -1,0 +1,14 @@
+<anvil-form layout="BusyBun.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="g-page">
+      <div class="g-h">
+        <div><h1 class="g-h1">The Shop</h1><p>Spend your steam coins on hats and fresh ingredients.</p></div>
+        <span class="bb-pill"><span class="bb-emoji" aria-hidden="true">🪙</span><span anvil:dom-node="coins"></span></span>
+      </div>
+      <div class="g-sec"><span class="bb-emoji" aria-hidden="true">🧺</span><h2>Market stall</h2><span class="g-sec-note">New stock every day.</span></div>
+      <anvil-component type="RepeatingPanel" name="market_panel" prop:item_template="BusyBun.Items.OfferCard" prop:role='["g-grid"]'></anvil-component>
+      <div class="g-sec"><span class="bb-emoji" aria-hidden="true">🎩</span><h2>Hat stand</h2></div>
+      <anvil-component type="RepeatingPanel" name="hats_panel" prop:item_template="BusyBun.Items.HatCard" prop:role='["g-grid"]'></anvil-component>
+    </div>
+  </anvil-block>
+</anvil-form>

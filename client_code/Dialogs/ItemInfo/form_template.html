@@ -1,0 +1,10 @@
+<div class="bb bb-dlg g-center">
+  <button type="button" class="bb-x" aria-label="Close" anvil:on-dom:click="self.close_click">✕</button>
+  <div class="g-bigemo bb-emoji" aria-hidden="true" anvil:dom-node="emo"></div>
+  <h2 class="dlg-h" anvil:dom-node="name"></h2>
+  <span class="g-rar" anvil:dom-node="rar"></span>
+  <p class="g-strong" anvil:dom-node="desc"></p>
+  <anvil-component type="RepeatingPanel" name="facts_panel" prop:item_template="BusyBun.Items.Chip" prop:role='["g-chips", "g-center-row"]'></anvil-component>
+  <p class="g-muted g-strong" anvil:dom-node="where"></p>
+  <p class="g-strong" anvil:dom-node="uses"></p>
+</div>

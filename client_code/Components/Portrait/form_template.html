@@ -1,0 +1,18 @@
+---
+custom_component: true
+properties:
+  - name: size
+    type: number
+    default_value: 56
+    description: Width and height in pixels
+  - name: hat
+    type: string
+    default_value: none
+    description: The hat the bun wears (a Catalog hat key)
+toolbox_item:
+  title: Bun portrait
+  group: Busy Bun
+help_text: |
+  The bao bun drawn on a canvas (bb-art.js), wearing a hat. show(hat, size, opts) redraws it with a face or squish.
+---
+<div class="bb-portrait"><div class="bb-portrait-in" anvil:dom-node="box"></div></div>

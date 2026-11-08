@@ -1,0 +1,11 @@
+<div class="bb bb-dlg g-cook">
+  <div anvil:name="cooking_part"><div class="pot bb-emoji" aria-hidden="true">♨️</div><h2 class="dlg-h" anvil:dom-node="cooking_title"></h2></div>
+  <div anvil:name="done_part">
+    <div class="g-bigemo pop bb-emoji" aria-hidden="true" anvil:dom-node="emo"></div>
+    <h2 class="dlg-h" anvil:dom-node="name"></h2>
+    <div class="g-banner free" anvil:name="perk_part">✨ New perk: <b anvil:dom-node="perk_name"></b><br><span class="g-perkdesc" anvil:dom-node="perk_desc"></span></div>
+    <p class="g-strong" anvil:dom-node="sold"></p>
+    <anvil-component type="RepeatingPanel" name="banners_panel" prop:item_template="BusyBun.Items.Banner"></anvil-component>
+    <div class="g-row"><anvil-component type="Button" name="ok_button" prop:text="Yum!" prop:role='["bb-btn", "red"]'></anvil-component></div>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+---
+layout_metadata:
+  title: Hub frame
+  description: The game's hub - the player bar (avatar, coins, stars, chopsticks, daily box, settings), the five tabs, the page and the footer
+---
+<div class="bb g-hub">
+  <header class="g-top">
+    <button type="button" class="g-av" anvil:dom-node="av" aria-label="Settings" anvil:on-dom:click="self.settings_click"></button>
+    <div class="g-who">
+      <anvil-component type="Label" name="who_name" prop:role='["g-who-name"]'></anvil-component>
+      <div class="g-who-sub">
+        <anvil-component type="Label" name="who_email" prop:role='["g-who-email"]'></anvil-component>
+        <span anvil:name="guest_note">Guest · <button type="button" class="g-linkbtn" anvil:on-dom:click="self.save_click">save your progress</button></span>
+      </div>
+    </div>
+    <div class="g-pills">
+      <span class="bb-pill" title="Steam coins"><span class="bb-emoji" aria-hidden="true">🪙</span><span class="ui-sr">Coins:</span><anvil-component type="Label" name="coins"></anvil-component></span>
+      <span class="bb-pill" title="Stars"><span class="bb-emoji" aria-hidden="true">⭐</span><span class="ui-sr">Stars:</span><anvil-component type="Label" name="stars"></anvil-component><anvil-component type="Label" name="stars_max" prop:role='["g-muted"]'></anvil-component></span>
+      <span class="bb-pill chop" title="Golden chopsticks"><span class="bb-emoji" aria-hidden="true">🥢</span><span class="ui-sr">Golden chopsticks:</span><anvil-component type="Label" name="chops"></anvil-component><anvil-component type="Label" name="chops_max" prop:role='["g-muted"]'></anvil-component></span>
+    </div>
+    <button type="button" class="g-iconbtn" anvil:name="daily_btn" anvil:on-dom:click="self.daily_click" aria-label="Daily market box" title="Daily market box"><span aria-hidden="true">📦</span><span class="dot" anvil:name="daily_dot"></span></button>
+    <button type="button" class="g-iconbtn" anvil:on-dom:click="self.settings_click" aria-label="Settings" title="Settings"><span aria-hidden="true">⚙️</span></button>
+  </header>
+  <nav class="g-tabs" aria-label="Game">
+    <a href="#journey" class="g-tab" anvil:name="tab_journey"><span class="bb-emoji" aria-hidden="true">🗺️</span>Journey</a>
+    <a href="#pantry" class="g-tab" anvil:name="tab_pantry"><span class="bb-emoji" aria-hidden="true">🧺</span>Pantry</a>
+    <a href="#kitchen" class="g-tab" anvil:name="tab_kitchen"><span class="bb-emoji" aria-hidden="true">🍳</span>Kitchen<span class="dot" anvil:name="kitchen_dot" title="Something to cook"></span></a>
+    <a href="#shop" class="g-tab" anvil:name="tab_shop"><span class="bb-emoji" aria-hidden="true">🎩</span>Shop</a>
+    <a href="#badges" class="g-tab" anvil:name="tab_badges"><span class="bb-emoji" aria-hidden="true">🏅</span>Badges</a>
+  </nav>
+  <main class="g-main">
+    <div class="g-panel">
+      <anvil-slot name="content"></anvil-slot>
+    </div>
+    <footer class="g-footer">
+      <a class="fb" href="https://prepsto.com/#f/xww6ue9" target="_blank" rel="noopener" data-prepsto-open><span aria-hidden="true">💬</span> Submit feedback</a>
+      <button type="button" class="g-linkbtn" anvil:on-dom:click="self.howto_click">How to play</button>
+      <button type="button" class="g-linkbtn" data-lk-open="overview">Privacy &amp; Terms</button>
+      <span class="g-org">Contact developer: <a href="https://arkvital.com" target="_blank" rel="noopener">arkvital.com</a> · Parent company: <a href="https://addanapp.com" target="_blank" rel="noopener">addanapp.com</a></span>
+      <span>Busy Bun · a little bao on a big journey</span>
+    </footer>
+  </main>
+</div>

@@ -1,0 +1,28 @@
+<div class="bb bb-dlg g-auth">
+  <button type="button" class="bb-x" aria-label="Close" anvil:on-dom:click="self.close_click">✕</button>
+  <div class="g-auth-pv"><anvil-component type="BusyBun.Components.Portrait" name="pv" prop:size="84"></anvil-component></div>
+  <h2 class="dlg-h" anvil:dom-node="title">Welcome back!</h2>
+  <p class="g-auth-sub" anvil:dom-node="sub"></p>
+  <label class="bb-field" anvil:name="name_field"><span>Bun name</span>
+    <anvil-component type="TextBox" name="name_box" prop:placeholder="e.g. Captain Dumpling"></anvil-component>
+  </label>
+  <label class="bb-field"><span>Email</span>
+    <anvil-component type="TextBox" name="email_box" prop:type="email"></anvil-component>
+  </label>
+  <label class="bb-field" anvil:name="password_field"><span>Password</span>
+    <anvil-component type="TextBox" name="password_box" prop:hide_text="true"></anvil-component>
+    <small class="g-muted" anvil:name="password_hint">At least 8 characters.</small>
+  </label>
+  <div anvil:name="consent_box"><div anvil:dom-node="consent"></div></div>
+  <anvil-component type="Label" name="message" prop:role='["bb-err"]' prop:visible="false"></anvil-component>
+  <anvil-component type="Button" name="submit_button" prop:text="Sign in" prop:role='["bb-btn", "red", "block"]'></anvil-component>
+  <div anvil:name="google_part" class="g-auth-google">
+    <anvil-component type="Button" name="google_button" prop:text="Continue with Google" prop:icon="_/theme/google-g.svg" prop:role='["bb-btn", "cream", "block"]'></anvil-component>
+  </div>
+  <div class="g-auth-links">
+    <span anvil:name="to_signup">New here? <button type="button" class="g-linkbtn" data-mode="signup" anvil:on-dom:click="self.mode_click">Create an account</button> ·
+      <button type="button" class="g-linkbtn" data-mode="reset" anvil:on-dom:click="self.mode_click">Forgot password?</button></span>
+    <span anvil:name="to_login">Already have an account? <button type="button" class="g-linkbtn" data-mode="login" anvil:on-dom:click="self.mode_click">Sign in</button></span>
+    <span anvil:name="to_back"><button type="button" class="g-linkbtn" data-mode="login" anvil:on-dom:click="self.mode_click">Back to sign in</button></span>
+  </div>
+</div>

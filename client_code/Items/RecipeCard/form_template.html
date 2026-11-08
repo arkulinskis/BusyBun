@@ -1,0 +1,10 @@
+<div class="g-rec-w">
+  <div class="g-rec" anvil:dom-node="box">
+    <div class="hd"><span class="bb-emoji" aria-hidden="true" anvil:dom-node="emo"></span><div><h2 anvil:dom-node="name"></h2><div class="perk" anvil:dom-node="perk"></div></div></div>
+    <anvil-component type="RepeatingPanel" name="needs_panel" prop:item_template="BusyBun.Items.Chip" prop:role='["g-chips"]'></anvil-component>
+    <div class="ft">
+      <span class="g-muted" anvil:dom-node="cooked"></span>
+      <anvil-component type="Button" name="cook_button" prop:text="Cook! 🔥" prop:role='["bb-btn", "small", "red"]'></anvil-component>
+    </div>
+  </div>
+</div>

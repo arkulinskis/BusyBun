@@ -1,0 +1,8 @@
+<div class="bb bb-dlg">
+  <button type="button" class="bb-x" aria-label="Close" anvil:on-dom:click="self.close_click">✕</button>
+  <h2 class="dlg-h">New level</h2>
+  <label class="bb-field"><span>Name</span><anvil-component type="TextBox" name="name_box" prop:text="New level"></anvil-component></label>
+  <label class="bb-field"><span>Territory</span><anvil-component type="DropDown" name="territory_box"></anvil-component></label>
+  <label class="bb-field"><span>Size</span><anvil-component type="DropDown" name="size_box"></anvil-component></label>
+  <anvil-component type="Button" name="create_button" prop:text="Create" prop:role='["bb-btn", "red", "block"]'></anvil-component>
+</div>

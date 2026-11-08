@@ -123,7 +123,7 @@ def _label(e):
 
 def totals(data):
     """What a level holds: item counts, pickups, npcs, nests, crates, bosses (used to check results)."""
-    out = {"items": {}, "coins": 0, "chopsticks": 0, "postcard": 0, "npcs": 0, "nests": 0, "crates": 0, "kings": 0,
+    out: dict = {"items": {}, "coins": 0, "chopsticks": 0, "postcard": 0, "npcs": 0, "nests": 0, "crates": 0, "kings": 0,
            "bonuses": 0, "knobs": 0}
     for e in data.get("ents") or []:
         t = e.get("t")

@@ -1,0 +1,10 @@
+<anvil-form layout="BusyBun.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="g-page">
+      <div class="g-h"><div><h1 class="g-h1">Badges</h1><p anvil:dom-node="lead"></p></div></div>
+      <anvil-component type="RepeatingPanel" name="badges_panel" prop:item_template="BusyBun.Items.BadgeCard" prop:role='["g-grid"]'></anvil-component>
+      <div class="g-sec"><span class="bb-emoji" aria-hidden="true">📊</span><h2>Your stats</h2></div>
+      <anvil-component type="RepeatingPanel" name="stats_panel" prop:item_template="BusyBun.Items.Chip" prop:role='["g-chips"]'></anvil-component>
+    </div>
+  </anvil-block>
+</anvil-form>

@@ -1,0 +1,66 @@
+<div class="bb bb-admin">
+  <div class="a-login" anvil:name="login_box">
+    <div class="bb-card a-login-card">
+      <div class="a-login-pv"><anvil-component type="BusyBun.Components.Portrait" name="pv" prop:size="96" prop:hat="toque"></anvil-component></div>
+      <h1>Level Builder</h1>
+      <p class="g-muted g-strong" anvil:dom-node="login_text">Admins only. Sign in to build levels.</p>
+      <div class="g-stack">
+        <anvil-component type="Button" name="signin_button" prop:text="Sign in" prop:role='["bb-btn", "red", "block"]'></anvil-component>
+        <anvil-component type="Button" name="other_button" prop:text="Sign in with another account" prop:role='["bb-btn", "red", "block"]'></anvil-component>
+        <a class="bb-btn cream" href="#journey">← Back to the game</a>
+      </div>
+      <p class="a-login-note" anvil:name="first_note">First time? Create the admin account with the admin email (Sign in → Create an account).</p>
+    </div>
+  </div>
+
+  <div class="a-app" anvil:name="app_box">
+    <div class="a-top">
+      <h1><span class="bb-emoji" aria-hidden="true">🛠</span>Busy Bun · Level Builder</h1>
+      <div class="tabs" role="group" aria-label="Builder sections">
+        <button type="button" anvil:name="tab_levels" data-tab="levels" anvil:on-dom:click="self.tab_click">🗺️ Levels</button>
+        <button type="button" anvil:name="tab_territories" data-tab="territories" anvil:on-dom:click="self.tab_click">🏮 Territories</button>
+        <button type="button" anvil:name="tab_players" data-tab="players" anvil:on-dom:click="self.tab_click">👥 Players</button>
+        <button type="button" anvil:name="tab_feedback" data-tab="feedback" anvil:on-dom:click="self.tab_click">💬 Feedback <span class="a-badge" anvil:dom-node="fb_count"></span></button>
+      </div>
+      <span class="sp"></span>
+      <anvil-component type="Label" name="who" prop:role='["a-who"]'></anvil-component>
+      <anvil-component type="Button" name="game_button" prop:text="▶ Open the game" prop:role='["bb-btn", "small", "cream"]'></anvil-component>
+      <anvil-component type="Button" name="out_button" prop:text="Sign out" prop:role='["bb-btn", "small"]'></anvil-component>
+    </div>
+
+    <div class="a-levels" anvil:name="levels_box">
+      <anvil-component type="BusyBun.Components.LevelBuilder" name="builder"></anvil-component>
+    </div>
+
+    <div class="a-page" anvil:name="terr_box">
+      <div class="a-pagehead"><h2>Territories</h2>
+        <anvil-component type="Button" name="restore_button" prop:text="↺ Restore missing built-ins" prop:role='["bb-btn", "small", "cream"]'></anvil-component>
+        <anvil-component type="Button" name="add_terr_button" prop:text="+ New territory" prop:role='["bb-btn", "small", "red"]'></anvil-component>
+      </div>
+      <p class="g-muted g-strong">Players travel through territories in this order. A territory unlocks when every level in the one before it is cleared.</p>
+      <anvil-component type="RepeatingPanel" name="terr_panel" prop:item_template="BusyBun.Items.TerritoryEditor" prop:role='["a-list"]'></anvil-component>
+    </div>
+
+    <div class="a-page" anvil:name="players_box">
+      <h2>Players</h2>
+      <div class="a-scroll" tabindex="0" aria-label="Players">
+        <div class="a-prow a-phead"><b>Name</b><b>Email</b><b>⭐</b><b>Levels</b><b>Recipes</b><b>Found</b><b>🪙</b><b>Last played</b><b>Admin</b></div>
+        <anvil-component type="RepeatingPanel" name="players_panel" prop:item_template="BusyBun.Items.PlayerRow"></anvil-component>
+      </div>
+      <p class="g-muted g-strong" anvil:name="no_players">No players yet.</p>
+    </div>
+
+    <div class="a-page" anvil:name="fb_box">
+      <h2>Feedback &amp; bug reports</h2>
+      <p class="g-muted g-strong">Messages players sent from the old in-game form. New feedback arrives in Prepsto (the "Submit feedback" links).</p>
+      <div class="a-filter" role="group" aria-label="Show">
+        <anvil-component type="Button" name="f_new" prop:role='["bb-btn", "small", "cream"]'></anvil-component>
+        <anvil-component type="Button" name="f_read" prop:role='["bb-btn", "small", "cream"]'></anvil-component>
+        <anvil-component type="Button" name="f_done" prop:role='["bb-btn", "small", "cream"]'></anvil-component>
+        <anvil-component type="Button" name="f_all" prop:role='["bb-btn", "small", "cream"]'></anvil-component>
+      </div>
+      <anvil-component type="RepeatingPanel" name="fb_panel" prop:item_template="BusyBun.Items.FeedbackRow" prop:role='["a-list"]'></anvil-component>
+      <p class="g-muted g-strong" anvil:dom-node="fb_empty"></p>
+    </div>
+  </div>
+</div>

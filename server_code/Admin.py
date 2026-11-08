@@ -165,7 +165,7 @@ def move_level(key, step):
 def save_territory(spec):
     _admin()
     name = (str(spec.get("name") or "").strip() or "New territory")[:40]
-    fields = {"name": name, "emoji": (str(spec.get("emoji") or "🏮"))[:8], "blurb": str(spec.get("blurb") or "")[:200],
+    fields: dict = {"name": name, "emoji": (str(spec.get("emoji") or "🏮"))[:8], "blurb": str(spec.get("blurb") or "")[:200],
               "theme": spec.get("theme") if spec.get("theme") in C.THEME_KEYS else "kitchen",
               "pest": spec.get("pest") if spec.get("pest") in C.PEST_KEYS else "ant",
               "postcard": str(spec.get("postcard") or "")[:1200], "published": bool(spec.get("published", True))}

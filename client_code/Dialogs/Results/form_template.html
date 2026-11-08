@@ -1,0 +1,28 @@
+<div class="bb bb-dlg g-res">
+  <div class="sub" anvil:dom-node="where"></div>
+  <h2 class="dlg-h" anvil:dom-node="title">Delicious! 🥟</h2>
+  <div class="g-stars">
+    <div class="g-star" anvil:dom-node="star0"><div class="s" aria-hidden="true">★</div><small anvil:dom-node="lab0">Finished!</small></div>
+    <div class="g-star" anvil:dom-node="star1"><div class="s" aria-hidden="true">★</div><small anvil:dom-node="lab1"></small></div>
+    <div class="g-star" anvil:dom-node="star2"><div class="s" aria-hidden="true">★</div><small anvil:dom-node="lab2"></small></div>
+  </div>
+  <div class="line"><span anvil:dom-node="time"></span><span class="g-muted" anvil:dom-node="best"></span><span class="g-newbest" anvil:dom-node="newbest">NEW BEST!</span></div>
+  <div class="coins" anvil:dom-node="coins"></div>
+  <details><summary>Coin breakdown</summary>
+    <anvil-component type="RepeatingPanel" name="coin_panel" prop:item_template="BusyBun.Items.Chip" prop:role='["g-coinlines"]'></anvil-component>
+  </details>
+  <anvil-component type="RepeatingPanel" name="gained_panel" prop:item_template="BusyBun.Items.Chip" prop:role='["g-chips", "g-center-row"]'></anvil-component>
+  <anvil-component type="RepeatingPanel" name="banners_panel" prop:item_template="BusyBun.Items.Banner"></anvil-component>
+  <div anvil:name="post_part">
+    <button type="button" class="g-banner post" anvil:on-dom:click="self.post_click" anvil:dom-node="post_btn">✉️ You found Grandma's postcard! Tap to read.</button>
+    <div class="g-postcard" anvil:dom-node="postcard"><div class="stamp bb-emoji" aria-hidden="true" anvil:dom-node="stamp"></div><span anvil:dom-node="post_text"></span></div>
+  </div>
+  <div class="g-guestbar" anvil:name="guestbar"><span class="grow">💾 Save this to the cloud and race on the leaderboard.</span>
+    <anvil-component type="Button" name="auth_button" prop:text="Create account" prop:role='["bb-btn", "small", "green"]'></anvil-component></div>
+  <div class="g-board"><anvil-component type="RepeatingPanel" name="board_panel" prop:item_template="BusyBun.Items.BoardRow"></anvil-component></div>
+  <div class="g-row">
+    <anvil-component type="Button" name="next_button" prop:text="Next level ▶" prop:role='["bb-btn", "big", "red"]'></anvil-component>
+    <anvil-component type="Button" name="replay_button" prop:text="↻ Replay" prop:role='["bb-btn"]'></anvil-component>
+    <anvil-component type="Button" name="map_button" prop:text="🗺️ Map" prop:role='["bb-btn", "cream"]'></anvil-component>
+  </div>
+</div>

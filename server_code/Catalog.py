@@ -2,7 +2,7 @@
 # The client gets this through Game.get_state() / Admin.admin_state(), so names, emoji and
 # prices live only here. Rules that use it are in Game.py.
 
-RARITY = {
+RARITY: dict = {
     "common": {"name": "Common", "color": "#7a9a5b", "price": 8, "weight": 60},
     "uncommon": {"name": "Uncommon", "color": "#3d8fd1", "price": 16, "weight": 28},
     "rare": {"name": "Rare", "color": "#9b59d0", "price": 40, "weight": 10},
@@ -58,7 +58,7 @@ _ITEMS = [
     ("matcha", "Matcha", "🍵", "pantry", "uncommon", "Stone-ground green tea from the Tea Garden."),
     ("moon_peach", "Moon Peach", "🍑", "veg", "legendary", "Ripens once a year, on the night of the Lantern Festival.", True),
 ]
-ITEMS = {}
+ITEMS: dict = {}
 for _row in _ITEMS:
     ITEMS[_row[0]] = {"key": _row[0], "name": _row[1], "emoji": _row[2], "cat": _row[3], "rarity": _row[4],
                       "desc": _row[5], "gold": bool(_row[6]) if len(_row) > 6 else False}
@@ -108,7 +108,7 @@ RECIPES = [
      "needs": {"matcha": 2, "eel": 1, "egg": 2},
      "perk": "nose", "perk_name": "Treasure Nose", "perk_desc": "Arrows point to hidden golden chopsticks and postcards."},
 ]
-RECIPE_BY_KEY = {r["key"]: r for r in RECIPES}
+RECIPE_BY_KEY: dict = {r["key"]: r for r in RECIPES}
 RECIPE_SELL = 25  # coins for cooking a recipe you already know
 
 HATS = [
@@ -247,7 +247,7 @@ KNOB_KEYS = {"knob", "timer"}
 BAG_COINS = 5
 
 COINS = {"errand": 5, "first_clear": 20, "star": 10, "pest": 1, "crate": 1, "boss": 15, "nest": 3}
-DAILY = {"coins": 15, "streak_bonus": 5, "streak_cap": 7, "items": 3}
+DAILY: dict = {"coins": 15, "streak_bonus": 5, "streak_cap": 7, "items": 3}
 MARKET_SIZE = 4
 
 

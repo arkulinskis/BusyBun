@@ -1,0 +1,23 @@
+<div class="bb bb-dlg">
+  <button type="button" class="bb-x" aria-label="Close" anvil:on-dom:click="self.close_click">✕</button>
+  <h2 class="dlg-h">Settings</h2>
+  <div class="g-me">
+    <anvil-component type="BusyBun.Components.Portrait" name="pv" prop:size="80"></anvil-component>
+    <div><b class="g-me-name" anvil:dom-node="me_name"></b><div class="g-muted g-strong" anvil:dom-node="me_sub"></div></div>
+  </div>
+  <div class="g-guestbar" anvil:name="guestbar"><span class="grow">Create an account to keep your progress safe.</span>
+    <anvil-component type="Button" name="auth_button" prop:text="Create account" prop:role='["bb-btn", "small", "green"]'></anvil-component></div>
+  <div class="g-namerow" anvil:name="name_row">
+    <label class="bb-field grow"><span>Bun name</span><anvil-component type="TextBox" name="name_box"></anvil-component></label>
+    <anvil-component type="Button" name="save_button" prop:text="Save" prop:role='["bb-btn", "small"]'></anvil-component>
+  </div>
+  <div class="g-setbtns">
+    <anvil-component type="Button" name="sfx_button" prop:role='["bb-btn", "small", "cream"]'></anvil-component>
+    <anvil-component type="Button" name="music_button" prop:role='["bb-btn", "small", "cream"]'></anvil-component>
+    <anvil-component type="Button" name="howto_button" prop:text="❓ How to play" prop:role='["bb-btn", "small", "cream"]'></anvil-component>
+    <anvil-component type="Button" name="feedback_button" prop:text="💬 Submit feedback" prop:role='["bb-btn", "small", "cream"]'></anvil-component>
+    <button type="button" class="bb-btn small cream" data-lk-open="overview">🔒 Privacy &amp; Terms</button>
+    <anvil-component type="Button" name="admin_button" prop:text="🛠 Level builder" prop:role='["bb-btn", "small", "jade"]'></anvil-component>
+    <anvil-component type="Button" name="out_button" prop:role='["bb-btn", "small", "red"]'></anvil-component>
+  </div>
+</div>

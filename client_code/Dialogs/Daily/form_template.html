@@ -1,0 +1,20 @@
+<div class="bb bb-dlg g-box">
+  <button type="button" class="bb-x" aria-label="Close" anvil:on-dom:click="self.close_click">✕</button>
+  <div anvil:name="waiting_part">
+    <div class="g-bigemo bb-emoji" aria-hidden="true">📦</div>
+    <h2 class="dlg-h">Opened today!</h2>
+    <p class="g-strong" anvil:dom-node="wait_text"></p>
+    <p class="g-muted g-strong" anvil:dom-node="streak_text"></p>
+  </div>
+  <div anvil:name="ready_part">
+    <h2 class="dlg-h">Daily market box</h2>
+    <p class="g-strong">Tap the box to open it!</p>
+    <button type="button" class="gift bb-emoji" anvil:dom-node="gift" anvil:on-dom:click="self.gift_click" aria-label="Open the box">🎁</button>
+    <div anvil:name="out_part">
+      <div class="g-boxcoins" anvil:dom-node="coins"></div>
+      <anvil-component type="RepeatingPanel" name="items_panel" prop:item_template="BusyBun.Items.Chip" prop:role='["g-chips", "g-center-row"]'></anvil-component>
+      <p class="g-strong" anvil:dom-node="streak_out"></p>
+      <div class="g-row"><anvil-component type="Button" name="ok_button" prop:text="Into the pantry!" prop:role='["bb-btn", "red"]'></anvil-component></div>
+    </div>
+  </div>
+</div>

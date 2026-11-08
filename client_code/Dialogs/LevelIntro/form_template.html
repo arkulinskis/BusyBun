@@ -1,0 +1,16 @@
+<div class="bb bb-dlg g-lv">
+  <button type="button" class="bb-x" aria-label="Close" anvil:on-dom:click="self.close_click">✕</button>
+  <div class="sub" anvil:dom-node="where"></div>
+  <h2 class="dlg-h" anvil:dom-node="name"></h2>
+  <div class="g-banner gold" anvil:name="bonus">🎁 Bonus round: coins and bonuses everywhere!</div>
+  <div class="thumb"><anvil-component type="BusyBun.Components.LevelThumb" name="thumb"></anvil-component></div>
+  <p class="g-intro" anvil:dom-node="intro"></p>
+  <anvil-component type="RepeatingPanel" name="goals_panel" prop:item_template="BusyBun.Items.Goal" prop:role='["g-goals"]'></anvil-component>
+  <anvil-component type="RepeatingPanel" name="items_panel" prop:item_template="BusyBun.Items.Chip" prop:role='["g-chips", "g-gap"]'></anvil-component>
+  <anvil-component type="RepeatingPanel" name="facts_panel" prop:item_template="BusyBun.Items.Chip" prop:role='["g-chips"]'></anvil-component>
+  <div class="g-board">
+    <div class="g-brow hd"><span>#</span><span anvil:dom-node="board_title">Top buns</span><span>Time</span></div>
+    <anvil-component type="RepeatingPanel" name="board_panel" prop:item_template="BusyBun.Items.BoardRow"></anvil-component>
+  </div>
+  <div class="g-row"><anvil-component type="Button" name="play_button" prop:text="▶ Play" prop:role='["bb-btn", "big", "red"]'></anvil-component></div>
+</div>
