@@ -281,7 +281,7 @@ metadata:
 name: Busy Bun
 native_deps:
   head_html: |
-    <script src="_/theme/legal-kit.js?v=28f1e010b9"></script>
+    <script src="_/theme/legal-kit.js?v=66257b1e8a"></script>
 
     <!-- seo:start (APP_MAKER/seo: edit seo/apps/busybun.json and run seo.py, not here) -->
     <link rel="canonical" href="https://busybun.com/">
@@ -313,7 +313,7 @@ native_deps:
     <!-- Busy Bun's engines (JavaScript): helpers + sound, music player, drawing, the game, the play stage, the level builder.
          The pages, menus, dialogs and lists are Python Forms in client_code. -->
     <script src="_/theme/app-kit.js?v=35f0886882"></script>
-    <script src="_/theme/ark-music.js?v=884c4f647c"></script>
+    <script src="_/theme/ark-music.js?v=39180862e8"></script>
     <script src="_/theme/bb-kit.js?v=8ae57f84cf"></script>
     <script src="_/theme/bb-art.js?v=5defa16bd3"></script>
     <script src="_/theme/bb-engine.js?v=6780e1c3a8"></script>
