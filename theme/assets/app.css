@@ -106,7 +106,7 @@ td, th, time, output, progress, .num, .tabular, [data-num] { font-variant-numeri
 /* design-kit:end */
 
 /* Chunky "sticker" buttons */
-.bb-btn, "sticker" buttons */
+.bb-btn,
 .anvil-role-bb-btn > button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 3px solid var(--bb-line);
   background: var(--bb-gold); color: var(--bb-ink); font-weight: 600; font-size: 17px; padding: 10px 18px; border-radius: 14px;
   box-shadow: 0 4px 0 var(--bb-line); transition: transform var(--dur-press) var(--ease-out), box-shadow var(--dur-press) var(--ease-out), filter var(--dur-fast) ease; user-select: none; white-space: nowrap; }
