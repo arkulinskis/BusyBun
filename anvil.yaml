@@ -274,10 +274,9 @@ db_schema:
     server: full
     title: Users
 metadata:
-  description: 'Play a little bao bun on a culinary journey: run errands for the neighbours, fill your bun, smash pest nests
-    and reach the steamer across 16 worlds and 118 levels.'
-  logo_img: asset:busybun.png
-  title: 'Busy Bun: a cute bao bun adventure game in your browser'
+  description: "Play a little bao bun on a culinary journey: run errands for the neighbours, fill your bun, smash pest nests and reach the steamer across 16 worlds and 118 levels."
+  logo_img: "asset:busybun.png"
+  title: "Busy Bun: a cute bao bun adventure game in your browser"
 name: Busy Bun
 native_deps:
   head_html: |
