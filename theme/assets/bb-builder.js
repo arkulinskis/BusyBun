@@ -427,11 +427,11 @@
       if (!ed || !cv || !document.body.contains(cv) || playGame) return;
       var tag = (document.activeElement && document.activeElement.tagName) || '';
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); if (e.shiftKey) redo(); else undo(); return; }
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') { e.preventDefault(); redo(); return; }
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); save(); return; }
+      if ((e.ctrlKey || e.metaKey) && (e.key || '').toLowerCase() === 'z') { e.preventDefault(); if (e.shiftKey) redo(); else undo(); return; }
+      if ((e.ctrlKey || e.metaKey) && (e.key || '').toLowerCase() === 'y') { e.preventDefault(); redo(); return; }
+      if ((e.ctrlKey || e.metaKey) && (e.key || '').toLowerCase() === 's') { e.preventDefault(); save(); return; }
       var map = { b: 'paint', r: 'rect', f: 'fill', e: 'erase', v: 'select' };
-      if (map[e.key.toLowerCase()] && !e.ctrlKey && !e.metaKey) { ed.tool = map[e.key.toLowerCase()]; drawTools(root.querySelector('.a-tools')); }
+      if (map[(e.key || '').toLowerCase()] && !e.ctrlKey && !e.metaKey) { ed.tool = map[(e.key || '').toLowerCase()]; drawTools(root.querySelector('.a-tools')); }
       if ((e.key === 'Delete' || e.key === 'Backspace') && ed.sel >= 0) { var en = ed.data.ents[ed.sel]; if (en && en.t !== 'start' && en.t !== 'exit') { change(function () { ed.data.ents.splice(ed.sel, 1); ed.sel = -1; }); drawInspector(); } }
     });
     function render() {
