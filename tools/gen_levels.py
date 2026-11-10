@@ -20,7 +20,7 @@ OUT = ROOT / "server_code" / "LevelPack.py"
 
 # Load the real Catalog and Levels modules, with an empty pack so Levels doesn't import the file we're writing.
 _pkg = types.ModuleType("bbapp")
-_pkg.__path__ = [str(ROOT / "server_code")]
+_pkg.__path__ = [str(ROOT / "server_code"), str(ROOT / "client_code")]  # Catalog and rules are shared (client_code)
 sys.modules["bbapp"] = _pkg
 _lp = types.ModuleType("bbapp.LevelPack")
 _lp.TERRITORIES, _lp.LEVELS = [], []

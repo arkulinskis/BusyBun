@@ -42,6 +42,7 @@ chunky ink outlines with hard `0 4px 0` shadows, Fredoka + Nunito, emoji items. 
 client_code/
   startup.py        admin_whoami -> state.me, Privacy & Terms kit, router.start()
   router.py         "" title (Landing), #journey #pantry #kitchen #shop #badges (hub, Layouts/Shell), #play/<level>, #admin
+  rules.py          the game rules + diff/merge for sync (shared with the server); Catalog.py (shared too)
   bun.py            the game state in the browser (st: me, progress, status, journey, catalog, market...), ensure()/act()
                     (guests call the guest_ twins with the progress kept in localStorage "bb.guest.v1"), lookups
                     (level_info, goals, where_found...), sound/music/toast/portrait bridges to window.BB
@@ -55,7 +56,7 @@ client_code/
   Items/            WorldCard, RoadNode, PantrySection, PantryItem, PostcardTile, RecipeCard, OfferCard, HatCard,
                     BadgeCard, Chip, Goal, BoardRow, Banner, TerritoryEditor, PlayerRow, FeedbackRow
   Dialogs/          HowTo, SignIn, LevelIntro, Start, Pause, Lose, Results, ItemInfo, Postcard, Cook, Daily, Settings, NewLevel
-server_code/        Game.py (every rule: apply_* + signed-in callable + guest_* twin), Catalog.py, Levels.py,
+server_code/        Game.py (journey, get_world, sync, leaderboards; rules come from client_code/rules.py), Levels.py,
                     LevelPack.py (generated), Admin.py, legal_server.py, seo_routes.py, SchemaCheck.py
 theme/assets/       app.css, app-kit.js, ark-music.js, bb-kit.js (window.BB helpers + Sound), bb-art.js (drawing),
                     bb-engine.js (BB.Game), bb-stage.js (play HUD/touch, title bg, road layout, click sound),
@@ -100,13 +101,43 @@ tools/              check.py, assets.py, ui_test.py + ui/smoke.js, gen_levels.py
 - **Service worker**: none of ours. Anvil already registers `/_/service-worker` for the whole site (cache "v0",
   refreshes in the background); a second one at scope "/" would replace it. Theme files are served `no-cache`.
 
+## Offline play and sync (2026-11-10)
+
+- **Anvil boots the app offline**: its service worker (`/_/service-worker`, cache "v0") keeps the page (with the app's
+  Python), the runtime and every `/_/theme/` file once the game has been opened online. Fonts live in theme/assets
+  (fredoka/nunito/caveat.woff2, no Google Fonts) so they're cached too. `startup.py`: if `admin_whoami` raises
+  AppOfflineError, the game opens as `bun.cached_me()` (who played last on this device) with `bun.set_online(False)`.
+- **The rules run in the browser**: `client_code/rules.py` (shared; the server imports it, as it does
+  `client_code/Catalog.py`). `bun.act(name, ...)` scores every action on the device, saves it, and (signed in,
+  online) syncs. Game.py keeps thin wrappers + the old per-action callables/guest_* twins for pages open from before.
+  The market and the daily box use a seeded generator (`rules._rng`), so browser and server get the same items.
+- **Saves on the device** (`theme/assets/bb-store.js`, IndexedDB "busybun"/"kv", localStorage fallback): `world`
+  (journey + catalog from `get_world`), `current` (last player), `acct:guest`, `acct:u:<email>` = {progress, base (what
+  the server last confirmed), finishes (wins not on the leaderboards yet), sync_id + sent + sent_fin (a sync in
+  flight)}. The old `bb.guest.v1` moves into `acct:guest` on first load.
+- **Sync = additive**: `rules.diff(base, progress)` -> server `sync(delta, sync_id, finishes, today)` ->
+  `rules.merge` adds it to the account (plays/clears, coins, items, stats add up; stars/hats/badges/postcards combine;
+  best time wins; daily box and market keep the later day; coins never below 0). `progress["sync"]` remembers the last
+  40 sync ids, so a retry is never added twice. Play during a sync is kept (`bun._adopt`: diff from `sent`).
+  When: on ensure(), after every action (background, except a win: Results syncs then loads the leaderboard), when the
+  phone says it's online again (`BBStore.onNet`), and every 20 s while offline (`bun._retry`).
+- **Accounts on one device**: each keeps its own save; signing out syncs first (`bun.before_sign_out`); offline,
+  sign-in and sign-out are blocked with a message. On sign-in, guest progress on the device -> "Keep your guest
+  progress?" (`bun.after_sign_in`): yes = `rules.add_progress` into the account + sync; no = asked again only after
+  more guest play.
+- **Top bar pill** (`Layouts/Shell.refresh_net`): 📴 Offline / ☁️ Syncing / hidden. Leaderboards offline show a note.
+- **Tests**: server tests cover the user's example (phone 10 online, 10 offline, computer 15, phone syncs -> 25 levels,
+  11-20 played twice, 35 runs) and retries. Browser: `?test=1` exposes `window.bbTest` (state/win/sync/ensure);
+  `tools/live/drive.mjs` takes `KEEP_SW=1` and `CHROME_ARGS="--proxy-server=127.0.0.1:9 --proxy-bypass-list=<-loopback>"`
+  (true offline, same profile). Local http: "remember me" doesn't survive a browser restart (sign in again in tests).
+
 ## Game rules (server)
 
-- Every progress-changing rule is an `apply_*(progress, ...)` in Game.py with a signed-in callable and a `guest_*`
-  twin (guests send their browser progress). New action = both + a call through `bun.act(name, ...)`.
+- Every progress-changing rule is an `apply_*(progress, ...)` in `client_code/rules.py` (shared). New action = the
+  rule there + a branch in `bun.act` (it then syncs through the additive merge; add new fields to diff/merge/clean_delta).
 - Progress is one Simple Object in `users.progress`; `normalize()` cleans anything from a browser.
 - `apply_finish` caps everything by `Levels.totals(level data)` and requires the goals; NPC order = order of `t:"npc"`.
-- Collectables live only in `server_code/Catalog.py` (sent to the client). Art: emoji for items; the rest is drawn in
+- Collectables live only in `client_code/Catalog.py` (shared with the server) (sent to the client). Art: emoji for items; the rest is drawn in
   `bb-art.js`.
 - Engine: `bb-engine.js` (`BB.Game`). World units are tiles. Static tiles are cached offscreen; water/stoves/conveyors/
   crates are drawn per frame.

@@ -16,7 +16,9 @@ fs.mkdirSync(outDir, { recursive: true });
 const port = process.env.CDP_PORT ? +process.env.CDP_PORT : 9300 + Math.floor(Math.random() * 500);
 const chrome = process.env.CDP_PORT ? { kill() {} } : spawn('C:/Program Files/Google/Chrome/Application/chrome.exe', [
   '--headless=new', '--disable-gpu', `--remote-debugging-port=${port}`, `--user-data-dir=${path.resolve(outDir, 'profile')}`,
-  `--window-size=${process.env.WINDOW || '1280,1000'}`, '--no-first-run', '--disable-extensions', 'about:blank'], { stdio: 'ignore' });
+  `--window-size=${process.env.WINDOW || '1280,1000'}`, '--no-first-run', '--disable-extensions',
+  ...(process.env.CHROME_ARGS ? process.env.CHROME_ARGS.split(' ') : []), 'about:blank'], { stdio: 'ignore' });
+// KEEP_SW=1 keeps the service worker (offline tests); CHROME_ARGS="--proxy-server=127.0.0.1:9" = no network at all.
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const log = [];
 const say = s => { log.push(s); console.log(s); };
@@ -51,7 +53,7 @@ try {
     }
   });
   await send('Runtime.enable'); await send('Log.enable'); await send('Page.enable');
-  try { await send('Network.enable'); await send('Network.setBypassServiceWorker', { bypass: true }); } catch (e) {}  // Anvil's service worker breaks reused headless profiles
+  try { await send('Network.enable'); if (!process.env.KEEP_SW) await send('Network.setBypassServiceWorker', { bypass: true }); } catch (e) {}  // Anvil's service worker breaks reused headless profiles
   if (process.env.MOBILE) {  // true phone size (headless windows can't be narrower than ~500 px)
     const [mw, mh] = process.env.MOBILE.split(',').map(Number);
     await send('Emulation.setDeviceMetricsOverride', { width: mw, height: mh, deviceScaleFactor: 2, mobile: true });

@@ -11,6 +11,7 @@ class Shell(ShellTemplate):
 
     def __init__(self, **properties):
         super().__init__(**properties)
+        bun.listen(self.refresh_net)
 
     def refresh(self, page):
         for name, el in (("journey", self.tab_journey), ("pantry", self.tab_pantry), ("kitchen", self.tab_kitchen),
@@ -37,6 +38,20 @@ class Shell(ShellTemplate):
         self.daily_dot.visible = bool(st["daily_ready"])
         self.kitchen_dot.visible = bun.can_cook_any()
         bun.put_portrait(self.dom_nodes["av"], 52, p.get("hat"))
+        self.refresh_net()
+
+    def refresh_net(self):
+        """📴 Offline (playing from this device) / ☁️ Syncing / nothing when everything is on the server."""
+        pill = self.dom_nodes["net_pill"]
+        if not bun.online():
+            text, tip = "📴 Offline", "Playing from this device. Your progress syncs when you're back online."
+        elif bun.st["syncing"] or bun.pending():
+            text, tip = "☁️ Syncing", "Adding the play saved on this device to your account."
+        else:
+            text, tip = "", ""
+        pill.textContent = text
+        pill.title = tip
+        pill.hidden = not text
 
     def settings_click(self, event):
         flows.settings()

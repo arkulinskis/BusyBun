@@ -2,6 +2,12 @@
    Fredoka + Nunito), every screen's styles, the design kit block, and the rules that give Anvil components and
    dialogs the same look. Light only. Buttons: role "bb-btn" (+ red, green, cream, jade, small, big, block). */
 
+/* Fonts live with the app (theme/assets, SIL Open Font License), so the look stays the same offline:
+   Anvil's service worker caches them with the rest of the theme. Variable fonts: one file covers every weight. */
+@font-face { font-family: 'Fredoka'; font-style: normal; font-weight: 300 700; font-display: swap; src: url(fredoka.woff2) format('woff2'); }
+@font-face { font-family: 'Nunito'; font-style: normal; font-weight: 200 1000; font-display: swap; src: url(nunito.woff2) format('woff2'); }
+@font-face { font-family: 'Caveat'; font-style: normal; font-weight: 400 700; font-display: swap; src: url(caveat.woff2) format('woff2'); }
+
 :root {
   --bb-cream: #fff7ea;
   --bb-dough: #f7e6c8;
@@ -876,3 +882,9 @@ html.bb-app .g-title { min-height: 100dvh; }
 @media (max-width: 720px) {
   .g-title .g-foot a, .g-title .g-foot .g-linkbtn, .ytf .ytf-link { min-height: 44px; display: inline-flex; align-items: center; }
 }
+
+/* Online / sync pill in the hub's top bar (Layouts/Shell: refresh_net) */
+.g-net { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border: 2px solid var(--bb-line); border-radius: 999px;
+  background: var(--bb-dough-2); font-family: var(--bb-title); font-weight: 600; font-size: 13px; color: var(--bb-ink); white-space: nowrap; }
+.g-net[hidden] { display: none; }
+@media (max-width: 720px) { .g-net { font-size: 12px; padding: 2px 8px; } }

@@ -88,6 +88,7 @@ def google(name=""):
 
 
 def sign_out():
+    bun.before_sign_out()  # last sync; this account's save stays on the device for the next time it signs in here
     anvil.users.logout()
     legal.signed_out()
     state.set_me(None)

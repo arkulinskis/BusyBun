@@ -281,7 +281,7 @@ metadata:
 name: Busy Bun
 native_deps:
   head_html: |
-    <script src="_/theme/legal-kit.js?v=66257b1e8a"></script>
+    <script src="_/theme/legal-kit.js?v=e95fdf49f4"></script>
 
     <!-- seo:start (APP_MAKER/seo: edit seo/apps/busybun.json and run seo.py, not here) -->
     <link rel="canonical" href="https://busybun.com/">
@@ -339,14 +339,12 @@ native_deps:
     })();
     </script>
     <!-- app-mode:end -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="_/theme/app.css?v=666ca305b4">
+    <link rel="stylesheet" href="_/theme/app.css?v=0460c15a63">
     <!-- Busy Bun's engines (JavaScript): helpers + sound, music player, drawing, the game, the play stage, the level builder.
          The pages, menus, dialogs and lists are Python Forms in client_code. -->
     <script src="_/theme/app-kit.js?v=35f0886882"></script>
     <script src="_/theme/ark-music.js?v=4ee0f1e082"></script>
+    <script src="_/theme/bb-store.js?v=6841fc8e17"></script>
     <script src="_/theme/bb-kit.js?v=ca66a6ed9f"></script>
     <script src="_/theme/bb-art.js?v=5defa16bd3"></script>
     <script src="_/theme/bb-engine.js?v=6780e1c3a8"></script>

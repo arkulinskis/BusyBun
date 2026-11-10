@@ -7,7 +7,7 @@ from ..LevelIntro import board_rows
 
 
 class Results(ResultsTemplate):
-    """The results card after a win (the server's report): stars popping in one by one, time and best, coins with the
+    """The results card after a win (the report the shared rules made on this device): stars popping in one by one, time and best, coins with the
     breakdown, ingredients gained (NEW ones marked), territory freed, postcard (read it right here), chopsticks,
     badges, the leaderboard. Closes with "next", "replay", "auth" or "map"."""
 
@@ -48,7 +48,8 @@ class Results(ResultsTemplate):
             dn["stamp"].textContent = tt.get("emoji") or "✉️"
             dn["post_text"].textContent = pc.get("text") or tt.get("postcard") or ""
         self.guestbar.visible = bun.st["guest"]
-        self.board_panel.items = board_rows(rep.get("leaderboard"), False)
+        self.board_panel.items = [{"rank": None, "name": "Loading…" if bun.online() else
+                                   "📴 Offline: your time goes on the leaderboard when you're back online."}]
         nxt = None
         for k in rep.get("unlocked") or []:
             nxt = nxt or k
@@ -69,6 +70,8 @@ class Results(ResultsTemplate):
         if self._rep.get("liberated"):
             window.setTimeout(lambda: bun.sfx("clear"), 1600)
         state.focus(self.next_button if self.next_key else self.replay_button)
+        if bun.online():
+            self.board_panel.items = board_rows(bun.leaderboard(self.key, after_win=True), False)
 
     def _star_fn(self, i, rec):
         node = self.dom_nodes["star%d" % i]

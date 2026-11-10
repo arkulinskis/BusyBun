@@ -7,6 +7,8 @@ from ... import bun
 
 def board_rows(b, guest):
     """Leaderboard lines for BoardRow: the top 5, you below them if you're further down, a note for guests."""
+    if b and b.get("offline"):
+        return [{"rank": None, "name": "📴 Offline: the leaderboard comes back when you're online."}]
     if not b or not b.get("top"):
         return [{"rank": None, "name": "No times yet. Be the first!"}]
     rows = [dict(r) for r in b["top"][:5]]
@@ -54,7 +56,7 @@ class LevelIntro(LevelIntroTemplate):
     def form_show(self, **event_args):
         width = min(460, int(window.innerWidth) - 90)
         self.thumb.show(self._l["data"], self._t["theme"], max(160, width))
-        b = bun.call("leaderboard", self.key)
+        b = bun.leaderboard(self.key)
         if b and b.get("total"):
             self.dom_nodes["board_title"].textContent = "Top buns · %d player%s" % (b["total"], "" if b["total"] == 1 else "s")
         self.board_panel.items = board_rows(b, bun.st["guest"])

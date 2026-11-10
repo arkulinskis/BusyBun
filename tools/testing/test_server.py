@@ -12,6 +12,8 @@ HERE = pathlib.Path(__file__).resolve().parent
 PROJECT = HERE.parents[1]
 tmp = pathlib.Path(tempfile.mkdtemp(prefix="bbtest-"))
 shutil.copytree(PROJECT / "server_code", tmp / "app")
+for shared in ("Catalog.py", "rules.py"):  # client_code modules the server imports (one package in Anvil)
+    shutil.copy(PROJECT / "client_code" / shared, tmp / "app" / shared)
 (tmp / "app" / "__init__.py").write_text("")
 sys.path[:0] = [str(HERE / "mock"), str(tmp)]
 
@@ -318,6 +320,84 @@ q2, rep = G.apply_finish(G.normalize(q), G._level_row(bag_lv["key"], jr), jr, wi
 ok(q2["stats"]["bonuses"] == tb["bonuses"] and q2["stats"]["knobs"] <= 3 * tb["knobs"], "bonus and knob stats are capped")
 raises(lambda: G.apply_finish(G.normalize(q), G._level_row("dragon-10", jr), jr, win("dragon-10", {"kings": 1}), dt.date.today()),
        G.GameError, "both bosses must be beaten")
+
+# ---- offline play and additive sync (the browser runs the shared rules, then sends rules.diff to sync)
+from app import rules as R  # noqa: E402
+
+jr = G.journey()
+order = [lv["key"] for t in jr for lv in t["levels"]]
+D = dt.date.today()
+
+
+def play(prog, keys):
+    """Win levels on the device (as the browser does, offline or not); returns progress and the finishes list."""
+    fin = []
+    for k in keys:
+        prog, rep = R.apply_finish(prog, R.level_of(k, jr), jr, win(k), D)
+        fin.append({"level": k, "time": rep["time"]})
+    return prog, fin
+
+
+dev = user("dev@example.com")
+anvil.users.CURRENT[0] = dev
+base = G.get_state(TODAY)["progress"]
+# Phone, online: 10 levels, synced.
+phone, fin = play(R.normalize(base), order[:10])
+r = G.sync(R.diff(base, phone), "sync-1", fin, TODAY)
+ok(r["ok"] and r["report"]["applied"] and r["status"]["clears"] == 10, "phone online: 10 levels synced")
+base = phone = r["progress"]
+coins_10 = base["coins"]
+# Phone goes offline and plays levels 11-20 on the device only.
+phone, fin_off = play(R.normalize(phone), order[10:20])
+# Computer, online: 15 more levels (11-25) straight on the server.
+for k in order[10:25]:
+    rr = G.finish_level(k, win(k), TODAY)
+    if not rr["ok"]:
+        ok(False, "computer finish %s: %s" % (k, rr["error"]))
+pc = G.get_state(TODAY)["progress"]
+ok(R.status(pc, jr)["clears"] == 25, "computer: 25 levels on the account")
+# Phone back online: its offline play is added on top.
+d = R.diff(base, phone)
+r = G.sync(d, "sync-2", fin_off, TODAY)
+acc = r["progress"]
+ok(r["status"]["clears"] == 25, "after the phone syncs: 25 levels done (5 further than the phone had)")
+ok(all(acc["levels"][k]["clears"] == 2 for k in order[10:20]), "levels 11-20 count as played twice")
+ok(all(acc["levels"][k]["clears"] == 1 for k in order[:10] + order[20:25]), "the other levels played once")
+ok(acc["stats"]["runs"] == 35, "35 runs in total (10 + 10 + 15): %d" % acc["stats"]["runs"])
+ok(acc["coins"] == pc["coins"] + (phone["coins"] - coins_10), "coins earned offline are added")
+again = G.sync(d, "sync-2", fin_off, TODAY)
+ok(not again["report"]["applied"] and again["progress"]["stats"]["runs"] == 35, "a retried sync is not added twice")
+ok(G.sync(R.diff(acc, acc), "sync-3", [], TODAY)["progress"]["stats"]["runs"] == 35, "an empty sync changes nothing")
+ok(G.leaderboard(order[12])["total"] >= 1, "levels won offline reach the leaderboard")
+
+# A guest's progress on the device, added to the account when the player says yes.
+guest, _ = play(R.new_progress(), order[:3])
+local = R.add_progress(R.normalize(acc), guest)
+r = G.sync(R.diff(acc, local), "sync-guest", [], TODAY)
+ok(r["progress"]["levels"][order[0]]["clears"] == 2 and r["progress"]["stats"]["runs"] == 38, "guest progress added on top")
+
+# The daily box, spending, cleaning.
+acc = r["progress"]
+yday = D - dt.timedelta(days=1)
+dev_off = R.normalize(acc)
+dev_off["daily"] = {"last": None, "streak": 0}
+base_off = R.normalize(dev_off)
+dev_off, _rep = R.apply_daily(dev_off, jr, yday)
+srv = R.normalize(acc)
+srv["daily"] = {"last": None, "streak": 0}
+srv, _rep = R.apply_daily(srv, jr, D)
+m = R.merge(srv, R.diff(base_off, dev_off))
+ok(m["daily"]["last"] == D.isoformat(), "a box opened offline yesterday doesn't move today's box back")
+ok(m["stats"]["dailies"] == srv["stats"]["dailies"] + 1, "both boxes count")
+ok(R.daily_items(D) == R.daily_items(D) and R.market_offers(D) == R.market_offers(D), "daily box and market are the same everywhere")
+spent = R.normalize(acc)
+spent["coins"] = 0
+ok(R.merge(R.normalize(acc), R.diff(acc, spent))["coins"] == 0, "coins spent offline come off (never below zero)")
+bad = R.clean_delta({"coins": 10 ** 9, "levels": {"nope": {"clears": 5}}, "pantry": {"unknown": 3}}, set(order))
+ok(bad["coins"] == 10 ** 6 and not bad["levels"] and not bad["pantry"], "deltas from the browser are cleaned and capped")
+ok(R.is_empty(R.diff(acc, acc)), "no change, no delta")
+w = G.get_world(TODAY)
+ok(w["ok"] and len(w["journey"]) == len(jr) and w["journey"][0]["_postcard"], "get_world gives the journey for offline play")
 
 print("\nALL OK" if not FAILS else "\n%d FAILED" % len(FAILS))
 sys.exit(1 if FAILS else 0)

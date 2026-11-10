@@ -1,6 +1,6 @@
-# Catalog — Server Module. Everything collectable in Busy Bun, in one place.
-# The client gets this through Game.get_state() / Admin.admin_state(), so names, emoji and
-# prices live only here. Rules that use it are in Game.py.
+# Catalog: everything collectable in Busy Bun, in one place. A shared module (client_code), so the browser and the
+# server read the same names, emoji, prices and coin values: the game rules (rules.py) run in both, which is what
+# makes offline play possible. The screens get a trimmed copy through public().
 
 RARITY: dict = {
     "common": {"name": "Common", "color": "#7a9a5b", "price": 8, "weight": 60},
@@ -153,6 +153,8 @@ BADGES = [
     {"key": "constellation", "name": "Constellation", "emoji": "🌌", "desc": "Earn 200 stars."},
     {"key": "chopstick_master", "name": "Chopstick Master", "emoji": "🏆", "desc": "Find 50 pairs of golden chopsticks."},
 ]
+
+BADGE_KEYS = {b["key"] for b in BADGES}
 
 PESTS = [
     {"key": "ant", "name": "Ant", "hp": 1, "desc": "Wanders about. Slow, but there are always more."},

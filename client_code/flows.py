@@ -18,6 +18,9 @@ def how_to():
 def sign_in(mode="login"):
     """The sign-in dialog; on success the guest's progress moves to the account and the journey opens."""
     from .Dialogs.SignIn import SignIn
+    if not bun.online():
+        state.toast("Signing in needs the internet. Keep playing: your game is saved on this device.", "error")
+        return False
     r = dialog(SignIn(mode=mode))
     if not r or not r.get("ok"):
         return False
@@ -43,6 +46,8 @@ def settings():
     elif r == "out":
         if bun.st["guest"]:
             router.go("landing")
+        elif not bun.online():
+            state.toast("You're offline. Sign out when you're back online; your game is saved on this device.", "error")
         else:
             auth.sign_out()
             state.toast("Signed out. See you soon!")

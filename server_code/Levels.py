@@ -14,6 +14,7 @@
 #
 # The built-in levels below are drawn as ASCII and converted with from_ascii().
 from . import Catalog as C
+from . import rules as R
 
 # ---------------------------------------------------------------- checks
 
@@ -121,34 +122,8 @@ def _label(e):
     return {"start": "The start", "exit": "The exit", "pickup": (e.get("k") or "Pickup").title()}.get(t, t)
 
 
-def totals(data):
-    """What a level holds: item counts, pickups, npcs, nests, crates, bosses (used to check results)."""
-    out: dict = {"items": {}, "coins": 0, "chopsticks": 0, "postcard": 0, "npcs": 0, "nests": 0, "crates": 0, "kings": 0,
-           "bonuses": 0, "knobs": 0}
-    for e in data.get("ents") or []:
-        t = e.get("t")
-        if t == "item":
-            out["items"][e["k"]] = out["items"].get(e["k"], 0) + 1
-        elif t == "pickup":
-            k = e.get("k")
-            if k == "coin":
-                out["coins"] += 1
-            elif k == "bag":
-                out["coins"] += C.BAG_COINS
-            elif k in ("chopsticks", "postcard"):
-                out[k] += 1
-            if k in C.BONUS_KEYS:
-                out["bonuses"] += 1
-            if k in C.KNOB_KEYS:
-                out["knobs"] += 1
-        elif t == "npc":
-            out["npcs"] += 1
-        elif t == "nest":
-            out["nests"] += 1
-        elif t == "pest" and e.get("k") in C.BOSSES:
-            out["kings"] += 1  # "kings" = bosses (the Rat King, the Wasp Queen)
-    out["crates"] = sum(r.count("X") for r in data.get("tiles") or [])
-    return out
+# What a level holds (item counts, pickups, nests, bosses...): shared with the browser, which scores levels offline.
+totals = R.totals
 
 
 # ---------------------------------------------------------------- ASCII authoring
