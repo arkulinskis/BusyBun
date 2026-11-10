@@ -357,6 +357,42 @@ def music_on():
     return bool(window.BB.Sound.musicOn)
 
 
+def can_vibrate():
+    return bool(window.BB.canVibrate)
+
+
+def haptics_on():
+    return bool(window.BB.Sound.hapticsOn)
+
+
+def set_haptics(on):
+    window.BB.Sound.setHaptics(bool(on))
+
+
+def install_offer():
+    """How this browser can install the game: "prompt" (Chrome/Edge kept the install offer), "ios" (Safari on an
+    iPhone/iPad: Share > Add to Home Screen), or "" (already installed, or no way to offer it)."""
+    html = window.document.documentElement
+    if html is not None and html.classList.contains("bb-app"):
+        return ""
+    if getattr(window, "bbInstall", None):
+        return "prompt"
+    ua = str(window.navigator.userAgent)
+    ios = "iPhone" in ua or "iPad" in ua or ("Macintosh" in ua and int(window.navigator.maxTouchPoints or 0) > 1)
+    return "ios" if ios else ""
+
+
+def install():
+    """Show the browser's install dialog (only when install_offer() is "prompt"). Returns True if they accepted."""
+    ev = getattr(window, "bbInstall", None)
+    if not ev:
+        return False
+    ev.prompt()
+    choice = window.Promise.resolve(ev.userChoice)  # a promise returned by a call: Anvil waits for it
+    window.bbInstall = None  # an offer can only be shown once
+    return bool(choice) and choice.outcome == "accepted"
+
+
 def set_sound(on):
     window.BB.Sound.setSfx(bool(on))
 

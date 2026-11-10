@@ -25,6 +25,10 @@ PAGES = {
 TABS = [("journey", "🗺️", "Journey"), ("pantry", "🧺", "Pantry"), ("kitchen", "🍳", "Kitchen"), ("shop", "🎩", "Shop"),
         ("badges", "🏅", "Badges")]
 APP_NAME = "Busy Bun"
+HUB = [tab[0] for tab in TABS]
+# Phone status-bar colour per screen (app mode): the hub's cream top bar, the dough title, the black play screen.
+BAR = {"landing": "#f7e6c8", "play": "#000000", "admin": "#efe3cf"}
+HUB_BAR = "#fff7ea"
 _r: dict = {"listening": False, "page": None, "name": ""}
 
 
@@ -81,6 +85,7 @@ def show():
     if old is not None and hasattr(old, "leave"):
         old.leave()  # stop the game loop, the title animation, the builder
     window.document.title = PAGES[name] + " · " + APP_NAME
+    _chrome(_r["name"], name)
     window.UI_READY = False
     page = _form(name)(args=args)
     _r["page"], _r["name"] = page, name
@@ -90,6 +95,20 @@ def show():
         shell.refresh(name)  # Anvil reuses the layout between pages: tell it which page is open
     window.scrollTo(0, 0)
     window.UI_READY = True  # tests and screenshots wait for this
+
+
+def _chrome(old, name):
+    """App feel: which way the hub page slides in (app.css reads html[data-nav]) and the status-bar colour."""
+    nav = ""
+    if old in HUB and name in HUB and old != name:
+        nav = "fwd" if HUB.index(name) > HUB.index(old) else "back"
+    html = window.document.documentElement
+    if html is not None:
+        html.setAttribute("data-nav", nav)
+    try:
+        window.bbThemeColor(BAR.get(name, HUB_BAR))  # defined in head_html's app-mode block
+    except Exception:
+        pass
 
 
 def go(name, *args):

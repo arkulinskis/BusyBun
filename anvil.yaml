@@ -274,9 +274,10 @@ db_schema:
     server: full
     title: Users
 metadata:
-  description: "Play a little bao bun on a culinary journey: run errands for the neighbours, fill your bun, smash pest nests and reach the steamer across 16 worlds and 118 levels."
-  logo_img: "asset:busybun.png"
-  title: "Busy Bun: a cute bao bun adventure game in your browser"
+  description: 'Play a little bao bun on a culinary journey: run errands for the neighbours, fill your bun, smash pest nests
+    and reach the steamer across 16 worlds and 118 levels.'
+  logo_img: asset:busybun.png
+  title: 'Busy Bun: a cute bao bun adventure game in your browser'
 name: Busy Bun
 native_deps:
   head_html: |
@@ -303,21 +304,54 @@ native_deps:
     <link rel="alternate" type="text/plain" title="Busy Bun for AI assistants" href="https://busybun.com/llms.txt">
     <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "VideoGame", "@id": "https://busybun.com/#app", "name": "Busy Bun", "url": "https://busybun.com/", "description": "Play a little bao bun on a culinary journey: run errands for the neighbours, fill your bun, smash pest nests and reach the steamer across 16 worlds and 118 levels.", "image": "https://busybun.com/_/theme/og-image.png", "inLanguage": "en", "publisher": {"@id": "https://arkvital.com/#org"}, "keywords": "bao bun game, cute browser game, top-down adventure game, food game online, play in browser no download, casual game for all ages, arcade puzzle game, Rat King boss, dim sum game", "applicationCategory": "GameApplication", "operatingSystem": "Any (web browser)", "featureList": ["16 worlds and 118 levels, each world with its own look, pests and music", "Errands for the neighbours, meat to collect and pest nests to smash", "Bosses like the Rat King, plus power-ups: magnet, shield bubble, coin bag, Star Anise", "Hazards that change as you go: hot stoves, oil slicks, conveyor lanes, rivers and bridges", "Plays in the browser on desktop and phone"], "audience": {"@type": "Audience", "audienceType": "Casual gamers and families who like cute, quick levels"}}, {"@type": "WebSite", "@id": "https://busybun.com/#site", "url": "https://busybun.com/", "name": "Busy Bun", "publisher": {"@id": "https://arkvital.com/#org"}}, {"@type": "Organization", "@id": "https://arkvital.com/#org", "name": "Arkvital", "url": "https://arkvital.com", "email": "arkvital@outlook.com", "address": {"@type": "PostalAddress", "addressLocality": "Montreal", "addressRegion": "QC", "addressCountry": "CA"}}]}</script>
     <!-- seo:end -->
+    <!-- app-mode:start  The installed-app feel (pilot for every app). Anvil's own tags come first in <head> and win, so
+         this points them at ours: the manifest (server_code/app_mode.py: dough colours, shortcuts, sharp icons from
+         tools/app_icons.py), the status-bar colour, the iPhone icon and name. It also adds class "bb-app" to <html>
+         when the game runs from the home screen (or with ?app=1, for testing): app.css's app-mode block reads it. -->
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#f7e6c8">
+    <script>
+    (function () {
+      var d = document, html = d.documentElement;
+      window.bbThemeColor = function (c) {
+        d.querySelectorAll('meta[name="theme-color"]').forEach(function (m) { m.setAttribute('content', c); });
+      };
+      function fix() {
+        var links = d.querySelectorAll('link[rel="manifest"]');
+        links.forEach(function (l, i) { if (i) l.remove(); else l.setAttribute('href', '_/api/manifest.json'); });
+        if (!links.length) { var l = d.createElement('link'); l.rel = 'manifest'; l.href = '_/api/manifest.json'; d.head.appendChild(l); }
+        d.querySelectorAll('link[rel="apple-touch-icon"]').forEach(function (l) { l.setAttribute('href', '_/theme/apple-touch-icon.png?v=fcb21b597b'); });
+        d.querySelectorAll('meta[name="apple-mobile-web-app-title"]').forEach(function (m) { m.setAttribute('content', 'Busy Bun'); });
+        var tc = d.querySelectorAll('meta[name="theme-color"]');
+        window.bbThemeColor(tc.length ? tc[tc.length - 1].getAttribute('content') : '#f7e6c8');
+      }
+      var mq = window.matchMedia ? window.matchMedia('(display-mode: standalone), (display-mode: fullscreen)') : null;
+      function mode() {
+        var on = (mq && mq.matches) || navigator.standalone === true || /[?&]app=1(&|$)/.test(location.search);
+        html.classList.toggle('bb-app', !!on);
+      }
+      fix(); mode();
+      d.addEventListener('DOMContentLoaded', fix);
+      if (mq && mq.addEventListener) mq.addEventListener('change', mode);
+      // Kept for Settings' "Install the app" button; the browser's own install offer still shows as usual.
+      window.addEventListener('beforeinstallprompt', function (e) { window.bbInstall = e; });
+      window.addEventListener('appinstalled', function () { window.bbInstall = null; });
+    })();
+    </script>
+    <!-- app-mode:end -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="_/theme/app.css?v=fe51469bc7">
+    <link rel="stylesheet" href="_/theme/app.css?v=666ca305b4">
     <!-- Busy Bun's engines (JavaScript): helpers + sound, music player, drawing, the game, the play stage, the level builder.
          The pages, menus, dialogs and lists are Python Forms in client_code. -->
     <script src="_/theme/app-kit.js?v=35f0886882"></script>
-    <script src="_/theme/ark-music.js?v=39180862e8"></script>
-    <script src="_/theme/bb-kit.js?v=8ae57f84cf"></script>
+    <script src="_/theme/ark-music.js?v=4ee0f1e082"></script>
+    <script src="_/theme/bb-kit.js?v=ca66a6ed9f"></script>
     <script src="_/theme/bb-art.js?v=5defa16bd3"></script>
     <script src="_/theme/bb-engine.js?v=6780e1c3a8"></script>
     <script src="_/theme/bb-stage.js?v=ec39b1802a"></script>
-    <script src="_/theme/bb-builder.js?v=fc037d13fd"></script>
+    <script src="_/theme/bb-builder.js?v=542b089d22"></script>
 
     <!-- Prepsto feedback panel: every "Submit feedback" link and button slides it in (it is the only feedback channel). No floating button, no cookies, nothing loads until it is opened. Codes: APP_MAKER/prepsto-links.json -->
     <script src="https://prepsto.com/_/theme/widget.js" data-prepsto="xww6ue9" data-button="false" data-label="Submit feedback" async></script>

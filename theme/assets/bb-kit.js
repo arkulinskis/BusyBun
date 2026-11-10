@@ -143,7 +143,19 @@
     boss: function (t) { tone(110, t, 0.5, 'sawtooth', 0.15, 55); noise(t, 0.4, 0.2, 400); },
     squawk: function (t) { tone(900, t, 0.12, 'sawtooth', 0.08, 500); tone(800, t + 0.12, 0.1, 'sawtooth', 0.07, 450); }
   };
+  /* Haptics (phones that support vibration, i.e. Android): a short buzz on the moments that matter, never on the
+     frequent ones (coins, pickups, footsteps). Its own switch in Settings (bb.haptics), independent of sound. */
+  var HAPTIC = { bonk: 12, crate: 15, hurt: 40, nest: [20, 30, 40], boss: [60, 40, 60], errand: 15, unlock: [15, 40, 25],
+    clear: [15, 40, 15], star: 10, cook: [10, 30, 10, 30, 20], win: [20, 60, 20, 60, 40], fail: 80 };
+  BB.canVibrate = !!(navigator.vibrate);
+  Sound.hapticsOn = BB.store.get('bb.haptics', true);
+  Sound.setHaptics = function (on) { Sound.hapticsOn = !!on; BB.store.set('bb.haptics', Sound.hapticsOn); if (on) BB.haptic(20); };
+  BB.haptic = function (pattern) {
+    if (!Sound.hapticsOn || !BB.canVibrate || document.visibilityState === 'hidden') return;
+    try { navigator.vibrate(pattern); } catch (e) {}
+  };
   Sound.play = function (name) {
+    if (HAPTIC[name]) BB.haptic(HAPTIC[name]);
     if (!Sound.sfxOn || !Sound.init() || !SFX[name]) return;
     try { SFX[name](Sound.ctx.currentTime + 0.005); } catch (e) {}
   };

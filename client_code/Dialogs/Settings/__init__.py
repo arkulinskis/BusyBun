@@ -5,7 +5,7 @@ from ... import bun, state
 
 
 class Settings(SettingsTemplate):
-    """Settings: your bun and name, sound and music, how to play, feedback, Privacy & Terms, the level builder (admins),
+    """Settings: your bun and name, sound, music and vibration, installing the app, how to play, feedback, Privacy & Terms, the level builder (admins),
     sign out. Closes with "howto", "auth", "admin", "saved", "out" or None."""
 
     def __init__(self, **properties):
@@ -21,11 +21,15 @@ class Settings(SettingsTemplate):
         state.set_control_attr(self.name_box, "autocomplete", "nickname")
         self.admin_button.visible = bool(me.get("is_admin"))
         self.out_button.text = "⏏ Back to title" if st["guest"] else "⏏ Sign out"
+        self.haptics_button.visible = bun.can_vibrate()
+        self._offer = bun.install_offer()
+        self.install_button.visible = bool(self._offer)
         self._labels()
 
     def _labels(self):
         self.sfx_button.text = "🔊 Sounds on" if bun.sound_on() else "🔇 Sounds off"
         self.music_button.text = "🎵 Music on" if bun.music_on() else "🎵 Music off"
+        self.haptics_button.text = "📳 Vibration on" if bun.haptics_on() else "📳 Vibration off"
 
     @handle("", "show")
     def form_show(self, **event_args):
@@ -57,6 +61,20 @@ class Settings(SettingsTemplate):
     def music_button_click(self, **event_args):
         bun.set_music(not bun.music_on())
         self._labels()
+
+    @handle("haptics_button", "click")
+    def haptics_button_click(self, **event_args):
+        bun.set_haptics(not bun.haptics_on())
+        self._labels()
+
+    @handle("install_button", "click")
+    def install_button_click(self, **event_args):
+        if self._offer == "prompt":
+            if bun.install():
+                bun.toast("Busy Bun is on your home screen!")
+            self.install_button.visible = False
+        else:
+            state.toast("On iPhone or iPad: tap the Share button in Safari, then \"Add to Home Screen\".")
 
     @handle("howto_button", "click")
     def howto_button_click(self, **event_args):

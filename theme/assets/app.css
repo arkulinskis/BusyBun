@@ -487,7 +487,7 @@ td, th, time, output, progress, .num, .tabular, [data-num] { font-variant-numeri
   .g-top .g-who small { display: none; }
   .g-top .bb-pill { font-size: 13px; padding: 2px 9px 2px 5px; }
   .g-top .g-pills .chop { display: none; }
-  .g-iconbtn { width: 40px; height: 40px; font-size: 19px; }
+  .g-iconbtn { width: 44px; height: 44px; font-size: 20px; }
   .g-tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: var(--bb-cream); border-top: 3px solid var(--bb-line); padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); gap: 4px; }
   .g-tab { border: 0; border-radius: 12px; display: flex; flex-direction: column; align-items: center; font-size: 11.5px; padding: 4px 2px; background: transparent; }
   .g-tab .bb-emoji { margin: 0 0 1px; font-size: 22px; }
@@ -816,4 +816,63 @@ button.g-banner { display: block; width: 100%; text-align: center; color: var(--
 @media (max-width: 720px) {
   .g-top .g-who-sub { display: none; }
   .g-continue small { font-size: 12px; }
+}
+
+/* ===== app mode: the installed-app feel (pilot for every app; head_html's app-mode block sets html.bb-app) ===== */
+
+/* Launch splash: while Anvil loads, the bouncing-bun spinner gets the logo and a line under it.
+   startup.py adds html.bb-ready once the first page is open; the app then fades in. */
+html:not(.bb-ready) body::before, html:not(.bb-ready) body::after { position: fixed; left: 16px; right: 16px; z-index: 10001;
+  text-align: center; pointer-events: none; animation: bb-splash-out 1ms linear 25s forwards; }
+html:not(.bb-ready) #loadingSpinner { position: fixed !important; top: 50% !important; left: 50% !important; margin: -55px 0 0 -55px !important; }
+html:not(.bb-ready) body::before { content: "Busy Bun"; top: calc(50% - 142px); font: 700 52px/1 var(--bb-title); color: #fff;
+  -webkit-text-stroke: 3px var(--bb-ink); paint-order: stroke fill; text-shadow: 0 5px 0 var(--bb-ink); letter-spacing: 1px; }
+html:not(.bb-ready) body::after { content: "Warming up the steamer…"; top: calc(50% + 80px); font: 700 16px/1.3 var(--bb-font); color: var(--bb-ink-2); }
+html:not(.bb-ready) #anvil-header, html:not(.bb-ready) #anvil-badge { visibility: hidden; }
+html.bb-ready #appGoesHere { animation: kit-fade var(--dur-base) var(--ease-out) both; }
+@keyframes bb-splash-out { to { opacity: 0; visibility: hidden; } }
+
+/* Full-height screens that follow the phone's moving browser bars (dvh), falling back to vh above. */
+.g-hub { min-height: 100dvh; }
+.bb-admin, .a-login { min-height: 100dvh; }
+.a-body { height: calc(100dvh - 58px); }
+.bb-modal { max-height: calc(100dvh - 32px); }
+
+/* Notches and rounded corners (viewport-fit=cover): keep controls inside the safe area. */
+.g-top { padding-top: max(10px, env(safe-area-inset-top)); padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+.g-main { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+.g-title { padding-top: max(24px, env(safe-area-inset-top)); padding-bottom: max(24px, env(safe-area-inset-bottom)); }
+.g-hud { inset: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+@media (max-width: 720px) {
+  .g-top { padding-top: max(8px, env(safe-area-inset-top)); padding-left: max(12px, env(safe-area-inset-left)); padding-right: max(12px, env(safe-area-inset-right)); }
+  .g-main { padding-left: max(12px, env(safe-area-inset-left)); padding-right: max(12px, env(safe-area-inset-right)); }
+  .g-tabs { padding-left: max(6px, env(safe-area-inset-left)); padding-right: max(6px, env(safe-area-inset-right)); }
+}
+
+/* Touch like an app: no double-tap zoom delay, no text selection or "save image" menu on controls and drawings. */
+button, a, label, [role="button"], .anvil-role-bb-btn > button { touch-action: manipulation; }
+.g-tab, .g-iconbtn, .g-av, .g-linkbtn, .bb-pill, .g-top, .g-tabs, .g-hud, .g-dash, canvas, .bb-emoji {
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.g-tab { transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-fast) ease; }
+@media (max-width: 720px) { .g-tab:active { transform: scale(.94); } .g-tab.on:active { transform: scale(.97); } }
+
+/* Page changes: the hub's page slides in from the side of the tab you picked; other pages fade. */
+.g-panel .g-page { animation: bb-page-in var(--dur-base) var(--ease-out) both; }
+html[data-nav="fwd"] .g-panel .g-page { animation-name: bb-page-fwd; }
+html[data-nav="back"] .g-panel .g-page { animation-name: bb-page-back; }
+@keyframes bb-page-in { from { opacity: 0; transform: translateY(6px); } }
+@keyframes bb-page-fwd { from { opacity: 0; transform: translateX(16px); } }
+@keyframes bb-page-back { from { opacity: 0; transform: translateX(-16px); } }
+@media (prefers-reduced-motion: reduce) {
+  .g-panel .g-page, html[data-nav] .g-panel .g-page { animation-name: kit-fade; }
+  .g-tab:active, .g-tab.on:active { transform: none; }
+}
+
+/* Installed (html.bb-app): a game, not a website. The title screen fills the phone with nothing to scroll; the
+   trailer section and the long landing footer go (feedback and Privacy & Terms stay under the title buttons,
+   in Settings and in the hub footer). */
+html.bb-app .g-landing .g-watchsec, html.bb-app .g-landing > .g-footer, html.bb-app .g-landing .g-watchlink { display: none; }
+html.bb-app .g-title { min-height: 100dvh; }
+@media (max-width: 720px) {
+  .g-title .g-foot a, .g-title .g-foot .g-linkbtn, .ytf .ytf-link { min-height: 44px; display: inline-flex; align-items: center; }
 }

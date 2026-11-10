@@ -77,6 +77,29 @@ tools/              check.py, assets.py, ui_test.py + ui/smoke.js, gen_levels.py
   engine's server calls go through its `_emit` with the ADMIN_CALLS whitelist; "+ New level" opens Dialogs/NewLevel),
   Territories, Players and Feedback (Forms + items).
 
+## App mode (installed-app feel, 2026-11-10; pilot for every app)
+
+- **head_html `app-mode` block** (between `<!-- app-mode:start -->` and `<!-- app-mode:end -->`): Anvil's own head tags
+  come first and win, so it points them at ours: `<link rel=manifest>` -> `/_/api/manifest.json`
+  (`server_code/app_mode.py`: dough colours, name "Busy Bun", shortcuts Journey/Kitchen/Shop, `id: "/"` kept so old
+  installs stay), every `theme-color` -> ours, the iPhone icon (`apple-touch-icon.png`) and title. Adds
+  `html.bb-app` when running from the home screen; **`?app=1` forces it** for testing in a normal browser.
+  `window.bbThemeColor(c)` sets the status bar; `router._chrome` calls it per page (BAR / HUB_BAR).
+- **Icons**: `python -I tools/app_icons.py` renders icon-192/512, icon-maskable-512 and apple-touch-icon (opaque:
+  iPhones turn transparency black) from `Art.drawBun` with headless Chrome. Then `python tools/assets.py`.
+- **app.css "app mode" block** (end of file): launch splash (logo + line around the boot spinner, pinned to the centre
+  until `startup.py` adds `html.bb-ready`; fails safe after 25 s), dvh heights, safe-area padding (top bar, main, HUD,
+  title), `touch-action: manipulation`, no selection/callout on controls and canvases, tab press, page slides
+  (`html[data-nav=fwd|back] .g-panel .g-page`; Anvil reuses the slot's `anvil-dropzone`, so animate the page's own
+  `.g-page` root), and installed-only rules (`html.bb-app`: no trailer section or landing footer, title fills `100dvh`).
+- **Haptics**: `HAPTIC` map in bb-kit.js inside `Sound.play` (bonk, crate, hurt, nest, boss, errand, unlock, clear,
+  star, cook, win, fail; never coins/pickups). Switch `bb.haptics` (Settings "Vibration", shown only where
+  `navigator.vibrate` exists: Android; iPhones have no web vibration).
+- **Install button** in Settings: Chrome/Edge's kept `beforeinstallprompt` (`window.bbInstall`, `bun.install()`), or
+  the Share > Add to Home Screen tip on iPhone/iPad; hidden when already installed.
+- **Service worker**: none of ours. Anvil already registers `/_/service-worker` for the whole site (cache "v0",
+  refreshes in the background); a second one at scope "/" would replace it. Theme files are served `no-cache`.
+
 ## Game rules (server)
 
 - Every progress-changing rule is an `apply_*(progress, ...)` in Game.py with a signed-in callable and a `guest_*`
