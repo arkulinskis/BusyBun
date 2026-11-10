@@ -11,8 +11,62 @@
   var esc = function (s) { return BB.esc(s); };
   function em(e) { return '<span class="bb-emoji">' + e + '</span>'; }
 
+  /* The phone Dash button can be moved: a tap dashes; holding it still for 2 seconds picks it up (buzz + wobble),
+     then it follows the finger and stays where it's let go. The spot is saved in this browser only (localStorage,
+     one per orientation, as fractions of the play area, so it fits any screen size). CSS (.g-dash.placed) turns the
+     fractions into a position and keeps the button on screen. Settings > "Reset Dash button" clears it. */
+  var DASH_HOLD_MS = 2000, DASH_SLOP = 14;
+  function dashKey(box) { return 'bb.dashPos.' + (box.clientWidth > box.clientHeight ? 'land' : 'port'); }
+  BB.dashMoved = function () { return !!(BB.store.get('bb.dashPos.port', null) || BB.store.get('bb.dashPos.land', null)); };
+  BB.resetDash = function () { BB.store.del('bb.dashPos.port'); BB.store.del('bb.dashPos.land'); };
+  function moveableDash(box, btn, dash) {
+    var id = null, sx = 0, sy = 0, timer = 0, moving = false, last = null;
+    function clamp01(v) { return Math.min(1, Math.max(0, v)); }
+    function place(p) {
+      btn.style.setProperty('--dx', String(p.x)); btn.style.setProperty('--dy', String(p.y)); btn.classList.add('placed');
+    }
+    function restore() {
+      var p = BB.store.get(dashKey(box), null);
+      if (p && typeof p.x === 'number' && typeof p.y === 'number') place(p);
+      else btn.classList.remove('placed');
+    }
+    function frac(t) {
+      var b = box.getBoundingClientRect();
+      return { x: clamp01((t.clientX - b.left) / (b.width || 1)), y: clamp01((t.clientY - b.top) / (b.height || 1)) };
+    }
+    function stop(save) {
+      clearTimeout(timer); timer = 0; id = null;
+      btn.classList.remove('holding', 'moving');
+      if (moving && save && last) { BB.store.set(dashKey(box), last); BB.haptic(15); }
+      moving = false; last = null;
+    }
+    function find(list) { for (var i = 0; i < list.length; i++) if (list[i].identifier === id) return list[i]; return null; }
+    btn.addEventListener('touchstart', function (e) {
+      e.preventDefault();
+      dash();
+      if (id !== null) return;
+      var t = e.changedTouches[0]; id = t.identifier; sx = t.clientX; sy = t.clientY;
+      btn.classList.add('holding');
+      timer = setTimeout(function () {
+        timer = 0; moving = true; btn.classList.remove('holding'); btn.classList.add('moving'); BB.haptic(40);
+      }, DASH_HOLD_MS);
+    }, { passive: false });
+    btn.addEventListener('touchmove', function (e) {
+      var t = find(e.changedTouches); if (!t) return;
+      e.preventDefault();
+      if (moving) { last = frac(t); place(last); }
+      else if (timer && Math.abs(t.clientX - sx) + Math.abs(t.clientY - sy) > DASH_SLOP) stop(false);
+    }, { passive: false });
+    btn.addEventListener('touchend', function (e) { if (find(e.changedTouches)) stop(true); });
+    btn.addEventListener('touchcancel', function (e) { if (find(e.changedTouches)) { stop(false); restore(); } });
+    restore();
+    var onResize = function () { if (!moving) restore(); };   // portrait <-> landscape keep their own spots
+    window.addEventListener('resize', onResize);
+    return function () { stop(false); window.removeEventListener('resize', onResize); };
+  }
+
   BB.mountStage = function (el, opts, onEvent) {
-    var Art = BB.Art, touch = BB.isTouch(), talkTimer = 0, alive = true;
+    var Art = BB.Art, touch = BB.isTouch(), talkTimer = 0, alive = true, unDash = null;
     function send(name, d) { if (alive && onEvent) onEvent(name, JSON.stringify(d || {})); }
     el.innerHTML = '<canvas class="g-cv" aria-label="The level"></canvas><div class="g-hud">' +
       '<div class="tl"><div class="g-hearts"></div><div class="g-goalbar"></div><div class="g-buffs"></div></div>' +
@@ -60,7 +114,7 @@
         }
       };
       area.addEventListener('touchend', end); area.addEventListener('touchcancel', end);
-      hud.dash.addEventListener('touchstart', function (e) { e.preventDefault(); game.dash(); }, { passive: false });
+      unDash = moveableDash(el.querySelector('.g-hud'), hud.dash, function () { game.dash(); });
     } else {
       hud.dash.addEventListener('mousedown', function () { game.dash(); });
     }
@@ -120,6 +174,7 @@
       destroy: function () {
         alive = false; clearTimeout(talkTimer);
         document.removeEventListener('visibilitychange', onVis);
+        if (unDash) unDash();
         game.destroy(); el.innerHTML = '';
       }
     };

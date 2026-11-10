@@ -22,6 +22,7 @@ class Settings(SettingsTemplate):
         self.admin_button.visible = bool(me.get("is_admin"))
         self.out_button.text = "⏏ Back to title" if st["guest"] else "⏏ Sign out"
         self.haptics_button.visible = bun.can_vibrate()
+        self.dashpos_button.visible = bun.dash_moved()
         self._offer = bun.install_offer()
         self.install_button.visible = bool(self._offer)
         self._labels()
@@ -66,6 +67,12 @@ class Settings(SettingsTemplate):
     def haptics_button_click(self, **event_args):
         bun.set_haptics(not bun.haptics_on())
         self._labels()
+
+    @handle("dashpos_button", "click")
+    def dashpos_button_click(self, **event_args):
+        bun.reset_dash()
+        self.dashpos_button.visible = False
+        bun.toast("Dash button is back in its corner.")
 
     @handle("install_button", "click")
     def install_button_click(self, **event_args):

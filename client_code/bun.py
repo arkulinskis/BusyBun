@@ -704,6 +704,15 @@ def set_haptics(on):
     window.BB.Sound.setHaptics(bool(on))
 
 
+def dash_moved():
+    """True when the player has dragged the phone Dash button somewhere (saved in this browser only)."""
+    return bool(window.BB.dashMoved())
+
+
+def reset_dash():
+    window.BB.resetDash()
+
+
 def install_offer():
     """How this browser can install the game: "prompt" (Chrome/Edge kept the install offer), "ios" (Safari on an
     iPhone/iPad: Share > Add to Home Screen), or "" (already installed, or no way to offer it)."""

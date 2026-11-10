@@ -461,6 +461,14 @@ td, th, time, output, progress, .num, .tabular, [data-num] { font-variant-numeri
 .g-dash .bb-emoji { font-size: 34px; }
 .g-dash.ready { background: #bfe8ff; }
 .g-dash svg { position: absolute; inset: -3px; width: calc(100% + 6px); height: calc(100% + 6px); transform: rotate(-90deg); pointer-events: none; }
+/* Moved by the player (hold 2 s, drag): --dx/--dy are the centre as fractions of the play area; clamp keeps it on screen. */
+.g-dash.placed { right: auto; bottom: auto; left: clamp(6px, calc(var(--dx) * 100% - 46px), calc(100% - 98px)); top: clamp(6px, calc(var(--dy) * 100% - 46px), calc(100% - 98px)); }
+.g-dash::after { content: ''; position: absolute; inset: -10px; border-radius: 50%; border: 3px dashed #fff; opacity: 0; transform: scale(.8); pointer-events: none; }
+.g-dash.holding::after { animation: bbDashHold 2s linear forwards; }
+.g-dash.moving { scale: 1.12; box-shadow: 0 10px 0 rgba(43,27,46,.35); z-index: 5; animation: bbWiggle .5s var(--ease-in-out) infinite; }
+.g-dash.moving::after { opacity: 1; transform: none; }
+@keyframes bbDashHold { 0%, 25% { opacity: 0; transform: scale(.8); } 100% { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .g-dash.moving { animation: none; } }
 .g-dash.kb { width: 70px; height: 70px; right: 14px; bottom: 14px; font-size: 12px; opacity: .9; }
 .g-dash.kb .bb-emoji { font-size: 24px; }
 .g-stick { position: absolute; left: 0; bottom: 0; width: 55%; height: 60%; }

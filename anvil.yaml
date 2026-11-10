@@ -339,7 +339,7 @@ native_deps:
     })();
     </script>
     <!-- app-mode:end -->
-    <link rel="stylesheet" href="_/theme/app.css?v=0460c15a63">
+    <link rel="stylesheet" href="_/theme/app.css?v=1e9b3a8a24">
     <!-- Busy Bun's engines (JavaScript): helpers + sound, music player, drawing, the game, the play stage, the level builder.
          The pages, menus, dialogs and lists are Python Forms in client_code. -->
     <script src="_/theme/app-kit.js?v=35f0886882"></script>
@@ -348,7 +348,7 @@ native_deps:
     <script src="_/theme/bb-kit.js?v=ca66a6ed9f"></script>
     <script src="_/theme/bb-art.js?v=5defa16bd3"></script>
     <script src="_/theme/bb-engine.js?v=6780e1c3a8"></script>
-    <script src="_/theme/bb-stage.js?v=ec39b1802a"></script>
+    <script src="_/theme/bb-stage.js?v=5850e7e285"></script>
     <script src="_/theme/bb-builder.js?v=542b089d22"></script>
 
     <!-- Prepsto feedback panel: every "Submit feedback" link and button slides it in (it is the only feedback channel). No floating button, no cookies, nothing loads until it is opened. Codes: APP_MAKER/prepsto-links.json -->

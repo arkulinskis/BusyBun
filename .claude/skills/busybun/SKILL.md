@@ -171,7 +171,13 @@ tools/              check.py, assets.py, ui_test.py + ui/smoke.js, gen_levels.py
 - **Continue with Google** (auth.py `google`): `login_with_google()` returns None for someone without an account, so it
   then calls `signup_with_google()`; on the sign-up view the Privacy & Terms tick comes first.
 - Guest progress is in localStorage `bb.guest.v1`; after sign-in `bun.after_sign_in` imports it (`import_guest`) when
-  the account is empty, then deletes it. Other browser keys: `bb.sfx`, `bb.music`, `bb.seenNew`, `bb.lastHat`.
+  the account is empty, then deletes it. Other browser keys: `bb.sfx`, `bb.music`, `bb.seenNew`, `bb.lastHat`,
+  `bb.dashPos.port` / `bb.dashPos.land`.
+- **Movable Dash button (phones, 2026-11-10):** `moveableDash` in bb-stage.js. A tap dashes at once; holding still for
+  2 s (`DASH_HOLD_MS`, moving > 14 px first cancels) picks it up, it follows the finger, and the drop spot is saved in
+  localStorage only (centre as fractions of the play area, one per orientation). CSS `.g-dash.placed` turns `--dx/--dy`
+  into left/top with `clamp()` so it never leaves the screen. Settings "Reset Dash button" (shown only once moved) calls
+  `BB.resetDash`. ui_test can't emulate touch: test it with a stub page + synthetic `TouchEvent`s via tools/live/drive.mjs.
 - `ADMIN_EMAILS` in Game.py grants admin on sign-in; Users email confirmation is off.
 - Loading spinner: Anvil's `#loadingSpinner` is restyled in app.css to the bouncing bun; `Art.installMascot()` draws it
   into `--bb-mascot` at load.
