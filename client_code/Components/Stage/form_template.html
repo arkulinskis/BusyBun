@@ -1,12 +1,11 @@
 ---
 custom_component: true
-properties: []
-toolbox_item:
-  title: Game stage
-  group: Busy Bun
-help_text: |
+help_text: |-
   The play screen: the canvas game (bb-engine.js) with its heads-up display, touch stick and neighbour speech
   (bb-stage.js). mount(level_data, theme, perks, hat, on_event) then start(); on_event(name, data) gets
   "pause", "win" and "lose".
+toolbox_item:
+  group: Busy Bun
+  title: Game stage
 ---
 <div class="g-stagewrap"><div class="g-stage" anvil:dom-node="box"></div></div>
