@@ -218,7 +218,10 @@ db_schema:
     indexes: []
     server: full
     title: Users
-metadata: {description: 'Play a little bao bun on a culinary journey: run errands for the neighbours, fill your bun, smash pest nests and reach the steamer across 16 worlds and 118 levels.', logo_img: 'asset:busybun.png', title: 'Busy Bun: a cute bao bun adventure game in your browser'}
+metadata:
+  description: "Play a little bao bun on a culinary journey: run errands for the neighbours, fill your bun, smash pest nests and reach the steamer across 16 worlds and 118 levels."
+  logo_img: "asset:busybun.png"
+  title: "Busy Bun: a cute bao bun adventure game in your browser"
 name: Busy Bun
 native_deps:
   head_html: |
@@ -244,6 +247,16 @@ native_deps:
     <meta name="twitter:image" content="https://busybun.com/_/theme/og-image.png">
     <link rel="alternate" type="text/plain" title="Busy Bun for AI assistants" href="https://busybun.com/llms.txt">
     <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "VideoGame", "@id": "https://busybun.com/#app", "name": "Busy Bun", "url": "https://busybun.com/", "description": "Play a little bao bun on a culinary journey: run errands for the neighbours, fill your bun, smash pest nests and reach the steamer across 16 worlds and 118 levels.", "image": "https://busybun.com/_/theme/og-image.png", "inLanguage": "en", "publisher": {"@id": "https://arkvital.com/#org"}, "keywords": "bao bun game, cute browser game, top-down adventure game, food game online, play in browser no download, casual game for all ages, arcade puzzle game, Rat King boss, dim sum game", "applicationCategory": "GameApplication", "operatingSystem": "Any (web browser)", "featureList": ["16 worlds and 118 levels, each world with its own look, pests and music", "Errands for the neighbours, meat to collect and pest nests to smash", "Bosses like the Rat King, plus power-ups: magnet, shield bubble, coin bag, Star Anise", "Hazards that change as you go: hot stoves, oil slicks, conveyor lanes, rivers and bridges", "Plays in the browser on desktop and phone"], "audience": {"@type": "Audience", "audienceType": "Casual gamers and families who like cute, quick levels"}}, {"@type": "WebSite", "@id": "https://busybun.com/#site", "url": "https://busybun.com/", "name": "Busy Bun", "publisher": {"@id": "https://arkvital.com/#org"}}, {"@type": "Organization", "@id": "https://arkvital.com/#org", "name": "Arkvital", "url": "https://arkvital.com", "email": "arkvital@outlook.com", "address": {"@type": "PostalAddress", "addressLocality": "Montreal", "addressRegion": "QC", "addressCountry": "CA"}}]}</script>
+    <noscript><div class="seo-noscript">
+    <h1>Busy Bun: a cute bao bun adventure game in your browser</h1>
+    <p>Play a little bao bun on a culinary journey: run errands for the neighbours, fill your bun, smash pest nests and reach the steamer across 16 worlds and 118 levels.</p>
+    <p>Busy Bun is a top-down 2D game. You play a little bao bun on a culinary journey: run errands for the neighbours, collect meat to fill your bun, smash pest nests to free each territory, and hop into the bamboo steamer to finish each level.</p>
+    <p>The journey has 16 worlds and 118 levels, from Grandma&#x27;s Kitchen and the Night Market to Spice Mountain, the Harbour Docks and the Golden Banquet, each with its own look, pests, music and new tricks.</p>
+    <p>Who it's for: Casual gamers and families who like cute, quick levels</p>
+    <h2>What it does</h2><ul><li>16 worlds and 118 levels, each world with its own look, pests and music</li><li>Errands for the neighbours, meat to collect and pest nests to smash</li><li>Bosses like the Rat King, plus power-ups: magnet, shield bubble, coin bag, Star Anise</li><li>Hazards that change as you go: hot stoves, oil slicks, conveyor lanes, rivers and bridges</li><li>Plays in the browser on desktop and phone</li></ul>
+    <h2>Questions</h2><h3>What kind of game is Busy Bun?</h3><p>A top-down 2D adventure in the browser. You guide a bao bun through food-themed worlds, running errands and clearing pests to reach the steamer.</p><h3>How many levels are there?</h3><p>118 levels across 16 worlds: the first six territories have 3 levels each and worlds 7 to 16 have 10 each.</p><h3>Do I need to download anything?</h3><p>No. Busy Bun runs in a web browser on a computer, tablet or phone.</p>
+    <p><a href="https://busybun.com/about">About Busy Bun</a> &middot; <a href="https://busybun.com/llms.txt">Busy Bun for AI assistants</a> &middot; Made by <a href="https://arkvital.com">Arkvital</a>, Montreal, Canada. Busy Bun needs JavaScript in your browser.</p>
+    </div></noscript>
     <!-- seo:end -->
     <!-- app-mode:start  The installed-app feel (pilot for every app). Anvil's own tags come first in <head> and win, so
          this points them at ours: the manifest (server_code/app_mode.py: dough colours, shortcuts, sharp icons from
