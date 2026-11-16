@@ -19,6 +19,8 @@ sys.path[:0] = [str(HERE / "mock"), str(tmp)]
 
 import anvil.server  # noqa: E402
 import anvil.users  # noqa: E402
+import anvil.secrets  # noqa: E402
+anvil.secrets.SECRETS["admin_emails"] = "admin@example.com"  # the App Secret, faked
 from anvil.tables import app_tables as T  # noqa: E402
 from app import Admin, Catalog as C, Game as G, Levels as L  # noqa: E402
 
@@ -202,7 +204,7 @@ ok(not G.set_name("x", TODAY)["ok"], "short name refused")
 
 # ---- admin
 raises(lambda: Admin.admin_state(), anvil.server.PermissionDenied, "non-admins can't open the editor")
-boss = user("arkulinskis@gmail.com")
+boss = user("admin@example.com")
 anvil.users.CURRENT[0] = boss
 ok(Admin.admin_whoami()["is_admin"], "the owner's email is an admin")
 a = Admin.admin_state()
@@ -244,7 +246,7 @@ ok(Admin.restore_defaults()["note"].startswith("Restored 1"), "deleted built-in 
 pl = Admin.list_players()
 ok(pl["ok"] and any(x["email"] == "ana@example.com" and x["stars"] == 354 for x in pl["players"]), "players list")
 ok(Admin.set_admin("ana@example.com", True)["ok"] and T.users.get(email="ana@example.com")["is_admin"], "made ana an admin")
-ok(not Admin.set_admin("arkulinskis@gmail.com", False)["ok"], "can't remove own admin")
+ok(not Admin.set_admin("admin@example.com", False)["ok"], "can't remove own admin")
 cd = Admin.clean_data({"w": 10, "h": 3, "tiles": ["#@#", "zz"], "ents": [{"t": "evil", "x": 1, "y": 1},
                                                                           {"t": "npc", "x": 1, "y": 1, "style": "x"}]})
 ok(len(cd["tiles"]) == 3 and all(len(t) == 10 for t in cd["tiles"]) and cd["ents"][0]["style"] == "dumpling",

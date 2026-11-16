@@ -15,9 +15,10 @@ from anvil.tables import app_tables
 from . import Catalog as C
 from . import Levels as L
 from . import rules as R
+from . import AdminAccess
 
 # Accounts with these emails become admins the first time they sign in (users.is_admin can also be ticked by hand).
-ADMIN_EMAILS = {"arkulinskis@gmail.com"}
+ADMIN_EMAILS = AdminAccess.ADMIN_EMAILS  # from the App Secret `admin_emails`
 
 STAT_KEYS = R.STAT_KEYS
 
@@ -177,7 +178,7 @@ def is_admin(u):
         return False
     if u["is_admin"]:
         return True
-    if (u["email"] or "").lower() in ADMIN_EMAILS:
+    if AdminAccess.may_promote(u):
         u["is_admin"] = True
         return True
     return False

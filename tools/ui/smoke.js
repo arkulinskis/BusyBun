@@ -153,7 +153,7 @@
 
     // ---- admin: sign up the first time, sign in after that
     const adminPw = 'Bb-smoke-adm-93Kx-7q';
-    if (!(await signUp('Admin Bun', 'arkulinskis@gmail.com', adminPw))) await signIn('arkulinskis@gmail.com', adminPw);
+    if (!(await signUp('Admin Bun', 'admin@example.com', adminPw))) await signIn('admin@example.com', adminPw);
     await open('#admin', /Level Builder/);
     await until(() => $('.a-tools') && $('.a-canvas canvas'), 'the level editor', 40000);
     check('#admin levels', /Playtest/);
