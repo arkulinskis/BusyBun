@@ -6,6 +6,11 @@
         <span class="bb-emoji" aria-hidden="true">💾</span><span class="grow">You're playing as a guest. Progress is kept in this browser only.</span>
         <anvil-component type="Button" name="save_button" prop:text="Create free account" prop:role='["bb-btn", "small", "green"]'></anvil-component>
       </div>
+      <div class="g-dishbar" anvil:name="dish_card">
+        <span class="em bb-emoji" aria-hidden="true">🍽️</span>
+        <div class="tx"><b anvil:dom-node="dish_title">Daily Dish</b><span class="w" anvil:dom-node="dish_sub"></span></div>
+        <anvil-component type="Button" name="dish_button" prop:text="Today's dish ▶" prop:role='["bb-btn", "jade"]'></anvil-component>
+      </div>
       <div class="g-continue" anvil:name="continue_card">
         <div class="pv"><anvil-component type="BusyBun.Components.Portrait" name="next_pv" prop:size="68"></anvil-component></div>
         <div class="tx"><small anvil:dom-node="next_where"></small><b anvil:dom-node="next_name"></b><span class="w" anvil:dom-node="next_world"></span></div>

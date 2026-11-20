@@ -3,7 +3,8 @@
    title background, the journey road (nodes on a curvy SVG path) and the click sound for buttons.
 
    BB.mountStage(el, opts, onEvent) -> {start, pause, resume, isPaused, destroy, game}
-       opts: {level, theme, items, perks, hat} (plain objects); onEvent(name, jsonText) gets pause / toast / win / lose.
+       opts: {level, theme, items, perks, hat, hearts, assist} (plain objects); onEvent(name, jsonText) gets pause /
+       toast / win / lose (lose says what got the bun and how far the goals were).
    BB.titleBg(canvas) -> stop()      BB.layoutRoad(roadEl)  (nodes = .g-node inside, positioned like the old map) */
 (function () {
   'use strict';
@@ -81,6 +82,7 @@
     };
     var game = BB.Game(cv, {
       level: opts.level, theme: opts.theme, items: opts.items, perks: opts.perks, hat: opts.hat, minimap: el.querySelector('.g-mm'),
+      hearts: opts.hearts || 0, assist: !!opts.assist,
       onHud: function (h) { drawHud(h); },
       onEvent: function (name, d) {
         if (name === 'heal') { hud.hearts.classList.remove('heal'); void hud.hearts.offsetWidth; hud.hearts.classList.add('heal'); }

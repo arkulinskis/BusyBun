@@ -16,11 +16,13 @@ class Stage(StageTemplate):
         self._on_event = None
         super().__init__(**properties)
 
-    def mount(self, level_data, theme, perks, hat, on_event):
+    def mount(self, level_data, theme, perks, hat, on_event, extra=None):
+        """extra: {"hearts": n} (a fixed number of hearts: the Daily Dish) and/or {"assist": True} (Grandma's help)."""
         self.destroy()
         self._on_event = on_event
-        opts = {"level": level_data, "theme": theme, "items": bun.st["catalog"] and {i["key"]: i for i in bun.st["catalog"]["items"]},
-                "perks": perks or [], "hat": hat or "none"}
+        opts: dict = {"level": level_data, "theme": theme, "perks": perks or [], "hat": hat or "none",
+                      "items": bun.st["catalog"] and {i["key"]: i for i in bun.st["catalog"]["items"]}}
+        opts.update(extra or {})
         self._api = window.BB.mountStage(self.dom_nodes["box"], bun.js(opts), self._event)
 
     def _event(self, name, data_json):

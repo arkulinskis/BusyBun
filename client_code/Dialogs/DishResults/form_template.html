@@ -1,0 +1,19 @@
+<div class="bb bb-dlg g-res g-dishres">
+  <div class="sub" anvil:dom-node="where"></div>
+  <h2 class="dlg-h" anvil:dom-node="title">Dish served! 🍽️</h2>
+  <div class="g-twistline"><span class="bb-emoji" aria-hidden="true" anvil:dom-node="twist_em"></span><b anvil:dom-node="twist_name"></b></div>
+  <div class="g-dish-time" anvil:dom-node="time"></div>
+  <div class="line"><span anvil:dom-node="hearts"></span><span anvil:dom-node="basket"></span><span class="g-newbest" anvil:dom-node="newbest">NEW BEST!</span></div>
+  <p class="g-dish-rank" anvil:dom-node="rank" role="status">Checking today's board…</p>
+  <div class="coins" anvil:dom-node="coins"></div>
+  <anvil-component type="RepeatingPanel" name="gained_panel" prop:item_template="BusyBun.Items.Chip" prop:role='["g-chips", "g-center-row"]'></anvil-component>
+  <p class="g-muted g-strong" anvil:dom-node="again"></p>
+  <anvil-component type="RepeatingPanel" name="banners_panel" prop:item_template="BusyBun.Items.Banner"></anvil-component>
+  <div class="g-guestbar" anvil:name="guestbar"><span class="grow" anvil:dom-node="guest_text"></span>
+    <anvil-component type="Button" name="auth_button" prop:text="Create account" prop:role='["bb-btn", "small", "green"]'></anvil-component></div>
+  <div class="g-row">
+    <anvil-component type="Button" name="share_button" prop:text="📤 Share" prop:role='["bb-btn", "big", "red"]'></anvil-component>
+    <anvil-component type="Button" name="replay_button" prop:text="↻ Play again" prop:role='["bb-btn"]'></anvil-component>
+    <anvil-component type="Button" name="back_button" prop:text="🍽️ Daily Dish" prop:role='["bb-btn", "cream"]'></anvil-component>
+  </div>
+</div>

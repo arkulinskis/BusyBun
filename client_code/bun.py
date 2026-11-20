@@ -8,6 +8,8 @@ bb-store.js = the saves on this device).
     bun.sync_now()          send what changed since the last sync (signed-in players); the server adds it on top
     bun.st                  {me, progress, status, journey, catalog, market, daily_ready, today, guest, online, ...}
     bun.sfx("coin")         a sound effect; bun.music("menu") the background music for a mood
+    bun.dish()              today's Daily Dish (rules.dish_of: the same level and twist everywhere); dish_board(), share()
+    bun.fails(key)          losses in a row on a level (Grandma's help is offered after 2); TIPS per pest
 
 Offline: every account that played on this device keeps its own save (IndexedDB "acct:<key>"): its progress, the copy
 the server last confirmed (base), levels won since (for the leaderboards) and an unfinished sync. Back online,
@@ -20,6 +22,7 @@ import anvil.server
 from anvil import alert
 from anvil.js import window
 
+from . import Catalog as C
 from . import rules as R
 from . import state
 
@@ -235,6 +238,7 @@ def _retry():
         had = pending()
         if sync_now() and had:
             toast("☁️ Back online: your offline play is added to your account.", "gold")
+        dish_flush()
     _changed()
 
 
@@ -345,6 +349,7 @@ def ensure(force=False):
     st["loaded"] = True
     if not st["guest"] and st["online"]:
         sync_now()
+        dish_flush()
     _changed()
     return True
 
@@ -402,9 +407,10 @@ def _new_id():
         return "%x-%x" % (int(window.Date.now()), int(window.Math.random() * 1e15))
 
 
-def act(name, *args):
+def act(name, *args, **opts):
     """A progress-changing action, scored right here with the shared rules (works offline), saved on the device,
-    then synced if online. Returns {"ok", "report", ...} like the server used to, or {"ok": False, "error"}."""
+    then synced if online. Returns {"ok", "report", ...} like the server used to, or {"ok": False, "error"}.
+    finish_level with assisted=True (Grandma's help) scores normally but stays off the leaderboard."""
     if not ensure():
         return {"ok": False, "error": "The game isn't loaded."}
     d = R.day(today()) or R.day("2026-01-01")
@@ -423,14 +429,20 @@ def act(name, *args):
             p, rep = R.apply_market(p, args[0], jr, d)
         elif name == "claim_daily":
             p, rep = R.apply_daily(p, jr, d)
+        elif name == "finish_dish":
+            p, rep = R.apply_dish(p, R.level_of(args[0], jr), jr, args[1], d)
         else:
             raise R.GameError("Unknown action.")
     except R.GameError as e:
         state.toast(str(e) or "That didn't work.", "error")
         return {"ok": False, "error": str(e)}
     st["progress"] = p
-    if name == "finish_level" and not st["guest"]:
+    if name == "finish_level" and not st["guest"] and not opts.get("assisted"):
         st["finishes"].append({"level": args[0], "time": rep["time"]})
+    if name == "finish_level":
+        clear_fails(args[0])
+    if name == "finish_dish":
+        _dish_keep(args[0], args[1], rep)
     _view()
     _save()
     if not st["guest"] and st["online"] and name != "finish_level":
@@ -492,6 +504,8 @@ def after_sign_in(is_new=False):
         _keep("acct:guest", guest_rec)
     if is_new:
         toast("Welcome to Busy Bun, %s!" % ((st.get("me") or {}).get("name") or "bun"), "gold")
+    if dish_flush(adopt_guest=True):
+        toast("🍽️ Your Daily Dish time is on today's board!", "gold")
     return True
 
 
@@ -766,6 +780,216 @@ def feedback():
     state.feedback()
 
 
+# ---------------------------------------------------------------- the Daily Dish
+DISH_PENDING = "dish_pending"  # device store: today's best Daily Dish run not on the board yet (a guest's, or offline)
+
+
+def dish(day_text=None):
+    """Today's Daily Dish (rules.dish_of) plus its level and territory, or None before the levels are loaded."""
+    d = R.day(day_text or today()) or R.day("2026-01-01")
+    out = R.dish_of(d, st["journey"]) if st["journey"] else None
+    if not out:
+        return None
+    f = find_level(out["level"])
+    if not f:
+        return None
+    out["t"], out["l"] = f
+    return out
+
+
+def dish_basics():
+    """Today's dish number and twist without the levels (the title screen shows them before the game loads)."""
+    d = R.day(today()) or R.day("2026-01-01")
+    return {"no": R.dish_no(d), "twist": R.dish_twist(d), "tier": C.DISH_DAYS[d.weekday()][0]}
+
+
+def dish_best():
+    """This player's best Daily Dish run today ({"day", "time", "hearts"}) or None."""
+    b = ((st["progress"] or {}).get("dish") or {}).get("best")
+    return b if b and b.get("day") == today() else None
+
+
+def dish_week():
+    """This week's stamps, Monday to Sunday: [{"day", "label", "done", "today", "future"}]."""
+    d = R.day(today()) or R.day("2026-01-01")
+    monday = d - _days(d.weekday())
+    won = set(((st["progress"] or {}).get("dish") or {}).get("days") or [])
+    out = []
+    for i, label in enumerate(("M", "T", "W", "T", "F", "S", "S")):
+        x = monday + _days(i)
+        out.append({"day": x.isoformat(), "label": label, "done": x.isoformat() in won, "today": x == d, "future": x > d})
+    return out
+
+
+def _days(n):
+    import datetime
+    return datetime.timedelta(days=n)
+
+
+def _dish_keep(level_key, result, rep):
+    """Remember the run for the board: submitted at once when signed in and online, otherwise kept on this device
+    (only the day's best) and submitted later (back online, or after a guest signs in)."""
+    old = _load(DISH_PENDING) or {}
+    if old.get("day") == rep["day"] and old.get("acct") == st["acct"] and float(old.get("time") or 1e9) <= rep["time"]:
+        return
+    _keep(DISH_PENDING, {"day": rep["day"], "level": level_key, "acct": st["acct"], "time": rep["time"],
+                         "result": result})
+
+
+def dish_flush(adopt_guest=False):
+    """Signed in and online: put a waiting Daily Dish run on the board. True if one went up."""
+    if st["guest"] or not st["online"] or not st["loaded"]:
+        return False
+    run = _load(DISH_PENDING)
+    if not run:
+        return False
+    if run.get("acct") != st["acct"] and not (adopt_guest and run.get("acct") == "guest"):
+        return False
+    if run.get("day") not in (today(), (R.day(today()) - _days(1)).isoformat() if R.day(today()) else None):
+        _drop_pending()
+        return False
+    ok, r = _try("dish_submit", run["day"], run["level"], run["result"])
+    if not ok:
+        return False  # offline again: try later
+    _drop_pending()
+    return bool(r and r.get("ok"))
+
+
+def _drop_pending():
+    try:
+        getattr(window.BBStore, "del")(DISH_PENDING)
+    except Exception:
+        _keep(DISH_PENDING, None)
+
+
+def dish_submit_now(level_key, result, rep):
+    """Right after a signed-in win: the board with this run on it, or None (offline: it waits on the device)."""
+    if st["guest"] or not st["online"]:
+        return None
+    ok, r = _try("dish_submit", rep["day"], level_key, result)
+    if not ok:
+        return None
+    _drop_pending()
+    return r
+
+
+def dish_board(time=None):
+    """Today's board (top 10, total, you, where `time` would rank); {"offline": True} when it can't be fetched."""
+    if st["online"]:
+        ok, b = _try("dish_board", today(), time)
+        if ok and b:
+            return b
+    return {"top": [], "you": None, "total": 0, "rank_if": None, "offline": True}
+
+
+def dish_pending_time():
+    """A guest's best time today that waits for an account (None if there is none)."""
+    run = _load(DISH_PENDING) or {}
+    if run.get("day") == today() and run.get("acct") == "guest":
+        return run.get("time")
+    return None
+
+
+def fmt_clock(s):
+    """0:42.3 (the share card's time)."""
+    s = max(0.0, float(s or 0))
+    m = int(s // 60)
+    r = s - m * 60
+    return "%d:%s%.1f" % (m, "0" if r < 10 else "", r)
+
+
+def share(text):
+    """The phone's share sheet (navigator.share), else the clipboard and a toast. True if it went somewhere."""
+    nav = window.navigator
+    try:
+        if getattr(nav, "share", None):
+            nav.share({"text": text})
+            return True
+    except Exception as e:
+        if "AbortError" in repr(e):
+            return False  # they closed the share sheet
+    try:
+        nav.clipboard.writeText(text)
+        toast("📋 Copied! Paste it to a friend.", "gold")
+        return True
+    except Exception:
+        alert(text, title="Copy this", role="app-dialog")
+        return False
+
+
+# ---------------------------------------------------------------- Grandma's Helping Hand
+FAILS_KEY = "bb.fails"  # localStorage: losses in a row per level (a win clears them)
+ASSIST_KEY = "bb.assist"  # localStorage: offer Grandma's help (on unless switched off in Settings)
+TIPS = {
+    "ant": "Ants are slow: Steam Dash into them to bonk, or simply walk around.",
+    "rat": "Rats chase you round walls: Steam Dash into them to bonk.",
+    "fly": "Flies zig-zag over walls: wait until one is close, then dash.",
+    "roach": "Cockroaches take two bonks: dash, step back, dash again.",
+    "gull": "Seagulls squawk before they swoop: step aside, then bonk them while they rest.",
+    "king": "The Rat King charges in straight lines: dodge, then dash into him while he turns round.",
+    "snail": "Snails are slow, but their slime slows you down: go round the shiny trail.",
+    "mould": "Mould blobs split in two when bonked: dash through, then keep moving.",
+    "frog": "Frogs hop in big jumps: let one land, then dash.",
+    "weevil": "Weevils charge when you're in line with them: step out of line and let them hit a wall.",
+    "spider": "Spiders hide and pounce: dash at them first, then back off while they rest.",
+    "wasp": "Wasps hover, then dart: keep moving and dash when one stops to aim.",
+    "queen": "The Wasp Queen dives, then gets tired: bonk her while she rests.",
+    "stove": "Hot stoves only hurt when you walk: dash across them, or find the oven knob.",
+}
+DEFAULT_TIP = "A Steam Dash makes you safe for a moment: dash into pests to bonk them."
+
+
+def fails(key):
+    return int((get(FAILS_KEY, {}) or {}).get(key) or 0)
+
+
+def note_loss(key):
+    f = get(FAILS_KEY, {}) or {}
+    f[key] = int(f.get(key) or 0) + 1
+    put(FAILS_KEY, dict(list(f.items())[-40:]))
+    return f[key]
+
+
+def clear_fails(key):
+    f = get(FAILS_KEY, {}) or {}
+    if key in f:
+        del f[key]
+        put(FAILS_KEY, f)
+
+
+def assist_on():
+    return get(ASSIST_KEY, True) is not False
+
+
+def set_assist(on):
+    put(ASSIST_KEY, bool(on))
+
+
+def loss_info(info):
+    """(who: "A 🐀 Rat got you", tip, progress: "4/6 meat · 1/2 errands") from the engine's lose event."""
+    info = info or {}
+    by = info.get("by") or "pest"
+    if by == "stove":
+        who = "A 🔥 hot stove got you"
+    else:
+        pest = next((x for x in (st["catalog"] or {}).get("pests", []) if x["key"] == by), None)
+        name = pest["name"] if pest else "pest"
+        who = "%s %s %s got you" % ("The" if by in BOSS_NAMES else "A", PEST_EMOJI.get(by, "🐜"), name)
+    g = info.get("goals") or {}
+    bits = []
+    if g.get("meatGoal"):
+        bits.append("%d/%d meat" % (min(g.get("meat") or 0, g["meatGoal"]), g["meatGoal"]))
+    if g.get("errandsGoal") and g.get("errandsTotal"):
+        bits.append("%d/%d errand%s" % (g.get("errandsDone") or 0, g["errandsTotal"], "" if g["errandsTotal"] == 1 else "s"))
+    if g.get("nestsGoal") and g.get("nestsTotal"):
+        bits.append("%d/%d nests" % (g["nestsTotal"] - (g.get("nestsLeft") or 0), g["nestsTotal"]))
+    if g.get("kingsTotal"):
+        bits.append("boss %s" % ("beaten" if not g.get("kingsLeft") else "still standing"))
+    if info.get("totalItems"):
+        bits.append("🧺 %d/%d" % (info.get("found") or 0, info["totalItems"]))
+    return who, TIPS.get(by, DEFAULT_TIP), " · ".join(bits)
+
+
 # ---------------------------------------------------------------- test hook (only with ?test=1 in the address)
 def _test_act(name, args_json):
     r = act(name, *json.loads(args_json))
@@ -796,9 +1020,20 @@ def _test_sync():
     return json.dumps({"synced": sync_now(), "pending": pending()})
 
 
+def _test_event(name, data_json):
+    """Send the open play screen an engine event ("win" / "lose") as if the canvas game had sent it."""
+    from . import router
+    page = router._r["page"]
+    if page is None or not hasattr(page, "_event"):
+        return "no play page"
+    page._event(str(name), json.loads(data_json or "{}"))
+    return "sent"
+
+
 try:
     if "test=1" in str(window.location.search):
         window.bbTest = {"act": _test_act, "win": _test_win, "state": _test_state, "sync": _test_sync, "ensure": lambda: ensure(),
+                         "event": _test_event,
                          "online": lambda flag: set_online(flag)}
 except Exception:
     pass

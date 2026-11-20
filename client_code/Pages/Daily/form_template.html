@@ -1,0 +1,50 @@
+<anvil-form layout="BusyBun.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="g-page g-dish">
+      <div class="g-h"><div><h1 class="g-h1" anvil:dom-node="title">Daily Dish</h1><p anvil:dom-node="lead">One level a day, the same for every bun. Same twist, same board.</p></div></div>
+      <div class="g-banner" anvil:name="empty_box"><span class="bb-emoji" aria-hidden="true">📴</span> <span anvil:dom-node="empty_text">Busy Bun needs the internet once to download its levels.</span></div>
+      <div anvil:name="dish_part">
+        <section class="g-dishcard">
+          <div class="g-dish-top">
+            <span class="g-flag" anvil:dom-node="tier"></span>
+            <span class="g-dish-clock" anvil:dom-node="countdown"></span>
+          </div>
+          <div class="g-dish-body">
+            <div class="thumb"><anvil-component type="BusyBun.Components.LevelThumb" name="thumb"></anvil-component></div>
+            <div class="g-dish-info">
+              <small anvil:dom-node="where"></small>
+              <h2 anvil:dom-node="lvname"></h2>
+              <div class="g-twist">
+                <span class="em bb-emoji" aria-hidden="true" anvil:dom-node="twist_em"></span>
+                <div><b anvil:dom-node="twist_name"></b><span anvil:dom-node="twist_desc"></span></div>
+              </div>
+              <anvil-component type="RepeatingPanel" name="goals_panel" prop:item_template="BusyBun.Items.Goal" prop:role='["g-goals"]'></anvil-component>
+              <p class="g-dish-reward" anvil:dom-node="reward"></p>
+              <div class="g-row g-dish-go"><anvil-component type="Button" name="play_button" prop:text="▶ Play today's dish" prop:role='["bb-btn", "big", "red"]'></anvil-component></div>
+            </div>
+          </div>
+        </section>
+        <div class="g-dish-grid">
+          <section class="g-dish-box">
+            <h2>Your best today</h2>
+            <p class="g-dish-best" anvil:dom-node="best"></p>
+            <h3>This week</h3>
+            <anvil-component type="RepeatingPanel" name="stamps_panel" prop:item_template="BusyBun.Items.Chip" prop:role='["g-stamps"]'></anvil-component>
+            <p class="g-muted g-strong g-small">No streak to lose: every dish you win gets a stamp.</p>
+          </section>
+          <section class="g-dish-box">
+            <h2 anvil:dom-node="board_title">Today's top buns</h2>
+            <div class="g-board">
+              <div class="g-brow hd"><span>#</span><span>Bun</span><span>Time</span></div>
+              <anvil-component type="RepeatingPanel" name="board_panel" prop:item_template="BusyBun.Items.BoardRow"></anvil-component>
+            </div>
+            <div class="g-guestbar" anvil:name="guestbar">
+              <span class="grow" anvil:dom-node="guest_text">Create a free account to get on today's board.</span>
+              <anvil-component type="Button" name="save_button" prop:text="Create free account" prop:role='["bb-btn", "small", "green"]'></anvil-component>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </anvil-block>
+</anvil-form>

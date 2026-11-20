@@ -2,7 +2,8 @@
 
     ""  / #landing   the title screen (Pages/Landing): play as a guest, sign in, the video
     #journey #pantry #kitchen #shop #badges   the hub tabs (Layouts/Shell); signed out = playing as a guest
-    #play/<level>    a level (Pages/Play: the canvas engine)
+    #play/<level>    a level (Pages/Play: the canvas engine); #play/dish = today's Daily Dish, #play/first = the next level
+    #daily           the Daily Dish (Pages/Daily, in the hub frame but not a tab): today's level, twist, board, stamps
     #admin           the level builder (Pages/Admin: shows its own sign-in card to non-admins, like the old #admin)
 
 Links in templates are plain <a href="#journey">; code calls router.go("play", key).
@@ -20,6 +21,7 @@ PAGES = {
     "shop": "The Shop",
     "badges": "Badges",
     "play": "Playing",
+    "daily": "Daily Dish",
     "admin": "Level Builder",
 }
 TABS = [("journey", "🗺️", "Journey"), ("pantry", "🧺", "Pantry"), ("kitchen", "🍳", "Kitchen"), ("shop", "🎩", "Shop"),
@@ -55,6 +57,9 @@ def _form(name):
     if name == "admin":
         from .Pages.Admin import Admin
         return Admin
+    if name == "daily":
+        from .Pages.Daily import Daily
+        return Daily
     from .Pages.Landing import Landing
     return Landing
 
@@ -125,8 +130,24 @@ def _on_hash(event):
     show()
 
 
+def _on_click(event):
+    """Anvil's <base href> makes a plain <a href="#x"> a full page load when the address has a query (a shared link
+    with ?fbclid=..., ?test=1): set the hash instead, so the game stays loaded."""
+    try:
+        a = event.target.closest('a[href^="#"]') if event.target and getattr(event.target, "closest", None) else None
+    except Exception:
+        a = None
+    if a is None or event.defaultPrevented or event.button != 0 or event.metaKey or event.ctrlKey:
+        return
+    if a.getAttribute("target") or not str(window.location.search):
+        return
+    event.preventDefault()
+    window.location.hash = a.getAttribute("href")
+
+
 def start():
     if not _r["listening"]:
         window.addEventListener("hashchange", anvil.js.report_exceptions(_on_hash))
+        window.document.addEventListener("click", anvil.js.report_exceptions(_on_click))
         _r["listening"] = True
     show()

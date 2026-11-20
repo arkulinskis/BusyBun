@@ -9,6 +9,8 @@
       <anvil-component type="Button" name="guest_button" prop:text="▶ Play now" prop:role='["bb-btn", "big", "red", "block"]'></anvil-component>
       <anvil-component type="Button" name="auth_button" prop:text="Sign in / Create account" prop:role='["bb-btn", "green", "block"]'></anvil-component>
       <anvil-component type="Button" name="signout_button" prop:text="Sign out" prop:role='["bb-btn", "small", "cream"]'></anvil-component>
+      <p class="g-free">Free · no ads · no timers · plays offline</p>
+      <button type="button" class="g-dishlink" anvil:on-dom:click="self.dish_click"><span class="bb-emoji" aria-hidden="true">🍽️</span><span anvil:dom-node="dish_text">Today's Daily Dish</span></button>
       <p class="g-note" anvil:name="guest_note">An account saves your progress and puts you on the leaderboards.</p>
     </div>
     <nav class="g-foot" aria-label="More">

@@ -253,7 +253,8 @@ def finish_level(level_key, result, today=None):
         p, report = apply_finish(p, lv, jr, result, t)
         row = lv["_row"]
         row["clears"] = (row["clears"] or 0) + 1
-        _save_score(u, row, report["time"], sum(1 for s in p["levels"][level_key]["stars"] if s))
+        if report["time"] >= L.min_time(lv["data"]):  # a time no bun could manage stays off the leaderboard
+            _save_score(u, row, report["time"], sum(1 for s in p["levels"][level_key]["stars"] if s))
         report["leaderboard"] = _board(row, u)
         return p, report
     return _user_action(today, fn)
@@ -322,7 +323,9 @@ def sync(delta, sync_id, finishes=None, today=None):
     """Add what this device changed since its last sync (rules.diff) on top of the account: offline play, play on
     another device in between, or a guest's progress the player chose to keep. Plays, coins, items and stats add up,
     stars/hats/badges combine, the best time wins (rules.merge). `finishes` = levels won since the last sync, for the
-    leaderboards. A sync_id the account already applied is skipped, so a retry after a dropped connection is harmless."""
+    leaderboards. A sync_id the account already applied is skipped, so a retry after a dropped connection is harmless.
+    Plausibility: a finish goes on a leaderboard only for a level the account has cleared and only with a time a bun
+    could really manage (Levels.min_time); best times below that floor are dropped from the delta too."""
     u = _user()
     ensure_seeded()
     t = _client_today(today)
@@ -332,7 +335,8 @@ def sync(delta, sync_id, finishes=None, today=None):
     applied = False
     if sid and sid not in p["sync"]:
         rows = {lv["key"]: lv for tr in jr for lv in tr["levels"]}
-        d = R.clean_delta(delta, set(rows))
+        sent = (delta.get("levels") or {}) if isinstance(delta, dict) else {}
+        d = R.clean_delta(delta, {k: L.min_time(lv["data"]) for k, lv in rows.items() if k in sent})
         if not R.is_empty(d):
             p = R.merge(p, d)
             R.check_badges(p, jr, t)
@@ -343,12 +347,14 @@ def sync(delta, sync_id, finishes=None, today=None):
             if lv is None:
                 continue
             try:
-                tm = max(3.0, min(float(f.get("time")), 24 * 3600.0))
+                tm = min(float(f.get("time")), 24 * 3600.0)
             except Exception:
                 continue
+            rec = p["levels"].get(lv["key"]) or {}
+            if not (rec.get("stars") or [False])[0] or tm < L.min_time(lv["data"]):
+                continue  # not cleared on this account, or faster than any bun could go: not for the leaderboard
             row = lv["_row"]
             row["clears"] = (row["clears"] or 0) + 1
-            rec = p["levels"].get(lv["key"]) or {}
             _save_score(u, row, tm, sum(1 for x in rec.get("stars", []) if x))
         u["progress"] = p
         u["last_played"] = _now()

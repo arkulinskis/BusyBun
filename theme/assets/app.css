@@ -896,3 +896,61 @@ html.bb-app .g-title { min-height: 100dvh; }
   background: var(--bb-dough-2); font-family: var(--bb-title); font-weight: 600; font-size: 13px; color: var(--bb-ink); white-space: nowrap; }
 .g-net[hidden] { display: none; }
 @media (max-width: 720px) { .g-net { font-size: 12px; padding: 2px 8px; } }
+
+/* ---------- Daily Dish, Grandma's help, straight into the kitchen (2026-11-20) ---------- */
+.g-title .g-free { position: relative; margin: -2px 0 0; font-weight: 800; font-size: 13.5px; color: var(--bb-ink-2); }
+.g-title .g-dishlink { position: relative; display: inline-flex; align-items: center; gap: 8px; max-width: 100%; padding: 8px 14px;
+  border: 2.5px solid var(--bb-line); border-radius: 999px; background: #fff1c9; box-shadow: 0 3px 0 var(--bb-line);
+  font-family: var(--bb-title); font-weight: 600; font-size: 15px; color: var(--bb-ink); cursor: pointer;
+  transition: transform var(--dur-press) var(--ease-out), box-shadow var(--dur-press) var(--ease-out); }
+.g-title .g-dishlink:hover { background: #ffe7a3; }
+.g-title .g-dishlink:active { transform: translateY(3px); box-shadow: 0 0 0 var(--bb-line); }
+.g-title .g-dishlink .bb-emoji { font-size: 20px; }
+.g-dishbar { display: flex; align-items: center; gap: 12px; padding: 10px 14px; margin: 0 0 12px; border: 3px solid var(--bb-line);
+  border-radius: 20px; background: linear-gradient(100deg, #d9f3ee, #fff7ea 70%); box-shadow: var(--bb-shadow); }
+.g-dishbar > .em { flex: none; font-size: 34px; }
+.g-dishbar .tx { flex: 1; min-width: 0; }
+.g-dishbar b { display: block; font-family: var(--bb-title); font-size: 19px; line-height: 1.15; }
+.g-dishbar .w { display: block; font-weight: 800; font-size: 13.5px; color: var(--bb-ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.g-dishbar .anvil-role-bb-btn > button { flex: none; }
+.g-dishcard { border: 3px solid var(--bb-line); border-radius: 22px; background: var(--bb-cream); box-shadow: var(--bb-shadow); padding: 14px 16px 16px; }
+.g-dish-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.g-dish-clock { font-weight: 800; font-size: 13.5px; color: var(--bb-ink-2); font-variant-numeric: tabular-nums; }
+.g-dish-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.g-dish-body .thumb { border: 2.5px solid var(--bb-line); border-radius: 12px; overflow: hidden; background: var(--bb-ink); display: flex; justify-content: center; }
+.g-dish-body .thumb canvas { max-width: 100%; height: auto !important; display: block; }
+.g-dish-info small { display: block; font-weight: 800; font-size: 13px; color: var(--bb-ink-2); }
+.g-dish-info h2 { font-size: 26px; margin: 2px 0 10px; }
+.g-twist { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 2.5px solid var(--bb-line); border-radius: 14px; background: #fff1c9; }
+.g-twist .em { font-size: 30px; line-height: 1; flex: none; }
+.g-twist b { display: block; font-family: var(--bb-title); font-size: 18px; }
+.g-twist span:not(.em) { display: block; font-size: 14px; font-weight: 700; color: var(--bb-ink-2); }
+.g-dish-reward { margin: 10px 0 0; font-weight: 800; }
+.g-dish-go { justify-content: flex-start; }
+.g-dish-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; margin-top: 14px; }
+.g-dish-box { border: 3px solid var(--bb-line); border-radius: 20px; background: var(--bb-cream); padding: 14px 16px; min-width: 0; }
+.g-dish-box h2 { font-size: 20px; margin-bottom: 8px; }
+.g-dish-box h3 { font-size: 16px; margin: 14px 0 8px; }
+.g-dish-best { margin: 0; font-family: var(--bb-title); font-size: 24px; font-variant-numeric: tabular-nums; }
+.g-small { font-size: 13px; margin: 10px 0 0; }
+.g-stamps { display: flex; gap: 6px; flex-wrap: wrap; }
+.g-chip.g-stamp { flex-direction: column; gap: 0; width: 40px; padding: 4px 0; border-radius: 12px; justify-content: center; color: var(--bb-ink-2); background: #fff; }
+.g-chip.g-stamp .bb-emoji { font-size: 18px; }
+.g-chip.g-stamp.done { background: #d9f3ee; color: var(--bb-ink); }
+.g-chip.g-stamp.today { box-shadow: 0 3px 0 var(--bb-line); border-width: 2.5px; }
+.g-dish .g-board { margin-top: 0; }
+.g-lose-tip { margin: 8px auto 0; max-width: 360px; font-weight: 700; color: var(--bb-ink-2); }
+.g-lose-prog { margin: 6px 0 0; font-weight: 800; }
+.g-lose-help { margin-top: 12px; }
+.g-startnote { display: flex; gap: 8px; align-items: center; font-size: 15px; background: #fff1c9; }
+.g-assistnote { display: flex; gap: 8px; align-items: center; justify-content: center; font-size: 15px; background: #d9f3ee; }
+.g-twistline { display: flex; justify-content: center; align-items: center; gap: 6px; font-family: var(--bb-title); font-size: 17px; margin-top: 4px; }
+.g-dish-time { font-family: var(--bb-title); font-size: 40px; margin: 6px 0 0; font-variant-numeric: tabular-nums; }
+.g-dish-rank { font-weight: 800; font-size: 16px; margin: 4px 0 8px; }
+@media (max-width: 640px) {
+  .g-dish-body, .g-dish-grid { grid-template-columns: minmax(0, 1fr); }
+  .g-dish-info h2 { font-size: 22px; }
+  .g-dishbar { flex-wrap: wrap; }
+  .g-dishbar .tx { flex-basis: calc(100% - 56px); }
+  .g-dish-time { font-size: 34px; }
+}

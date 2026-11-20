@@ -137,7 +137,7 @@ BADGES = [
     {"key": "collector", "name": "Collector", "emoji": "🧺", "desc": "Discover 20 kinds of ingredient."},
     {"key": "legend_hunter", "name": "Legend Hunter", "emoji": "🌟", "desc": "Find a legendary ingredient."},
     {"key": "chef", "name": "Junior Chef", "emoji": "🍳", "desc": "Cook your first recipe."},
-    {"key": "master_chef", "name": "Master Chef", "emoji": "👩‍🍳", "desc": "Cook all 10 recipes."},
+    {"key": "master_chef", "name": "Master Chef", "emoji": "👩‍🍳", "desc": "Cook every recipe."},
     {"key": "fashionista", "name": "Fashion Bun", "emoji": "🎩", "desc": "Own 5 hats."},
     {"key": "golden_touch", "name": "Golden Touch", "emoji": "🥢", "desc": "Find 10 pairs of golden chopsticks."},
     {"key": "pen_pal", "name": "Pen Pal", "emoji": "✉️", "desc": "Find all of Grandma's postcards."},
@@ -152,6 +152,7 @@ BADGES = [
     {"key": "hive_breaker", "name": "Hive Breaker", "emoji": "🐝", "desc": "Defeat 3 bosses.", "stat": "bosses", "at": 3},
     {"key": "constellation", "name": "Constellation", "emoji": "🌌", "desc": "Earn 200 stars."},
     {"key": "chopstick_master", "name": "Chopstick Master", "emoji": "🏆", "desc": "Find 50 pairs of golden chopsticks."},
+    {"key": "dish_regular", "name": "Daily Regular", "emoji": "🍽️", "desc": "Win 7 Daily Dishes.", "stat": "dishes", "at": 7},
 ]
 
 BADGE_KEYS = {b["key"] for b in BADGES}
@@ -251,6 +252,32 @@ BAG_COINS = 5
 COINS = {"errand": 5, "first_clear": 20, "star": 10, "pest": 1, "crate": 1, "boss": 15, "nest": 3}
 DAILY: dict = {"coins": 15, "streak_bonus": 5, "streak_cap": 7, "items": 3}
 MARKET_SIZE = 4
+
+# The Daily Dish: one level a day, the same for everyone (rules.dish_of), with a twist that gives every bun the same
+# loadout, so the day's board is fair. Easy on Monday, spicy on Sunday. The first win of the day pays DISH["coins"]
+# and the day's secret ingredient.
+DISH_EPOCH = "2026-11-20"  # Daily Dish #1 (the day it went live)
+DISH: dict = {"coins": 20}
+# key, name, emoji, what it does, the perks every bun gets, hearts (None = the usual 3 + Hearty), hardest weekday
+DISH_TWISTS = [
+    {"key": "glass", "name": "Glass Dumpling", "emoji": "🧊", "desc": "One heart. One bump and you're squished.",
+     "perks": [], "hearts": 1, "max_day": 3},
+    {"key": "tailwind", "name": "Tailwind", "emoji": "💨", "desc": "Swift + Long Dash for everyone.",
+     "perks": ["swift", "longdash"], "hearts": None, "max_day": 6},
+    {"key": "plain", "name": "Plain Bun", "emoji": "🥟", "desc": "No perks at all. Just you and the pests.",
+     "perks": [], "hearts": None, "max_day": 6},
+    {"key": "sticky", "name": "Sticky Fingers", "emoji": "🧲", "desc": "Sticky Dough + Snack Lover: things fly to you, bonuses last longer.",
+     "perks": ["magnet", "snacker"], "hearts": None, "max_day": 6},
+    {"key": "ironpot", "name": "Iron Pot", "emoji": "🛡️", "desc": "Hearty + Steam Shield: 4 hearts and a shield.",
+     "perks": ["hearty", "shield"], "hearts": None, "max_day": 6},
+    {"key": "mitts", "name": "Oven Mitts", "emoji": "🧤", "desc": "Fireproof + Steady Paws: stoves and slime can't stop you.",
+     "perks": ["fireproof", "steady"], "hearts": None, "max_day": 6},
+]
+DISH_TWIST_BY_KEY = {t["key"]: t for t in DISH_TWISTS}
+# Monday to Sunday: the name and the part of the journey (fractions of the worlds) the dish comes from.
+DISH_DAYS = [("Easy Monday", 0.0, 0.25), ("Gentle Tuesday", 0.1, 0.35), ("Warm Wednesday", 0.2, 0.5),
+             ("Toasty Thursday", 0.3, 0.6), ("Hot Friday", 0.4, 0.75), ("Sizzling Saturday", 0.55, 0.9),
+             ("Spicy Sunday", 0.7, 1.0)]
 
 
 def public():

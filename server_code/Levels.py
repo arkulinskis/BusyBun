@@ -722,3 +722,158 @@ def canon(d):
     if isinstance(d, float) and d.is_integer():
         return int(d)
     return d
+
+
+# ---------------------------------------------------------------- plausible times (leaderboards + Daily Dish board)
+# The browser reports its own time, so the server puts a time on a board only when a bun could really have done it.
+# min_time(data, perks) is a floor no honest run can beat: the shortest route from the start through what the goals
+# make you visit (each neighbour with an errand, the ingredients for those errands when the level has no spare ones,
+# each nest, every meat when the goal needs them all) to the steamer, at the bun's best sustained speed with those
+# perks (None = every perk: the level leaderboards), plus the time nests and bosses need between bonks.
+# Generous on purpose (tea and Star Anise all the time, magnets, talking through walls, a Sand Timer stopping the
+# clock for as long as you like), so a real run is never refused; a made-up time usually is.
+REACH = {"exit": 0.75, "npc": 0.99, "nest": 0.76, "clock": 0.6}   # how close the bun must get (bb-engine.js)
+OCTILE = 1.0825       # an 8-way grid path is at most this much longer than the straight way
+EDGE_SLACK = 1.42     # the bun can be anywhere in a tile, not at its centre: each leg may be this much shorter
+NEST_HITS, BOSS_GAP = 3, 0.6   # a nest takes 3 bonks; a boss can't be bonked again for 0.6 s
+_FLOORS: dict = {}
+
+
+def _grid_dist(w, h, open_, sources):
+    """Shortest 8-way distance (diagonals sqrt 2) from any source tile to every open tile."""
+    import heapq
+    dist = [float("inf")] * (w * h)
+    heap = [(0.0, i) for i in sources]
+    for i in sources:
+        dist[i] = 0.0
+    heapq.heapify(heap)
+    while heap:
+        d, i = heapq.heappop(heap)
+        if d > dist[i]:
+            continue
+        x, y = i % w, i // w
+        for dx, dy, c in ((1, 0, 1.0), (-1, 0, 1.0), (0, 1, 1.0), (0, -1, 1.0), (1, 1, 1.4142), (1, -1, 1.4142),
+                          (-1, 1, 1.4142), (-1, -1, 1.4142)):
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < w and 0 <= ny < h:
+                j = ny * w + nx
+                if open_[j] and d + c < dist[j]:
+                    dist[j] = d + c
+                    heapq.heappush(heap, (d + c, j))
+    return dist
+
+
+def bun_speed(perks, pickups=(), conveyor=False):
+    """The bun's best sustained speed (tiles/s): a Steam Dash (12.5 tiles/s) every time it recharges, walking and
+    gliding in between (bb-engine.js updatePlayer), tea and Star Anise counted as always on when the level has them,
+    plus 5%. perks None = every perk."""
+    def has(k):
+        return perks is None or k in perks
+    walk = 4.4 * (1.12 if has("swift") else 1) * (1.35 if "tea" in pickups else 1) * (1.15 if "anise" in pickups else 1)
+    dash = 0.19 * (1.4 if has("longdash") else 1)
+    cool = 0.9 * (0.7 if has("quickdash") else 1)
+    glide = (12.5 - walk) / 16.0
+    return 1.05 * (12.5 * dash + walk * (cool - dash) + glide) / cool + (2.6 if conveyor else 0.0)
+
+
+def min_time(data, perks=None):
+    """The fastest time (seconds) a real run of this level could report, never below 3. Cached by content."""
+    import json
+    try:
+        key = json.dumps([data, sorted(perks) if perks is not None else None], sort_keys=True, default=str)
+    except Exception:
+        return 3.0
+    hit = _FLOORS.get(key)
+    if hit is not None:
+        return hit
+    try:
+        out = max(3.0, _min_time(data, perks))
+    except Exception:
+        out = 3.0  # damaged data: only the old 3-second floor
+    if len(_FLOORS) > 400:
+        _FLOORS.clear()
+    _FLOORS[key] = out
+    return out
+
+
+def _min_time(data, perks):
+    w, h, tiles, ents = int(data["w"]), int(data["h"]), data["tiles"], data.get("ents") or []
+    open_ = [tiles[y][x] not in C.SOLID or tiles[y][x] in WALKABLE_EXTRA for y in range(h) for x in range(w)]
+    start = next(e for e in ents if e.get("t") == "start")
+    exit_ = next(e for e in ents if e.get("t") == "exit")
+    pickups = {e.get("k") for e in ents if e.get("t") == "pickup"}
+    pull = 3.6 if "magnet" in pickups else 2.6 if (perks is None or "magnet" in perks) else 0.9
+    item_reach = pull + 0.3  # ingredients fly to the bun from this far (Magnet bonus / Sticky Dough / plain)
+
+    def zone(e, reach):
+        """Open tiles the bun could be in while within `reach` of e (straight line: talking, magnets and nests work
+        through walls too)."""
+        r = reach + 0.75
+        out = []
+        for y in range(max(0, int(e["y"] - r - 1)), min(h, int(e["y"] + r + 2))):
+            for x in range(max(0, int(e["x"] - r - 1)), min(w, int(e["x"] + r + 2))):
+                if open_[y * w + x] and (x - e["x"]) ** 2 + (y - e["y"]) ** 2 <= r * r:
+                    out.append(y * w + x)
+        return out
+
+    goals = data.get("goals") or {}
+    items = [e for e in ents if e.get("t") == "item"]
+    npcs = [e for e in ents if e.get("t") == "npc"] if goals.get("errands") else []
+    nests = [e for e in ents if e.get("t") == "nest"] if goals.get("nests") else []
+    wanted: dict = {}
+    for n in npcs:
+        wanted[n.get("wants")] = wanted.get(n.get("wants"), 0) + max(1, int(n.get("count") or 1))
+    meats = [e for e in items if e.get("k") in C.MEATS]
+    need_items = []
+    for e in items:
+        k = e.get("k")
+        spare = sum(1 for i in items if i.get("k") == k) - wanted.get(k, 0)
+        if (k in wanted and spare <= 0) or (k in C.MEATS and int(goals.get("meat") or 0) >= len(meats)):
+            need_items.append(e)  # no spare ones: this very ingredient has to be picked up
+    # Points: 0 = start, 1 = steamer, then neighbours and nests, then ingredients.
+    zones = [[start["y"] * w + start["x"]], zone(exit_, REACH["exit"])]
+    zones += [zone(e, REACH["npc"]) for e in npcs] + [zone(e, REACH["nest"]) for e in nests]
+    core = len(zones)
+    zones += [zone(e, item_reach) for e in need_items]
+    keep = [i for i, z in enumerate(zones) if z]
+    core = len([i for i in keep if i < core])
+    zones = [zones[i] for i in keep]
+    dists = [_grid_dist(w, h, open_, z) for z in zones]
+    n = len(zones)
+    leg = [[0.0] * n for _ in range(n)]  # the shortest any leg between two points can really be
+    for a in range(n):
+        for b in range(a + 1, n):
+            d = min(dists[a][i] for i in zones[b])
+            leg[a][b] = leg[b][a] = max(0.0, d / OCTILE - EDGE_SLACK) if d != float("inf") else 0.0
+
+    def tree(pts):
+        """Minimum spanning tree: any route through all of `pts` is at least this long (Prim)."""
+        best = {p: float("inf") for p in pts}
+        best[pts[0]] = 0.0
+        total, left = 0.0, list(pts)
+        while left:
+            a = min(left, key=lambda p: best[p])
+            left.remove(a)
+            total += best[a]
+            for b in left:
+                best[b] = min(best[b], leg[a][b])
+        return total
+
+    path = max(tree(list(range(core))), tree(list(range(n))), leg[0][1])
+    for a in range(2, n):  # one or two stops on the way to the steamer, in the better order
+        path = max(path, leg[0][a] + leg[a][1])
+        for b in range(a + 1, n):
+            path = max(path, min(leg[0][a] + leg[a][b] + leg[b][1], leg[0][b] + leg[b][a] + leg[a][1]))
+    # A Sand Timer stops the clock: such a run is only held to the way to a timer, and no fights.
+    clocks = [zone(e, REACH["clock"]) for e in ents if e.get("t") == "pickup" and e.get("k") == "clock"]
+    fights = 0.0
+    if clocks:
+        path = min([path] + [max(0.0, min(dists[0][i] for i in z) / OCTILE - EDGE_SLACK) for z in clocks if z])
+    else:
+        cool = 0.35 if "anise" in pickups else 0.9 * (0.7 if (perks is None or "quickdash" in perks) else 1)
+        hp = {p["key"]: p["hp"] for p in C.PESTS}
+        bosses = [hp.get(e.get("k"), 1) for e in ents if e.get("t") == "pest" and e.get("k") in C.BOSSES]
+        fights = len(nests) * (NEST_HITS - 1) * cool + max([(b - 1) * BOSS_GAP for b in bosses] or [0.0])
+    conveyor = any(ch in "RLUD" for row in tiles for ch in row)
+    speed = bun_speed(perks, pickups, conveyor)
+    return int(10 * (0.9 * path / speed + 0.8 * fights)) / 10.0

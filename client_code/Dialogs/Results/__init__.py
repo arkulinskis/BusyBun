@@ -9,9 +9,10 @@ from ..LevelIntro import board_rows
 class Results(ResultsTemplate):
     """The results card after a win (the report the shared rules made on this device): stars popping in one by one, time and best, coins with the
     breakdown, ingredients gained (NEW ones marked), territory freed, postcard (read it right here), chopsticks,
-    badges, the leaderboard. Closes with "next", "replay", "auth" or "map"."""
+    badges, the leaderboard (an assisted win shows "Grandma helped" and isn't on it). Closes with "next", "replay",
+    "auth" or "map"."""
 
-    def __init__(self, key=None, report=None, found=0, total=0, prev=None, **properties):
+    def __init__(self, key=None, report=None, found=0, total=0, prev=None, assisted=False, **properties):
         super().__init__(**properties)
         rep, dn = report or {}, self.dom_nodes
         self._rep, self.key = rep, key
@@ -48,6 +49,9 @@ class Results(ResultsTemplate):
             dn["stamp"].textContent = tt.get("emoji") or "✉️"
             dn["post_text"].textContent = pc.get("text") or tt.get("postcard") or ""
         self.guestbar.visible = bun.st["guest"]
+        self.assist_note.visible = bool(assisted)
+        if assisted:
+            self.replay_button.text = "↻ Try it solo"
         self.board_panel.items = [{"rank": None, "name": "Loading…" if bun.online() else
                                    "📴 Offline: your time goes on the leaderboard when you're back online."}]
         nxt = None

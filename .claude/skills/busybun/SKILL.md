@@ -131,7 +131,40 @@ tools/              check.py, assets.py, ui_test.py + ui/smoke.js, gen_levels.py
   `tools/live/drive.mjs` takes `KEEP_SW=1` and `CHROME_ARGS="--proxy-server=127.0.0.1:9 --proxy-bypass-list=<-loopback>"`
   (true offline, same profile). Local http: "remember me" doesn't survive a browser restart (sign in again in tests).
 
-## Game rules (server)
+## Daily Dish, Grandma's help, first play (2026-11-20)
+
+- **Daily Dish** (`#daily` = `Pages/Daily`, in the Shell layout but not a tab; `#play/dish`): `rules.dish_of(day, jr)` picks
+  one level a day for everyone with seeded generators (`dish-twist:`, `dish-level:`, `dish-secret:` + the date), from
+  the part of the journey `Catalog.DISH_DAYS` gives the weekday (easy Monday ... spicy Sunday; no bonus rounds, no
+  bosses Mon-Thu). `Catalog.DISH_TWISTS` (6) = the perks/hearts every bun gets (Glass Dumpling only Mon-Thu).
+  `DISH_EPOCH` 2026-11-20 = Dish #1. `rules.apply_dish`: first win of the day = 20 coins + the secret ingredient, a stamp
+  in `progress.dish.days` (last 31), the day's best in `progress.dish.best`, stat `dishes` (badge Daily Regular at 7);
+  it never unlocks levels. `dish` is in normalize/diff/clean_delta/merge (days union, best = later day or faster).
+- **Board**: `server_code/Dish.py` + table `dish_runs` (day, user, name, time, hearts, at). `dish_submit(day, level,
+  result)`: signed in, today (+-1 day), today's level, `rules.check_goals`, time >= `Levels.min_time(data, twist perks)`,
+  best per player per day kept. `dish_board(day, time)`: anyone, top 10 + total + you + `rank_if`. The device keeps
+  the day's best run under `dish_pending` (bb-store) until it's on the board: guests after sign-in
+  (`bun.dish_flush(adopt_guest=True)` in after_sign_in), offline players when back online. `Dialogs/DishResults` has the
+  Share card (`bun.share`: navigator.share, else clipboard + toast).
+- **Plausible times** (`Levels.min_time(data, perks=None)`): the shortest route through what the goals force (errand
+  neighbours, their ingredients when there are no spares, nests, all meats when the goal needs every one) as a minimum
+  spanning tree over 8-way grid distances, at the best sustained speed for those perks (`bun_speed`), plus nest/boss
+  bonk gaps; a Sand Timer level is only held to the way to the timer. Generous by design (floors are 3-12 s; real runs
+  are far slower). `Game.sync` puts a finish on a leaderboard only for a cleared level and a time >= the floor, and
+  drops delta best times below it; `finish_level` checks it too.
+- **Grandma's help**: the engine's `lose` event has `{by, goals, time, found, totalItems}` (`hurtPlayer(.., p.k)`
+  remembers the last hit). `bun.loss_info` + `TIPS` make the lose card's line and tip; `bb.fails` (localStorage) counts
+  losses in a row per level (a win clears it); after 2, `Dialogs/Lose` offers "Try with Grandma's help" ->
+  `bun.st["assist_for"]` -> `Pages/Play` mounts the stage with `{"assist": True}` (+1 heart, shield; `opts.hearts` /
+  `opts.assist` in bb-engine.js). An assisted win scores normally (stars count) but `bun.act(..., assisted=True)` keeps
+  it off `st["finishes"]`. Settings: "Offer Grandma's help" (`bb.assist`). The Daily Dish never offers help.
+- **Straight into the kitchen**: Landing's Play goes to `#play/<next level>` while the player has no wins (else the
+  Journey); `#play/first` resolves the same way. Journey shows a one-time "Your journey" toast after the first wins
+  (`bb.journeyTip`). Landing reads the guest save from the device store (`acct:guest`), not the old `bb.guest.v1`.
+- `router._on_click`: with a query in the address (`?fbclid=` on shared links, `?test=1`) `<a href="#x">` sets the hash
+  instead of reloading (Anvil's `<base href>`). `?test=1` also has `bbTest.event(name, json)`: send the play page an
+  engine event (win/lose).
+
 
 - Every progress-changing rule is an `apply_*(progress, ...)` in `client_code/rules.py` (shared). New action = the
   rule there + a branch in `bun.act` (it then syncs through the additive merge; add new fields to diff/merge/clean_delta).
@@ -170,8 +203,8 @@ tools/              check.py, assets.py, ui_test.py + ui/smoke.js, gen_levels.py
 
 - **Continue with Google** (auth.py `google`): `login_with_google()` returns None for someone without an account, so it
   then calls `signup_with_google()`; on the sign-up view the Privacy & Terms tick comes first.
-- Guest progress is in localStorage `bb.guest.v1`; after sign-in `bun.after_sign_in` imports it (`import_guest`) when
-  the account is empty, then deletes it. Other browser keys: `bb.sfx`, `bb.music`, `bb.seenNew`, `bb.lastHat`,
+- Guest progress lives in the device store (`acct:guest`; the old localStorage `bb.guest.v1` moves there on first
+  load and is deleted); after sign-in `bun.after_sign_in` offers to add it to the account. Other browser keys: `bb.sfx`, `bb.music`, `bb.seenNew`, `bb.lastHat`, `bb.fails`, `bb.assist`, `bb.journeyTip`,
   `bb.dashPos.port` / `bb.dashPos.land`.
 - **Movable Dash button (phones, 2026-11-10):** `moveableDash` in bb-stage.js. A tap dashes at once; holding still for
   2 s (`DASH_HOLD_MS`, moving > 14 px first cancels) picks it up, it follows the finger, and the drop spot is saved in

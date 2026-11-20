@@ -31,6 +31,7 @@ class Settings(SettingsTemplate):
         self.sfx_button.text = "🔊 Sounds on" if bun.sound_on() else "🔇 Sounds off"
         self.music_button.text = "🎵 Music on" if bun.music_on() else "🎵 Music off"
         self.haptics_button.text = "📳 Vibration on" if bun.haptics_on() else "📳 Vibration off"
+        self.assist_button.text = "🧓 Offer Grandma's help: on" if bun.assist_on() else "🧓 Offer Grandma's help: off"
 
     @handle("", "show")
     def form_show(self, **event_args):
@@ -66,6 +67,11 @@ class Settings(SettingsTemplate):
     @handle("haptics_button", "click")
     def haptics_button_click(self, **event_args):
         bun.set_haptics(not bun.haptics_on())
+        self._labels()
+
+    @handle("assist_button", "click")
+    def assist_button_click(self, **event_args):
+        bun.set_assist(not bun.assist_on())
         self._labels()
 
     @handle("dashpos_button", "click")

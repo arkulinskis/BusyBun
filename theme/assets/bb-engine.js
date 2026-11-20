@@ -1,9 +1,10 @@
 /* Busy Bun — the game engine. Runs one level on a canvas. Used by the game (GamePage) and by the
    level editor's playtest (AdminPage).
 
-   var g = BB.Game(canvas, {level, theme, items, perks, hat, minimap, onHud, onEvent});
+   var g = BB.Game(canvas, {level, theme, items, perks, hat, minimap, onHud, onEvent, hearts, assist});
+   hearts = a fixed number of hearts (the Daily Dish's Glass Dumpling); assist = Grandma's help (+1 heart, a shield).
    g.start(); g.pause(); g.resume(); g.setStick(x, y); g.dash(); g.destroy();
-   onEvent(name, data): 'talk' {npc, text, done, have, need}, 'toast' {text}, 'win' {result}, 'lose' {}, 'found' {kind}
+   onEvent(name, data): 'talk' {npc, text, done, have, need}, 'toast' {text}, 'win' {result}, 'lose' {by, goals, time, found, totalItems}, 'found' {kind}
    World units are tiles; drawing converts with S (pixels per tile). */
 (function () {
   'use strict';
@@ -74,9 +75,10 @@
     });
     startE = startE || { x: 1.5, y: 1.5 };
     exitE = exitE || { x: W - 1.5, y: H - 1.5 };
-    var maxHearts = 3 + (perks.hearty ? 1 : 0);
+    var maxHearts = (opts.hearts ? opts.hearts : 3 + (perks.hearty ? 1 : 0)) + (opts.assist ? 1 : 0);
+    var lastHit = 'pest';  // what took the last heart (a pest's key or 'stove'): the lose card names it
     player = { x: startE.x, y: startE.y, vx: 0, vy: 0, r: 0.34, hearts: maxHearts, inv: 0, dashT: 0, dashCd: 0, dx: 0, dy: 1,
-      shield: !!perks.shield, revive: !!perks.revive, tea: 0, hits: [], squash: 0, lookX: 0, lookY: 1, safe: 0, postDash: 0, fullHint: 0,
+      shield: !!perks.shield || !!opts.assist, revive: !!perks.revive, tea: 0, hits: [], squash: 0, lookX: 0, lookY: 1, safe: 0, postDash: 0, fullHint: 0,
       magnet: 0, anise: 0, clock: 0 };
     var totalItems = items.length, meatTotal = items.filter(function (i) { return MEATS[i.k]; }).length;
     var kingsTotal = pests.filter(function (p) { return BOSS[p.k]; }).length;
@@ -233,7 +235,7 @@
         player.shield = false; player.inv = 1.0; sfx('bonk'); ring(player.x, player.y, '#9fd8ff', 1.4); floatText(player.x, player.y - 0.6, 'Shield!', '#9fd8ff');
         return;
       }
-      player.hearts--; player.inv = 1.4; stats.damage++; shake(0.35); sfx('hurt');
+      player.hearts--; player.inv = 1.4; stats.damage++; shake(0.35); sfx('hurt'); lastHit = why || 'pest';
       burst(player.x, player.y, 10, '#fff7ea', 4);
       floatText(player.x, player.y - 0.6, why === 'stove' ? 'Hot hot hot!' : 'Ouch!', '#ffb3a8');
       if (player.hearts <= 0) {
@@ -654,7 +656,7 @@
                 }
               }
             } else if (p.stun <= 0 && !harmless(p)) {
-              hurtPlayer(p.x, p.y);
+              hurtPlayer(p.x, p.y, p.k);
             }
           }
         }
@@ -727,8 +729,10 @@
         var res = { time: Math.round(time * 100) / 100, picked: picked, errands: stats.errands.slice(), nests: stats.nests, kings: stats.kings,
           coins: stats.coins, pests: stats.pests, crates: stats.crates, damage: stats.damage, chopsticks: stats.chopsticks, postcard: stats.postcard,
           knobs: stats.knobs, bonuses: stats.bonuses };
+        res.hearts = player.hearts;
         emit('win', { result: res, goals: goalState(), totalItems: totalItems, found: items.filter(function (i) { return i.taken; }).length });
-      } else emit('lose', {});
+      } else emit('lose', { by: lastHit, goals: goalState(), time: Math.round(time * 10) / 10, totalItems: totalItems,
+        found: items.filter(function (i) { return i.taken; }).length });
     }
 
     // ---------------------------------------------------------------- drawing

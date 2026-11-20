@@ -3,7 +3,7 @@ import anvil.js
 from anvil.js import window
 
 from ._anvil_designer import JourneyTemplate
-from ... import bun, flows
+from ... import bun, flows, router
 
 
 class Journey(JourneyTemplate):
@@ -29,6 +29,7 @@ class Journey(JourneyTemplate):
             st["world"] = nxt_world or (keys[-1] if keys else None)
         dn["lead"].textContent = "%d worlds to free from the pests. Clear every level in a world to open the next one." % len(ws)
         self.guestbar.visible = st["guest"]
+        self._draw_dish()
         f = bun.find_level(nxt) if nxt else None
         self.continue_card.visible = bool(f)
         self.all_free.visible = not f and bool(s["cleared"]) and len(s["cleared"]) == len(ws)
@@ -46,6 +47,17 @@ class Journey(JourneyTemplate):
         dn["prog_worlds"].textContent = "🏮 %d / %d worlds free" % (len(s["cleared"]), len(ws))
         self.worlds_panel.items = [{"t": t, "i": i, "host": self, "next_world": nxt_world} for i, t in enumerate(ws)]
         self._draw_world(ws, nxt)
+
+    def _draw_dish(self):
+        """The Daily Dish card on top: today's number and twist, and whether today's stamp is in."""
+        d, dn = bun.dish(), self.dom_nodes
+        self.dish_card.visible = d is not None
+        if d is None:
+            return
+        tw, best = d["twist"], bun.dish_best()
+        dn["dish_title"].textContent = "Daily Dish #%d" % d["no"]
+        dn["dish_sub"].textContent = "%s %s · %s" % (tw["emoji"], tw["name"], (
+            "✅ done today, best %s" % bun.fmt_clock(best["time"]) if best else d["tier"]))
 
     def _draw_world(self, ws, nxt):
         st, s, dn = bun.st, bun.st["status"], self.dom_nodes
@@ -102,6 +114,9 @@ class Journey(JourneyTemplate):
                 or self.dom_nodes["road"].querySelector(".g-node.next")
             if node:
                 window.setTimeout(lambda: node.scrollIntoView({"block": "center", "behavior": "smooth"}), 120)
+        if 0 < (bun.st["status"] or {}).get("clears", 0) <= 3 and not bun.get("bb.journeyTip"):
+            bun.put("bb.journeyTip", True)  # the map's first appearance after the very first win
+            bun.toast("🗺️ Your journey: %d worlds to free from the pests" % len(bun.worlds()), "gold")
         opened = bun.st.get("open")
         bun.st["open"] = None
         if opened:  # "Next level" on the results card: its intro card opens on the map
@@ -146,6 +161,10 @@ class Journey(JourneyTemplate):
     @handle("postcard_button", "click")
     def postcard_button_click(self, **event_args):
         flows.postcard(bun.st["world"])
+
+    @handle("dish_button", "click")
+    def dish_button_click(self, **event_args):
+        router.go("daily")
 
     @handle("save_button", "click")
     def save_button_click(self, **event_args):
